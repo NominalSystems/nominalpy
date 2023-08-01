@@ -54,7 +54,7 @@ class Component:
         response = post_request(self.__credentials, "component/property", params={"id": self.id, "name": property, "value": value})
         return response != None
     
-    def set_messsage (self, property: str, msg: Message) -> bool:
+    def set_message (self, property: str, msg: Message) -> bool:
         '''
         Sets the value of a message in a component to a specific message
         based on the ID of the message.

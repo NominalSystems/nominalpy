@@ -90,7 +90,7 @@ class Simulation:
         ends.
         '''
         if display:
-            STEPS: int = 20
+            STEPS: int = 5
             split: float = time / float(STEPS)
             print("Simulating...")
             print("%s 0/%d" % ("." * STEPS, time))
