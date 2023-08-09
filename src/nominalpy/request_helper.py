@@ -70,7 +70,7 @@ def get_request (credentials: Credentials, url: str, params: dict = {}) -> str:
     raise create_web_exception(response.status_code)
 
 
-def post_request (credentials: Credentials, url: str, params: dict = {}) -> str:
+def post_request (credentials: Credentials, url: str, data: str = None, params: dict = {}) -> str:
     '''
     Creates a POST request with some suffix URL data and returns
     the result of the request in a text form. If there was an
@@ -86,7 +86,8 @@ def post_request (credentials: Credentials, url: str, params: dict = {}) -> str:
     response = requests.post(
         credentials.url + url, 
         verify=False, 
-        params=params, 
+        params=params,
+        data=data,
         headers = {'x-api-key': credentials.access_key, 'Content-Type': 'application/json'}
     )
 
@@ -98,6 +99,57 @@ def post_request (credentials: Credentials, url: str, params: dict = {}) -> str:
     # Throw an error
     raise create_web_exception(response.status_code)
 
+
+def put_request (credentials: Credentials, url: str, data: str = None, params: dict = {}) -> str:
+    '''
+    TODO
+    '''
+
+    # Skip if missing credentials
+    if credentials == None:
+        raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
+
+    # Create the POST request
+    response = requests.put(
+        credentials.url + url, 
+        verify=False, 
+        params=params,
+        data=data,
+        headers = {'x-api-key': credentials.access_key, 'Content-Type': 'application/json'}
+    )
+
+    # Check if the request went through
+    if response.status_code == 200:
+        data = response.text.replace('\"', "")
+        return data
+
+    # Throw an error
+    raise create_web_exception(response.status_code)
+
+def jsonify (data: dict, array: bool = True) -> str:
+    '''
+    TODO
+    '''
+    if array:
+        return "[%s]" % str(data)
+    return str(data)
+
+def str_to_list (raw: str) -> list:
+    array: list = []
+    if len(raw) < 2: return array
+    raw = raw[1:-1]
+    array = raw.split(",")
+    return array
+
+def is_valid_guid (guid: str) -> bool:
+    empty: str = "00000000-0000-0000-0000-000000000000"
+    if guid == empty: return False
+    if len(guid) != len(empty): return False
+    if guid[8] != empty[8]: return False
+    if guid[13] != empty[13]: return False
+    if guid[18] != empty[18]: return False
+    if guid[23] != empty[23]: return False
+    return True
 
 def create_web_exception (code: int) -> NominalException:
     '''
