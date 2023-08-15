@@ -5,95 +5,74 @@ to aid with communication to the public API.
 '''
 
 from .request_helper import *
-from .value import Value
-import json
+from .value_old import Value
+from .object import Object
+from .printer import *
 
 '''
 The message class is used for storing data about a particular
 set of parameters using the inbuilt Messaging system.
 '''
-class Message:
+class Message (Object):
 
-    # Stores the ID of the message
-    id: str = None
-
-    '''
-    Stores the credentials to the message that is defined by the
-    simulation that creates it.
-    '''
-    __credentials: Credentials = None
-
+    __subscribed: bool = False
 
     def __init__(self, credentials: Credentials, id: str) -> None:
         '''
-        Defines the constructor for the message that
-        sets the ID of the message
+        TODO
         '''
-        self.__credentials = credentials
-        self.id = id
+        super().__init__(credentials, id, "message")
 
-    def get_value (self, property: str) -> Value:
+    def subscribe (self) -> bool:
         '''
-        Returns the value of a particular property as a string using
-        the GET request.
+        TODO
         '''
-        value = get_request(self.__credentials, "message/property", params={"id": self.id, "name": property})
-        return Value(value)
+        # Construct the JSON body
+        body: dict = {
+            "guid": self.id
+        }
 
-    def set_value (self, property: str, value: Value) -> bool:
+        # Create the data
+        request_data: str = jsonify(body)
+
+        # Create the response from the PATCH request and get the IDs
+        response = put_request(self._Object__credentials, "database/message", data=request_data)
+        if response == False:
+            error("Failed to subscribe message to the database system.")
+            return False
+        self.__subscribed = True
+        return True
+
+    def fetch_range (self, min_time: float, max_time: float, *values) -> list:
         '''
-        Sets the value of a property to a specific value and returns
-        a flag whether it was updated correctly.
+        TODO
         '''
-        response = post_request(self.__credentials, "message/property", params={"id": self.id, "name": property, "value": value})
-        return response != None
-    
-    def register (self) -> bool:
+
+        # Throw an error if not subscribed
+        if not self.__subscribed:
+            error("Unable to fetch data. Ensure that this message has been subscribed to the database system.")
+            return []
+
+        # Construct the JSON body parameters
+        body: dict = {
+            "guid": self.id,
+            "min_time": min_time,
+            "max_time": max_time
+        }
+        if len(values) > 0:
+            body["data"] = []
+            for param in values:
+                body["data"].append(param)
+
+        # Create the data
+        request_data: str = jsonify(body)
+
+        # Create the response from the POST request and get the data
+        response = post_request(self._Object__credentials, "query/database/message", data=request_data)
+        return response
+
+    def fetch (self, *values) -> list:
         '''
-        Registers a particular message to be tracked by the database system
-        within the simulation to be pulled from later.
+        TODO
         '''
-        response = post_request(self.__credentials, "message/register", params={"id": self.id})
-        return response != None
-    
-    def get_properties (self) -> list:
-        '''
-        Returns a list of all properties that can be updated or read
-        from this message.
-        '''
-        data = get_request(self.__credentials, "message/properties", params={"id": self.id})
-        if data == None: return []
-        return data.replace('"', "")[1:-1].split(",")
-    
-    def __str__(self) -> str:
-        '''
-        Returns the ID of the message that is stored within the database.
-        This ID is unique per message.
-        '''
-        return self.id
-    
-    def request_values (self, property: str) -> dict:
-        '''
-        Requests a series of a specific parameter from the message that was
-        stored in a database and is identitified by the time it was entered
-        in the database at.
-        '''
-        value = post_request(self.__credentials, "message/request", params={"id": self.id, "name": property})
-        if value == None: return {}
-        data = value.replace('{', '{"').replace(':', '": ').replace(',', ', "').replace(' ', '')
-        try: return json.loads(data)
-        except: return {}
-    
-    def request_values_vector3 (self, property: str) -> dict:
-        '''
-        Requests a series of a specific parameter from the message that was
-        stored in a database and is identitified by the time it was entered
-        in the database at. This will convert the data into a vector3 tuple
-        format.
-        '''
-        values: dict = self.request_values(property)
-        if values == {}: return {}
-        out: dict = {}
-        for v in values.keys():
-            out[v] = (values[v]["X"], values[v]["Y"], values[v]["Z"])
-        return out
+        return self.fetch_range(0.0, 0.0, *values)

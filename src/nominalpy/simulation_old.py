@@ -7,7 +7,7 @@ to aid with communication to the public API.
 from .request_helper import *
 from .component import Component
 from .credentials import Credentials
-from .message import Message
+from .message_old import Message
 from .system import System
 
 '''

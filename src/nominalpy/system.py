@@ -5,7 +5,7 @@ to aid with communication to the public API.
 '''
 
 from .request_helper import *
-from .value import Value
+from .value_old import Value
 from .credentials import Credentials
 
 '''

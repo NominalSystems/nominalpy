@@ -4,8 +4,9 @@ This code is developed by Nominal Systems
 to aid with communication to the public API.
 '''
 
-import requests
+import requests, json
 import urllib3
+from .printer import *
 from .credentials import Credentials
 from .exception import NominalException
 
@@ -41,10 +42,33 @@ def validate_credentials (credentials: Credentials) -> None:
         raise create_web_exception(response.status_code)
 
 
-def get_request (credentials: Credentials, url: str, params: dict = {}) -> str:
+def handle_request_data (response: requests.Response) -> dict:
+    '''
+    Handles the standard request data created from a HTTP
+    web request. This will attempt to return a JSON or throw
+    a web 
+    '''
+
+    # Skip if no response
+    if response == None:
+        raise Exception("Invalid response passed into 'handle_request_data'.")
+    
+    # Check if the request was valid and return the json data
+    if response.status_code == 200:
+        if response.text == "":
+            return {}
+        data = json.loads(response.text)
+        return data
+    
+    # Throw an error if not
+    error("Invalid request with status code %d." % response.status_code)
+    raise create_web_exception(response.status_code)
+
+
+def get_request (credentials: Credentials, url: str, params: dict = {}) -> dict:
     '''
     Creates a GET request with some suffix URL data and returns
-    the result of the request in a text form. If there was an
+    the result of the request in a JSON form. If there was an
     error, then a None will be returned. This requires valid
     credentials to be passed through.
     '''
@@ -54,6 +78,7 @@ def get_request (credentials: Credentials, url: str, params: dict = {}) -> str:
         raise Exception("Invalid Credentials: No valid credentials were passed into the GET requets.")
 
     # Create the GET request
+    log("Attempting a GET request '/%s' with parameters:\n\t%s" % (url, params))
     response = requests.get(
         credentials.url + url, 
         verify=False, 
@@ -61,19 +86,14 @@ def get_request (credentials: Credentials, url: str, params: dict = {}) -> str:
         headers = {'x-api-key': credentials.access_key, 'Content-Type': 'application/json'}
     )
 
-    # Check if the request went through
-    if response.status_code == 200:
-        data = response.text
-        return data
-    
-    # Throw an error
-    raise create_web_exception(response.status_code)
+    # Handle the response
+    return handle_request_data(response)
 
 
-def post_request (credentials: Credentials, url: str, data: str = None, params: dict = {}) -> str:
+def post_request (credentials: Credentials, url: str, data: str = None, params: dict = {}) -> dict:
     '''
     Creates a POST request with some suffix URL data and returns
-    the result of the request in a text form. If there was an
+    the result of the request in a JSON form. If there was an
     error, then a None will be returned. This requires valid
     credentials to be passed through.
     '''
@@ -83,6 +103,7 @@ def post_request (credentials: Credentials, url: str, data: str = None, params: 
         raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
 
     # Create the POST request
+    log("Attempting a POST request '/%s' with data:\n\t%s" % (url, data))
     response = requests.post(
         credentials.url + url, 
         verify=False, 
@@ -91,25 +112,24 @@ def post_request (credentials: Credentials, url: str, data: str = None, params: 
         headers = {'x-api-key': credentials.access_key, 'Content-Type': 'application/json'}
     )
 
-    # Check if the request went through
-    if response.status_code == 200:
-        data = response.text.replace('\"', "")
-        return data
-
-    # Throw an error
-    raise create_web_exception(response.status_code)
+    # Handle the response
+    return handle_request_data(response)
 
 
-def put_request (credentials: Credentials, url: str, data: str = None, params: dict = {}) -> str:
+def put_request (credentials: Credentials, url: str, data: str = None, params: dict = {}) -> dict:
     '''
-    TODO
+    Creates a PUT request with some suffix URL data and returns
+    the result of the request in a JSON form. If there was an
+    error, then a None will be returned. This requires valid
+    credentials to be passed through.
     '''
 
     # Skip if missing credentials
     if credentials == None:
         raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
 
-    # Create the POST request
+    # Create the PUT request
+    log("Attempting a PUT request '/%s' with data:\n\t%s" % (url, data))
     response = requests.put(
         credentials.url + url, 
         verify=False, 
@@ -118,30 +138,75 @@ def put_request (credentials: Credentials, url: str, data: str = None, params: d
         headers = {'x-api-key': credentials.access_key, 'Content-Type': 'application/json'}
     )
 
-    # Check if the request went through
-    if response.status_code == 200:
-        data = response.text.replace('\"', "")
-        return data
+    # Handle the response
+    return handle_request_data(response)
 
-    # Throw an error
-    raise create_web_exception(response.status_code)
-
-def jsonify (data: dict, array: bool = True) -> str:
+def patch_request (credentials: Credentials, url: str, data: str = None, params: dict = {}) -> dict:
     '''
-    TODO
+    Creates a PATCH request with some suffix URL data and returns
+    the result of the request in a JSON form. If there was an
+    error, then a None will be returned. This requires valid
+    credentials to be passed through.
+    '''
+
+    # Skip if missing credentials
+    if credentials == None:
+        raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
+
+    # Create the PATCH request
+    log("Attempting a PATCH request '/%s' with data:\n\t%s" % (url, data))
+    response = requests.patch(
+        credentials.url + url, 
+        verify=False, 
+        params=params,
+        data=data,
+        headers = {'x-api-key': credentials.access_key, 'Content-Type': 'application/json'}
+    )
+
+    # Handle the response
+    return handle_request_data(response)
+
+def delete_request (credentials: Credentials, url: str, data: str = None, params: dict = {}) -> dict:
+    '''
+    Creates a DELETE request with some suffix URL data and returns
+    the result of the request in a JSON form. If there was an
+    error, then a None will be returned. This requires valid
+    credentials to be passed through.
+    '''
+
+    # Skip if missing credentials
+    if credentials == None:
+        raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
+
+    # Create the DELETE request
+    log("Attempting a DELETE request '/%s' with data:\n\t%s" % (url, data))
+    response = requests.delete(
+        credentials.url + url, 
+        verify=False, 
+        params=params,
+        data=data,
+        headers = {'x-api-key': credentials.access_key, 'Content-Type': 'application/json'}
+    )
+
+    # Handle the response
+    return handle_request_data(response)
+
+def jsonify (data: dict, array: bool = False) -> str:
+    '''
+    Converts a particular data as a dictionary to string
+    using the JSON payload and has an optional parameter
+    to wrap the data inside of an array.
     '''
     if array:
-        return "[%s]" % str(data)
-    return str(data)
-
-def str_to_list (raw: str) -> list:
-    array: list = []
-    if len(raw) < 2: return array
-    raw = raw[1:-1]
-    array = raw.split(",")
-    return array
+        return "[%s]" %  json.dumps(data)
+    return json.dumps(data)
 
 def is_valid_guid (guid: str) -> bool:
+    '''
+    Determines if a parsed GUID, as a string,
+    is valid. This will ensure that it is of
+    the correct format.
+    '''
     empty: str = "00000000-0000-0000-0000-000000000000"
     if guid == empty: return False
     if len(guid) != len(empty): return False
@@ -160,8 +225,8 @@ def create_web_exception (code: int) -> NominalException:
     if code == 200:
         return None
     elif code == 403:
-         raise NominalException("Invalid Credentials: Access key is unauthorised to connect to the API.")
+        raise NominalException("Invalid Credentials: Access key is unauthorised to connect to the API.")
     elif code == 404:
         raise NominalException("Invalid Connection: The URL specified does not exist.")
     else:
-        raise NominalException("Unknown Error: A communication link with the API is broken.")
+        raise NominalException("Unknown Error: A communication link with the API is broken. Status Code: %d" % code)
