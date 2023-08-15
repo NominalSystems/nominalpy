@@ -5,6 +5,7 @@ to aid with communication to the public API.
 '''
 
 import datetime
+from .printer import *
 
 '''
 Defines a value that can be casted to a particular data type based on
@@ -49,3 +50,35 @@ class Value:
         '''
         value: dict = {'Days': days, 'Hours': hours, 'Minutes': mins, 'Seconds': secs, 'Milliseconds': milliseconds}
         return value
+    
+    @classmethod
+    def fetch_array (self, data: list, param: str, field: str = None) -> list:
+        '''
+        Attempts to fetch a particular set of data from a returned
+        fetch of data over time. This assumes the format is of the
+        type [{ "data": {} }] as JSON. The field parameter specifies a
+        sub-parameter within the data.
+        '''
+        try:
+            if len(data) == 0:
+                raise Exception("Data has a length of 0.")
+            
+            # In the case the param is in the dictionary
+            if param in data[0]:
+                if field != None and field != "":
+                    return [_[param][field] for _ in data]
+                else:
+                    return [_[param] for _ in data]
+                
+            # In the case there is data
+            else:
+                print(field)
+                if field != None and field != "":
+                    return [_["data"][param][field] for _ in data]
+                else:
+                    return [_["data"][param] for _ in data]
+            
+        # Catch the exception
+        except Exception as ex:
+            error("Failed to fetch array from fetched data. Error reason: %s" % str(ex))
+            return []

@@ -23,13 +23,14 @@ class Message (Object):
         '''
         super().__init__(credentials, id, "message")
 
-    def subscribe (self) -> bool:
+    def subscribe (self, interval: float = 10.0) -> bool:
         '''
         TODO
         '''
         # Construct the JSON body
         body: dict = {
-            "guid": self.id
+            "guid": self.id,
+            "interval": interval
         }
 
         # Create the data
