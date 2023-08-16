@@ -1,13 +1,12 @@
 '''
-        [ NOMINAL SYSTEMS ]
-This code is developed by Nominal Systems
-to aid with communication to the public API.
-'''
+                    [ NOMINAL SYSTEMS ]
+This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 
-'''
-Defines a class to store the credential access to the
-Nominal API for making API calls to the server. This can be both
-via the cloud or locally.
+The Credentials class stores the credential access to the Nominal API 
+for making API calls to the server. This can allow for both a remote 
+or a local server call.
 '''
 class Credentials:
 

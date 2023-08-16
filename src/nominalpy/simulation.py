@@ -1,14 +1,19 @@
 '''
-        [ NOMINAL SYSTEMS ]
-TODO
+                    [ NOMINAL SYSTEMS ]
+This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+
+The Simulation class allows for a simulation to be constructed using
+the API and for objects to be added to the simulation. All objects
+need to be created via the simulation and the simulation can also
+tick all objects within the simulation.
 '''
 
 from .object import Object
 from .component import Component
 from .request_helper import *
 from .credentials import Credentials
-from .message_old import Message
-from .system import System
 from .value import Value
 from .printer import *
 
@@ -20,10 +25,16 @@ class Simulation:
     __credentials: Credentials = None
 
     '''
-    Defines a list of components added to the simulation. This will be populated
-    by adding components to the simulation.
+    Defines a list of components added to the simulation. This will be 
+    populated by adding components to the simulation.
     '''
     __components: list = []
+
+    '''
+    Defines the current simulation since starting the simulation. This is
+    calculated based on the number of ticks that have occurred.
+    '''
+    __time: float = 0.0
 
     
     def __init__(self, credentials: Credentials, reset: bool = True) -> None:
@@ -133,7 +144,7 @@ class Simulation:
         simulation side and will tick with the same step size.
         '''
 
-        # Get the timespan
+        # Get the timespan and number of seconds and milliseconds to tick
         step = float(step)
         timespan: str = Value.timespan(0, 0, 0, int(step), int(step * 1000) - int(step) * 1000)
         
@@ -149,9 +160,19 @@ class Simulation:
         post_request(self.__credentials, "timeline/tick", data=request_data)
         success('Ticked the simulation %.3fs %d time(s).' % (step, iterations))
 
+        # Increase the time
+        self.__time += step * float(iterations)
+
         # Update all objects so their data needs to be fetched
         for obj in self.__components:
             obj.__require_update__()
+        
+    def get_time (self) -> float:
+        '''
+        Returns the current simulation time based on the number of
+        seconds that have been ticked.
+        '''
+        return self.__time
     
     def delete (self) -> None:
         '''
@@ -161,3 +182,4 @@ class Simulation:
         '''
         delete_request(self.__credentials, "timeline")
         self.__components = []
+        self.__time = 0.0

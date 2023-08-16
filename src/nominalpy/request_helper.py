@@ -1,7 +1,11 @@
 '''
-        [ NOMINAL SYSTEMS ]
-This code is developed by Nominal Systems
-to aid with communication to the public API.
+                    [ NOMINAL SYSTEMS ]
+This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+
+This code assists with having some helper functions for requesting
+data from the API and ensuring the data is in the correct form.
 '''
 
 import requests, json

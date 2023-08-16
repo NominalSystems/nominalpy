@@ -1,15 +1,14 @@
 '''
-        [ NOMINAL SYSTEMS ]
-This code is developed by Nominal Systems
-to aid with communication to the public API.
+                    [ NOMINAL SYSTEMS ]
+This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+
+The Exception class defines a custom exception that is able to track 
+errors with the Nominal API. Any connection errors or issues with the 
+objects will throw an Nominal API if there are configuration issues.
 '''
 
-'''
-This class defines a custom exception that is able to
-track errors with the Nominal API. Any connection errors
-or issues with the objects will throw an Nominal API if there
-are configuration issues.
-'''
 class NominalException (Exception):
 
     def __init__(self, message: str):

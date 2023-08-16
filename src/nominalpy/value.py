@@ -1,17 +1,18 @@
 '''
-        [ NOMINAL SYSTEMS ]
-This code is developed by Nominal Systems
-to aid with communication to the public API.
+                    [ NOMINAL SYSTEMS ]
+This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+
+The Value class contains public static class methods that can be used
+to convert standard types to the correct JSON format. It also includes
+methods that can filter JSON data by a particular parameter for use of
+data analysis. This class should not be instantiated.
 '''
 
 import datetime
 from .printer import *
 
-'''
-Defines a value that can be casted to a particular data type based on
-the data that is stored. This is a helper function that can be useful
-for converting raw data between Vector3 and Matrix3x3 data types.
-'''
 class Value:
 
     @classmethod
@@ -72,7 +73,6 @@ class Value:
                 
             # In the case there is data
             else:
-                print(field)
                 if field != None and field != "":
                     return [_["data"][param][field] for _ in data]
                 else:
