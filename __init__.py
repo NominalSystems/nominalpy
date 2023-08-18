@@ -1,1 +1,1 @@
-from .src.nominalpy import *
+from .nominalpy import *
