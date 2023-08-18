@@ -10,7 +10,7 @@ end of the simulation. Each simulation will be identical with the
 exception of some user defined parameters within the configuration.
 '''
 
-from .. import Credentials, Message, printer
+from .. import Component, Credentials, Message, NominalException, printer
 from .case import SensitivityCase
 from .configuration import SensitivityConfiguration
 
@@ -79,11 +79,13 @@ class SensitivityAnalysis:
         self.cases.append(SensitivityCase())
         return self.cases[-1]
     
-    def subscribe (self, object: str, message: str, interval: float = 10.0) -> None:
+    def subscribe (self, object: str, message: str, interval: float = 10.0):
         '''
         Registers a new message to be subscribed to in the database system based
         on the object name and the message name, if it exists.
         '''
+
+        # Add a subscription to the configuration
         self.subscriptions.append({
             "object": object,
             "message": message,
@@ -102,6 +104,7 @@ class SensitivityAnalysis:
 
         # If no cases, add a single empty case
         if len(self.cases) == 0:
+            printer.warning("No sensitivity cases were added to the analysis. Creating a default case now.")
             self.new_case()
         
         # Loop through each of the cases
@@ -127,6 +130,9 @@ class SensitivityAnalysis:
             
             # Run the simulation for the desired time
             self.config.tick(step, iterations)
+        
+        # Print a success
+        printer.success("Successfully completed %d sensitivity cases." % len(self.cases))
     
     def get_values (self, object: str, message: str, parameter: str, min_time: float = 0.0, max_time: float = 0.0) -> list:
         '''
@@ -161,9 +167,9 @@ class SensitivityAnalysis:
 
             # Get the data
             data: list = Message.message_fetch_range(self.__credentials, sim_id, msg_id, min_time, max_time, parameter)
+            if data == {}:
+                printer.warning("No data found when fetching data for message '%s' on object '%s'." % (message, object))
             values.append(data)
         
         # Return the final list of values
         return values
-
-    

@@ -8,6 +8,7 @@ The Credentials class stores the credential access to the Nominal API
 for making API calls to the server. This can allow for both a remote 
 or a local server call.
 '''
+
 class Credentials:
 
     '''

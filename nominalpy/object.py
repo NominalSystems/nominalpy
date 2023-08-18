@@ -138,7 +138,7 @@ class Object:
         # Fetch all values and parse only the one in the parameter
         data: dict = self.get_values(param)
         if data == {}:
-            error("Failed to find parameter '%s' in class '%s'." % (param, self.__type))
+            error("Failed to find parameter '%s' in class '%s'. Please check the documentation for valid variables." % (param, self.__type))
             return None
         return data[param]
     

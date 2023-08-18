@@ -31,6 +31,7 @@ __SUCCESS = __GREEN
 
 # Defines the available verbose levels
 LOG_VERBOSITY: str      = "log"
+SUCCESS_VERBOSITY: str  = "success"
 WARNING_VERBOSITY: str  = "warning"
 ERROR_VERBOSITY: str    = "error"
 
@@ -48,7 +49,7 @@ def set_verbosity (level: str) -> None:
     LOG_VERBOSITY, WARNING_VERBOSITY or ERROR_VERBOSITY.
     '''
     global __verbose, __verbose_level
-    if level.lower() in [LOG_VERBOSITY, WARNING_VERBOSITY, ERROR_VERBOSITY]:
+    if level.lower() in [LOG_VERBOSITY, SUCCESS_VERBOSITY, WARNING_VERBOSITY, ERROR_VERBOSITY]:
         __verbose_level = level.lower()
         __verbose = True
     else:
@@ -78,7 +79,7 @@ def warning (data: str) -> None:
     Prints warning messages to the console, providing information
     about potential errors.
     '''
-    if __verbose_level in [LOG_VERBOSITY, WARNING_VERBOSITY]:
+    if __verbose_level in [LOG_VERBOSITY, SUCCESS_VERBOSITY, WARNING_VERBOSITY]:
         output(data, __WARNING)
 
 def error (data: str) -> None:
@@ -86,7 +87,7 @@ def error (data: str) -> None:
     Prints error messages to the console, providing information
     about errors that occurred.
     '''
-    if __verbose_level in [LOG_VERBOSITY, WARNING_VERBOSITY, ERROR_VERBOSITY]:
+    if __verbose_level in [LOG_VERBOSITY, SUCCESS_VERBOSITY, WARNING_VERBOSITY, ERROR_VERBOSITY]:
         output(data, __ERROR)
 
 def success (data: str) -> None:
@@ -94,7 +95,7 @@ def success (data: str) -> None:
     Prints success messages to the console, providing information
     about key events that occurred.
     '''
-    if __verbose_level == LOG_VERBOSITY:
+    if __verbose_level in [LOG_VERBOSITY, SUCCESS_VERBOSITY]:
         output(data, __SUCCESS)
 
 def display_time (enable: bool) -> None:

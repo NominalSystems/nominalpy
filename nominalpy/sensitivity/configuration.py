@@ -12,7 +12,7 @@ components must be made public in the class (using the self keyword)
 and the configuration must be implemented in the 'configure' method.
 '''
 
-from .. import Component, Credentials, Message, Object, Simulation
+from .. import Component, Credentials, Message, Object, Simulation, NominalException, printer
 from abc import ABC, abstractmethod
 
 class SensitivityConfiguration (ABC):
@@ -70,16 +70,40 @@ class SensitivityConfiguration (ABC):
         simulation.reset()
         return True
     
+    def find_object (self, name: str, type: type = None):
+        '''
+        Attempts to find an object of a particular name (not case sensitive)
+        as part of the self. parameters. Only objects that have been associated
+        with the class object will be found. This can also ensure the types
+        match if the optional type is passed.
+        '''
+        name = name.lower()
+        for param, value in vars(self).items():
+            if param.lower() == name:
+                if type == None:
+                    return value
+                elif isinstance(value, type):
+                    return value
+        return None
+    
+    def find_object_of_type (self, type: type):
+        '''
+        Attempts to find an object of a particular type on the class-level
+        of the object. Only objects that have been associated with the class 
+        object will be found.
+        '''
+        for _, value in vars(self).items():
+            if isinstance(value, type):
+                return value
+        return None
+    
     def get_simulation (self) -> Simulation:
         '''
         Attempts to get the simulation from the class based on the
         objects within the class. This will ensure that a simulation
         object exists within the simulation.
         '''
-        for name, value in vars(self).items():
-            if isinstance(value, Simulation):
-                return value
-        return None
+        return self.find_object_of_type(Simulation)
     
     def get_id (self) -> str:
         '''
@@ -103,15 +127,11 @@ class SensitivityConfiguration (ABC):
         '''
 
         # Attempt to find the object of the name
-        obj: Object = None
-        for name, val in vars(self).items():
-            if object == name and isinstance(val, Object):
-                obj = val
-                break
+        obj: Object = self.find_object(object, Object)
         
         # Skip if no object found
         if obj == None:
-            return False
+            raise NominalException("Failed to find object '%s' on component. Check that it exists in the configuration class using the self. keyword." % object)
         
         # Set the value
         return obj.set_value(param, value)
@@ -124,20 +144,16 @@ class SensitivityConfiguration (ABC):
         '''
 
         # Attempt to find the object of the name
-        obj: Component = None
-        for name, val in vars(self).items():
-            if object == name and isinstance(val, Component):
-                obj = val
-                break
+        obj: Component = self.find_object(object, Component)
 
         # Skip if no object found
         if obj == None:
-            return None
-        
+            raise NominalException("Failed to find object '%s' on component. Check that it exists in the configuration class using the self. keyword." % object)
+
         # Fetch the message
         msg: Message = obj.get_message(message)
         if msg == None:
-            return None
+            raise NominalException("Failed to find message '%s' on component '%s'. Please check the documentation for valid message names." % (message, object))
 
         # Subscribe to the message
         msg.subscribe(interval)

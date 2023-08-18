@@ -123,7 +123,7 @@ class Simulation:
 
         # Create the response from the PUT request and get the IDs
         response = put_request(self.__credentials, "objects", data=request_data)
-        log("Attempted to create %d components with IDs: \n\t%s" % (len(response), response))
+        log("Attempted to create %d component(s) with IDs: \n\t%s" % (len(response), response))
 
         # Skip on empty list
         if len(response) == 0: return None
@@ -179,7 +179,7 @@ class Simulation:
 
         # Create the response from the POST request on the timeline
         post_request(self.__credentials, "timeline/tick", data=request_data)
-        success('Ticked the simulation %.3fs %d time(s).' % (step, iterations))
+        success('Ticked the simulation with a step of %.3fs %d time(s).' % (step, iterations))
 
         # Increase the time
         self.__time += step * float(iterations)
