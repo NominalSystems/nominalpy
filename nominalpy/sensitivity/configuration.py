@@ -12,11 +12,7 @@ components must be made public in the class (using the self keyword)
 and the configuration must be implemented in the 'configure' method.
 '''
 
-from .credentials import Credentials
-from .component import Component
-from .message import Message
-from .simulation import Simulation
-from .object import Object
+from .. import Component, Credentials, Message, Object, Simulation
 from abc import ABC, abstractmethod
 
 class SensitivityConfiguration (ABC):

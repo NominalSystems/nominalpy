@@ -10,11 +10,9 @@ end of the simulation. Each simulation will be identical with the
 exception of some user defined parameters within the configuration.
 '''
 
-from .credentials import Credentials
+from .. import Credentials, Message, printer
 from .case import SensitivityCase
 from .configuration import SensitivityConfiguration
-from .printer import *
-from .message import Message
 
 class SensitivityAnalysis:
 
@@ -148,7 +146,7 @@ class SensitivityAnalysis:
         
         # Fail if no correct message
         if index < 0:
-            error("No message of name '%s' on object '%s' was subscribed." % (message, object))
+            printer.error("No message of name '%s' on object '%s' was subscribed." % (message, object))
             return []
         
         # Create the data list

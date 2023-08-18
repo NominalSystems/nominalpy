@@ -15,12 +15,8 @@ class SensitivityCase:
     def __init__ (self) -> None:
         '''
         Initialises a new case with an empty set of data. No parameters
-        are required to be initialised.
-        '''
-
-        '''
-        This defines the use case data in the correct format as
-        per the expected case study.
+        are required to be initialised. This defines the use case data in 
+        the correct format as per the expected case study.
         '''
         self.data: list = []
 

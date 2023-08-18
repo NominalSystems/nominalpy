@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
     name='nominalpy',
     version='0.2.0',
-    packages=["nominalpy"],
+    packages=find_packages(),
     install_requires=["requests", "urllib3"],
     author='Nominal Systems',
     author_email='support@nominalsys.com',
