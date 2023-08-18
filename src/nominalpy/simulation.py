@@ -20,6 +20,12 @@ from .printer import *
 class Simulation:
 
     '''
+    Defines the unique GUID identifier of the simulation that is created
+    when the simulation is defined.
+    '''
+    id: str = None
+
+    '''
     Specifies the credentials for accessing the API correctly.
     '''
     __credentials: Credentials = None
@@ -37,7 +43,7 @@ class Simulation:
     __time: float = 0.0
 
     
-    def __init__(self, credentials: Credentials, reset: bool = True) -> None:
+    def __init__ (self, credentials: Credentials, reset: bool = True) -> None:
         '''
         Default constructor for the simulation handler which takes 
         in the credentials to access the API. The reset flag will attempt
@@ -51,9 +57,24 @@ class Simulation:
         if not self.__credentials.is_local:
             validate_credentials(self.__credentials)
 
-        # Reset the simulation if valid credentials
+        # Resets the simulation if valid credentials
         if reset and self.__credentials != None:
-            self.delete()
+            self.reset()
+
+        # Fetch the current ID
+        timeline: dict = self.__get_timeline__()
+        if timeline != None:
+            self.id = timeline["ID"]
+    
+    def __get_timeline__ (self) -> dict:
+        '''
+        Attempts to fetch the current timeline information from the simulation, 
+        including the initial epoch, ID and current time.
+        '''
+        response = get_request(self.__credentials, "timeline")
+        if response == {}:
+            return None
+        return response
 
     def get_component_types (self) -> list:
         '''
@@ -174,7 +195,7 @@ class Simulation:
         '''
         return self.__time
     
-    def delete (self) -> None:
+    def reset (self) -> None:
         '''
         Deletes and resets the simulation. All components, data
         and messages associated with the timeline on the simulation
@@ -183,3 +204,4 @@ class Simulation:
         delete_request(self.__credentials, "timeline")
         self.__components = []
         self.__time = 0.0
+        self.id = None

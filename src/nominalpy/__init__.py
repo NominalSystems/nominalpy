@@ -7,3 +7,6 @@ from .printer import set_verbosity, LOG_VERBOSITY, WARNING_VERBOSITY, ERROR_VERB
 from .simulation import Simulation
 from .types import *
 from .value import Value
+from .case import SensitivityCase
+from .configuration import SensitivityConfiguration
+from .sensitivity import SensitivityAnalysis

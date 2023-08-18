@@ -96,3 +96,47 @@ class Message (Object):
         stamp and the JSON data of the message at that time.
         '''
         return self.fetch_range(0.0, 0.0, *values)
+    
+    @classmethod
+    def message_fetch_range (cls, credentials: Credentials, simulation: str, id: str, min_time: float, max_time: float, *values) -> list:
+        '''
+        This method fetches the data, in the form of a JSON array,
+        from the database assuming that it has been subscribed to
+        the database system. The returned data will include a time
+        stamp and the JSON data of the message at that time. This
+        method also takes in a filter of the minimum and maximum
+        simulation time in seconds to search for. This is a class
+        level method and takes in some credentials and an ID of the
+        message, rather than being an object level method.
+        '''
+
+        # Construct the JSON body parameters
+        body: dict = {
+            "guid": id,
+            "simulation": simulation,
+            "min_time": min_time,
+            "max_time": max_time
+        }
+        if len(values) > 0:
+            body["data"] = []
+            for param in values:
+                body["data"].append(param)
+
+        # Create the data
+        request_data: str = jsonify(body)
+
+        # Create the response from the POST request and get the data
+        response = post_request(credentials, "query/database/message", data=request_data)
+        return response
+    
+    @classmethod
+    def message_fetch (cls, credentials: Credentials, simulation: str, id: str, *values) -> list:
+        '''
+        This method fetches the data, in the form of a JSON array,
+        from the database assuming that it has been subscribed to
+        the database system. The returned data will include a time
+        stamp and the JSON data of the message at that time. This is 
+        a class level method and takes in some credentials and an ID 
+        of the message, rather than being an object level method.
+        '''
+        return Message.message_fetch_range(credentials, simulation, id, 0.0, 0.0, *values)

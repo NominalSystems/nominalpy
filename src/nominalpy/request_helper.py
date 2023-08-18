@@ -82,7 +82,7 @@ def get_request (credentials: Credentials, url: str, params: dict = {}) -> dict:
         raise Exception("Invalid Credentials: No valid credentials were passed into the GET requets.")
 
     # Create the GET request
-    log("Attempting a GET request '/%s' with parameters:\n\t%s" % (url, params))
+    log("Attempting a GET request '/%s' with parameters: %s" % (url, params))
     response = requests.get(
         credentials.url + url, 
         verify=False, 
@@ -107,7 +107,7 @@ def post_request (credentials: Credentials, url: str, data: str = None, params: 
         raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
 
     # Create the POST request
-    log("Attempting a POST request '/%s' with data:\n\t%s" % (url, data))
+    log("Attempting a POST request '/%s' with data: %s" % (url, data))
     response = requests.post(
         credentials.url + url, 
         verify=False, 
@@ -133,7 +133,7 @@ def put_request (credentials: Credentials, url: str, data: str = None, params: d
         raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
 
     # Create the PUT request
-    log("Attempting a PUT request '/%s' with data:\n\t%s" % (url, data))
+    log("Attempting a PUT request '/%s' with data: %s" % (url, data))
     response = requests.put(
         credentials.url + url, 
         verify=False, 
@@ -158,7 +158,7 @@ def patch_request (credentials: Credentials, url: str, data: str = None, params:
         raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
 
     # Create the PATCH request
-    log("Attempting a PATCH request '/%s' with data:\n\t%s" % (url, data))
+    log("Attempting a PATCH request '/%s' with data: %s" % (url, data))
     response = requests.patch(
         credentials.url + url, 
         verify=False, 
@@ -183,7 +183,7 @@ def delete_request (credentials: Credentials, url: str, data: str = None, params
         raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
 
     # Create the DELETE request
-    log("Attempting a DELETE request '/%s' with data:\n\t%s" % (url, data))
+    log("Attempting a DELETE request '/%s' with data: %s" % (url, data))
     response = requests.delete(
         credentials.url + url, 
         verify=False, 

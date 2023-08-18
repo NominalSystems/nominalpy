@@ -10,6 +10,8 @@ If the verbosity is enabled, then data will be printed to the console.
 Additioanlly, data can be printed in a text file if set.
 '''
 
+import datetime
+
 # Defines ANSI escape sequences for colors
 __RESET =     '\033[0m'
 __RED =       '\033[31m'
@@ -32,8 +34,12 @@ LOG_VERBOSITY: str      = "log"
 WARNING_VERBOSITY: str  = "warning"
 ERROR_VERBOSITY: str    = "error"
 
+# Defines whether the printer should print
 __verbose: bool = False
 __verbose_level: str = ""
+
+# Defines whether a timestamp should be shown
+__display_time: bool = False
 
 def set_verbosity (level: str) -> None:
     '''
@@ -55,6 +61,8 @@ def output(data: str, color: str = "") -> None:
     level is enabled.
     '''
     if __verbose:
+        if __display_time:
+            data = "[%s] %s" % (__get_time_str__(), data)
         print(color + data + __RESET)
 
 def log (data: str) -> None:
@@ -88,6 +96,22 @@ def success (data: str) -> None:
     '''
     if __verbose_level == LOG_VERBOSITY:
         output(data, __SUCCESS)
+
+def display_time (enable: bool) -> None:
+    '''
+    Defines whether time should be enabled on the printing output
+    messages or not.
+    '''
+    global __display_time
+    __display_time = enable
+
+def __get_time_str__ () -> str:
+    '''
+    Returns the current datetime in the suitable datetime
+    format that can be printed.
+    '''
+    return datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S.%f")[:-3]
     
 # Define the base verbosity by default
 set_verbosity(ERROR_VERBOSITY)
+display_time(True)
