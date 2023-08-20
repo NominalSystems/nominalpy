@@ -46,7 +46,7 @@ def timespan (days: int = 0, hours: int = 0, mins: int = 0, secs: int = 0, milli
     value: dict = {'Days': days, 'Hours': hours, 'Minutes': mins, 'Seconds': secs, 'Milliseconds': milliseconds}
     return value
 
-def get_array (data: list, param: str, field: str = None) -> list:
+def get_array (data: list, param: str, field: str = None, index: int = None) -> list:
     '''
     Attempts to fetch a particular set of data from a returned
     set of data over time. This assumes the format is of the
@@ -61,6 +61,8 @@ def get_array (data: list, param: str, field: str = None) -> list:
         if param in data[0]:
             if field != None and field != "":
                 return [_[param][field] for _ in data]
+            elif index != None:
+                return [_[param][index] for _ in data]
             else:
                 return [_[param] for _ in data]
             
@@ -68,6 +70,8 @@ def get_array (data: list, param: str, field: str = None) -> list:
         else:
             if field != None and field != "":
                 return [_["data"][param][field] for _ in data]
+            elif index != None:
+                return [_["data"][param][index] for _ in data]
             else:
                 return [_["data"][param] for _ in data]
         
