@@ -14,7 +14,7 @@ from .object import Object
 from .component import Component
 from .request_helper import *
 from .credentials import Credentials
-from .value import Value
+from .maths import value
 from .printer import *
 
 class Simulation:
@@ -167,7 +167,7 @@ class Simulation:
 
         # Get the timespan and number of seconds and milliseconds to tick
         step = float(step)
-        timespan: str = Value.timespan(0, 0, 0, int(step), int(step * 1000) - int(step) * 1000)
+        timespan: str = value.timespan(0, 0, 0, int(step), int(step * 1000) - int(step) * 1000)
         
         # Construct the JSON body
         request_data: str = jsonify(
