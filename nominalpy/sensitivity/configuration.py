@@ -11,9 +11,11 @@ the specified configuration. For this to work correctly, all *CHANGING*
 components must be made public in the class (using the self keyword)
 and the configuration must be implemented in the 'configure' method.
 '''
-
-from .. import Component, Credentials, Message, Object, Simulation, NominalException, printer
 from abc import ABC, abstractmethod
+
+from .. import Component, Credentials, Message, Simulation, NominalException, printer
+from ..objects.object import Object
+
 
 class SensitivityConfiguration (ABC):
 
