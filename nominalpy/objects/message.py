@@ -10,10 +10,13 @@ able to be subscribed to a database and data can be fetched from
 the database system to pull back message data over the simulation
 time.
 '''
+import pandas as pd
+from copy import deepcopy
 
-from .request_helper import *
-from .object import Object
-from .printer import *
+from ..request_helper import *
+from ..objects.object import Object
+from ..printer import *
+
 
 class Message (Object):
 
@@ -48,7 +51,7 @@ class Message (Object):
         request_data: str = jsonify(body)
 
         # Create the response from the PATCH request and get the IDs
-        response = put_request(self._Object__credentials, "database/message", data=request_data)
+        response = put_request(self._credentials, "database/message", data=request_data)
         if response == False:
             error("Failed to subscribe message to the database system.")
             return False
@@ -85,7 +88,7 @@ class Message (Object):
         request_data: str = jsonify(body)
 
         # Create the response from the POST request and get the data
-        response = post_request(self._Object__credentials, "query/database/message", data=request_data)
+        response = post_request(self._credentials, "query/database/message", data=request_data)
         return response
 
     def fetch (self, *values) -> list:
@@ -96,7 +99,45 @@ class Message (Object):
         stamp and the JSON data of the message at that time.
         '''
         return self.fetch_range(0.0, 0.0, *values)
-    
+
+    def fetch_df(self, *values) -> pd.DataFrame:
+        """
+        Fetch the data from the simulation and return the results as a pandas DataFrame for easy handling and analysis
+
+        :param values: The message names desired to be returned from the simulation
+        :return: A dataframe containing the values of the subscribed messages for the simulation
+        """
+        data = self.fetch(values)
+        # Define a variable containing the name of the time data returned from the API
+        time_col_name = "time"
+        # Add the data from the simulation, handling multi-dimensional and single-dimension data variables
+        data_new = []
+        for x in data:
+            packet = x["data"]
+            # Create a copy of the packet that can be manipulated without losing the original data
+            packet_new = deepcopy(packet)
+            for key, value in packet.items():
+                # If the data item is a dictionary, it indicates that the variable is multi-dimensional
+                if isinstance(value, dict):
+                    # Add each component of a multi-dimensional variable to their own column
+                    for key2, value2 in value.items():
+                        # Create a new key for the element of the multi-dimensional variable
+                        key_new = f"{key}_{key2}"
+                        # Add the element to the new packet
+                        packet_new[key_new] = value2
+                    # Remove the original data from the new data packet to avoid data duplication
+                    packet_new.pop(key, None)
+                # Else the data is a single-dimension, and so we leave the new packet as is for this value
+            # Add the new packet to a container so that it can be added to a DataFrame
+            data_new.append(packet_new)
+        # Create the dataframe
+        df = pd.DataFrame(data_new)
+        # Add the time column
+        df.loc[:, "time"] = [x[time_col_name] for x in data]
+        # Reorder the time column to be the first column
+        df = df[[time_col_name] + [col for col in df if col != time_col_name]]
+        return df
+
     @classmethod
     def message_fetch_range (cls, credentials: Credentials, simulation: str, id: str, min_time: float, max_time: float, *values) -> list:
         '''
@@ -140,3 +181,9 @@ class Message (Object):
         of the message, rather than being an object level method.
         '''
         return Message.message_fetch_range(credentials, simulation, id, 0.0, 0.0, *values)
+
+    def __bool__(self) -> bool:
+        """
+        Return the self testing of the validity of this object
+        """
+        return self.id is not None

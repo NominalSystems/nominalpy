@@ -10,25 +10,17 @@ need to be created via the simulation and the simulation can also
 tick all objects within the simulation.
 '''
 
-from .object import Object
-from .component import Component
-from .request_helper import *
-from .credentials import Credentials
-from .maths import value
-from .printer import *
+from ..objects.object import Object
+from ..objects.object import ObjectBase
+from ..objects.component import Component
+from ..request_helper import *
+from ..credentials import Credentials
+from ..maths import value
+from ..printer import *
+from ..objects.message import Message
 
-class Simulation:
 
-    '''
-    Defines the unique GUID identifier of the simulation that is created
-    when the simulation is defined.
-    '''
-    id: str = None
-
-    '''
-    Specifies the credentials for accessing the API correctly.
-    '''
-    __credentials: Credentials = None
+class Simulation(ObjectBase):
 
     '''
     Defines a list of components added to the simulation. This will be 
@@ -42,13 +34,14 @@ class Simulation:
     '''
     __time: float = 0.0
 
-    
     def __init__ (self, credentials: Credentials, reset: bool = True) -> None:
         '''
         Default constructor for the simulation handler which takes 
         in the credentials to access the API. The reset flag will attempt
         to reset the simulation when initialised by default.
         '''
+        super().__init__(credentials=credentials, id=None)
+
         self.__credentials = credentials
         if self.__credentials == None:
             raise NominalException("Invalid Credentials: No credentials passed into the Simulation.")
@@ -156,7 +149,39 @@ class Simulation:
 
         # Create the get request
         return get_request(self.__credentials, "message/types")
-    
+
+    def get_planet_message(self, planet: str) -> Message:
+        """
+        Get the spice state message for an input planet
+
+        :param planet: the name of the planet whose state msg will be returned
+        :type planet: str
+        :return: return the Message object containing the spice planet state message
+        :rtype: Message
+        """
+        # Create the data packet to be submitted to the api
+        body = dict(planet=str(planet))
+        body["data"] = {}
+        request_data: str = jsonify(body)
+        # Make the request to get the data
+        response = post_request(self._credentials, f"query/planet", data=request_data)
+        # Check for a valid response and update the data
+        if response == None or response == {}:
+            error(f"Failed to retrieve data from planet.")
+            return
+        # Transform the data into a Message object
+        msg: Message = Message(credentials=self._credentials, id=response["guid"])
+        # Return the message
+        return msg
+
+    def get_planet_message_id(self, planet: str) -> str:
+        """
+        Get the spice planet message id
+        :param planet: the name of the planet whose state msg will be returned
+        :return: the guid of the spice planet state message
+        """
+        return self.get_planet_message(planet=planet).id
+
     def tick (self, step: float = 1e-3, iterations: int = 1) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will

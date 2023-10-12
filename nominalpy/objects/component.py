@@ -9,11 +9,10 @@ simulation or to other objects within the simulation. Components
 have messages that can store data.
 '''
 
-from .request_helper import *
-from .credentials import Credentials
-from .printer import *
-from .message import Message
-from .object import Object
+from ..credentials import Credentials
+from ..objects.message import Message
+from ..objects.object import Object
+
 
 class Component (Object):
 
@@ -60,9 +59,8 @@ class Component (Object):
                 return msg
             
         # Create a new message otherwise
-        msg: Message = Message(self._Object__credentials, id)
+        msg: Message = Message(self._credentials, id)
         
         # Add the message to the array for caching
         self.messages.append(msg)
         return msg
-    

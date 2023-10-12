@@ -11,22 +11,13 @@ on an API call and if no simulation events have occurred, the data is
 not fetched again.
 '''
 
-from .request_helper import *
-from .credentials import Credentials
-from .printer import *
+from .. import request_helper as rh
+from ..credentials import Credentials
+from ..printer import *
+from ..objects.object_base import ObjectBase
 
-class Object:
 
-    '''
-    Defines the unique GUID identifier of the object. This needs to be
-    in the corred GUID format and is used to call simulation requests.
-    '''
-    id: str = None
-
-    '''
-    Specifies the credentials for accessing the API correctly.
-    '''
-    __credentials: Credentials = None
+class Object(ObjectBase):
 
     '''
     A flag that defines whether the caching needs updated on the parameter.
@@ -50,7 +41,7 @@ class Object:
     The API type defines the root object type of the class. This is either
     'object' for components and simulation objects or 'message' for messages.
     '''
-    __api_type = "object"
+    _api_type = "object"
 
     def __init__(self, credentials: Credentials, id: str, api_type: str = "object") -> None:
         '''
@@ -59,9 +50,8 @@ class Object:
         associated with the simulation object and the type of requests that
         must be made.
         '''
-        self.id = id
-        self.__credentials = credentials
-        self.__api_type = api_type
+        super().__init__(credentials=credentials, id=id)
+        self._api_type = api_type
 
     def __require_update__ (self) -> None:
         '''
@@ -83,14 +73,14 @@ class Object:
             return
         
         # Perform the request on the data
-        request_data: str = jsonify({
+        request_data: str = rh.jsonify({
             "guid": self.id
         })
-        response = post_request(self.__credentials, "query/" + self.__api_type, data=request_data)
+        response = rh.post_request(self._credentials, "query/" + self._api_type, data=request_data)
         
         # Check for a valid response and update the data
         if response == None or response == {}:
-            error("Failed to retrieve data from %s '%s'." % (self.__api_type, self.id))
+            error("Failed to retrieve data from %s '%s'." % (self._api_type, self.id))
         else:
             self.__update_required = False
             self.__type = response["type"]
@@ -170,12 +160,12 @@ class Object:
         body["data"] = kwargs
 
         # Create the data
-        request_data: str = jsonify(body)
+        request_data: str = rh.jsonify(body)
 
         # Create the response from the PATCH request and get the IDs
-        response = patch_request(self.__credentials, self.__api_type, data=request_data)
+        response = rh.patch_request(self._credentials, self._api_type, data=request_data)
         if response == False:
-            error("Failed to set data on %s." % self.__api_type)
+            error("Failed to set data on %s." % self._api_type)
             return False
         
         # Update the flag for needing to get values
@@ -197,14 +187,14 @@ class Object:
         remove access to all objects associated with this.
         '''
         # Construct the JSON body
-        request_data: str = jsonify(
+        request_data: str = rh.jsonify(
             {
                 "guid": self.id
             }
         )
 
         # Create the response
-        response = delete_request(self.__credentials, self.__api_type, data=request_data)
+        response = rh.delete_request(self._credentials, self._api_type, data=request_data)
         if response == True:
             success("Successfully deleted object '%s' of type '%s'." % (self.id, self.__type))
             self.id = None
