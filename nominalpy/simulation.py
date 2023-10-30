@@ -19,6 +19,7 @@ from .maths import value
 from .image import Visualiser
 from .printer import *
 from .types import *
+import time
 
 class Simulation:
 
@@ -238,27 +239,58 @@ class Simulation:
         for obj in self.__components:
             obj.__require_update__()
 
-    def capture_image (self, position: dict, attitude: dict, file: str) -> bool:
+    def capture_image (self, file_name, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0, ray_tracing: bool = False, 
+        size: tuple = (500, 500), camera_position: dict = None, camera_rotation: tuple = (0, 0, 0), timeout: float = 3.0) -> bool:
         '''
         Attempts to capture an image of the simulation using the visualisation
         tool. This will capture an image based on a component's position and
         attitude.
+         - file_name:       [REQUIRED] The name of the file to save the image as when the data is received
+         - spacecraft:      [REQUIRED] The simulation object for ths spacecraft in
+         - fov:             The field of view of the camera in degrees
+         - exposure:        The exposure level of the camera to take an image with
+         - ray_tracing:     A flag whether to enable ray-tracing on the camera
+         - size:            A tuple containing the X and Y pixel size of the image as (X, Y)
+         - camera_position: The JSON formatted position of the camera relative to the base object as X, Y, Z
+         - camera_rotation: A tuple containing pitch, roll and yaw angle values in degrees of the camera relative to the base object
+         - timeout:         A timeout for pausing the thread waiting for an image. If the timeout is <= 0, it will run asynchronously.
         '''
 
         # Puts a default file extension
-        if "." not in file:
-            file += ".png"
-        format: str = file.split(".")[-1]
+        if "." not in file_name:
+            file_name += ".png"
+        format: str = file_name.split(".")[-1]
 
         # Fetches the current epoch
         epoch: dict = self.get_system(UNIVERSE).get_value("Epoch")
+        zero_base: str = self.get_system(UNIVERSE).get_value("ZeroBase")
+
+        # Fetches the spacecraft information
+        spacecraft_position: dict = spacecraft.get_value("Position")
+        spacecraft_attitude: dict = spacecraft.get_value("Attitude")
 
         # Create the visualiser if it doesn't exist
         if self.__visualiser == None:
             self.__visualiser = Visualiser()
 
         # Capture the image with the parameters
-        self.__visualiser.capture(position, attitude, epoch=epoch, file=file, format=format)
+        self.__visualiser.capture(epoch=epoch, zero_base=zero_base, position=spacecraft_position, attitude=spacecraft_attitude, 
+            format=format, fov=fov, exposure=exposure, ray_tracing=ray_tracing, size=size, camera_position=camera_position, 
+            camera_rotation=camera_rotation, file_name=file_name)
+        
+        # If pausing thread
+        if timeout > 0:
+            end_time: float = time.time() + timeout
+            completed: bool = False
+            while time.time() < end_time:
+                if self.__visualiser.file == file_name:
+                    completed = True
+                    break
+                time.sleep(0.1)
+
+            # Throw a warning if the timeout passes
+            if not completed:
+                warning("The capture image from the visualiser was not returned within a %ss timeout. The image may still be received asynchronously but requests may be lost." % timeout)
                 
     def get_time (self) -> float:
         '''
