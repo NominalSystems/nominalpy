@@ -12,10 +12,13 @@ tick all objects within the simulation.
 
 from .object import Object
 from .component import Component
+from .message import Message
 from .request_helper import *
 from .credentials import Credentials
 from .maths import value
+from .image import Visualiser
 from .printer import *
+from .types import *
 
 class Simulation:
 
@@ -41,6 +44,12 @@ class Simulation:
     calculated based on the number of ticks that have occurred.
     '''
     __time: float = 0.0
+
+    '''
+    Defines the image visualiser if it has been created and initialised
+    with a particular object connected to MQTT.
+    '''
+    __visualiser: Visualiser = None
 
     
     def __init__ (self, credentials: Credentials, reset: bool = True) -> None:
@@ -140,6 +149,47 @@ class Simulation:
         error("Could not construct object of class '%s'" % type)
         return None
     
+    def create_message (self, type: str, **kwargs) -> Message:
+        '''
+        Attempts to create a new message of a particular type with
+        some sample values, if they are passed in and returns the message
+        if it exists. This is message that is owned by the user and not
+        by the simulation.
+        '''
+
+        # Sanitise the type
+        if "NominalSystems" not in type:
+            if "." not in type:
+                type = "NominalSystems.Messages." + type
+            else:
+                type = "NominalSystems." + type
+
+        # Construct the JSON parameters
+        body: dict = {
+            "type": type
+        }
+        # If there are keyword arguments
+        if len(kwargs) > 0:
+            body["values"] = kwargs
+
+        # Create the data
+        request_data: str = jsonify(body)
+
+        # Create the response from the PUT request
+        guid: str = put_request(self.__credentials, "message", data=request_data)
+        log("Attempted to create a message of type %s with IDs: \n\t%s" % (type, guid))
+
+        # Check the GUID and return a new component with that ID or a None component
+        if is_valid_guid(guid):
+            success("Message of type '%s' created." % type)
+            obj: Message = Message(self.__credentials, guid)
+            return obj
+        
+        # Throw an error if no object or valid ID
+        error("Could not construct message of class '%s'" % type)
+        return None
+        
+    
     def get_system (self, type: str, **kwargs) -> Object:
         '''
         Fetches a particular simulation system that is valid
@@ -187,7 +237,29 @@ class Simulation:
         # Update all objects so their data needs to be fetched
         for obj in self.__components:
             obj.__require_update__()
-        
+
+    def capture_image (self, position: dict, attitude: dict, file: str) -> bool:
+        '''
+        Attempts to capture an image of the simulation using the visualisation
+        tool. This will capture an image based on a component's position and
+        attitude.
+        '''
+
+        # Puts a default file extension
+        if "." not in file:
+            file += ".png"
+        format: str = file.split(".")[-1]
+
+        # Fetches the current epoch
+        epoch: dict = self.get_system(UNIVERSE).get_value("Epoch")
+
+        # Create the visualiser if it doesn't exist
+        if self.__visualiser == None:
+            self.__visualiser = Visualiser()
+
+        # Capture the image with the parameters
+        self.__visualiser.capture(position, attitude, epoch=epoch, file=file, format=format)
+                
     def get_time (self) -> float:
         '''
         Returns the current simulation time based on the number of
