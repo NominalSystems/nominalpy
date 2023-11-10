@@ -62,10 +62,6 @@ class Simulation:
         self.__credentials = credentials
         if self.__credentials == None:
             raise NominalException("Invalid Credentials: No credentials passed into the Simulation.")
-        
-        # Attempt a simple request
-        if not self.__credentials.is_local:
-            validate_credentials(self.__credentials)
 
         # Resets the simulation if valid credentials
         if reset and self.__credentials != None:
