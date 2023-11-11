@@ -80,6 +80,10 @@ def get_request (credentials: Credentials, url: str, params: dict = {}) -> dict:
     # Skip if missing credentials
     if credentials == None:
         raise Exception("Invalid Credentials: No valid credentials were passed into the GET requets.")
+    
+    # Add the session ID parameter
+    if credentials.session_id != None:
+        params["session_id"] = credentials.session_id
 
     # Create the GET request
     log("Attempting a GET request '/%s' with parameters: %s" % (url, params))
@@ -105,6 +109,10 @@ def post_request (credentials: Credentials, url: str, data: str = None, params: 
     # Skip if missing credentials
     if credentials == None:
         raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
+    
+    # Add the session ID parameter
+    if credentials.session_id != None:
+        params["session_id"] = credentials.session_id
 
     # Create the POST request
     log("Attempting a POST request '/%s' with data: %s" % (url, data))
@@ -131,6 +139,10 @@ def put_request (credentials: Credentials, url: str, data: str = None, params: d
     # Skip if missing credentials
     if credentials == None:
         raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
+    
+    # Add the session ID parameter
+    if credentials.session_id != None:
+        params["session_id"] = credentials.session_id
 
     # Create the PUT request
     log("Attempting a PUT request '/%s' with data: %s" % (url, data))
@@ -156,6 +168,10 @@ def patch_request (credentials: Credentials, url: str, data: str = None, params:
     # Skip if missing credentials
     if credentials == None:
         raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
+    
+    # Add the session ID parameter
+    if credentials.session_id != None:
+        params["session_id"] = credentials.session_id
 
     # Create the PATCH request
     log("Attempting a PATCH request '/%s' with data: %s" % (url, data))
@@ -181,6 +197,10 @@ def delete_request (credentials: Credentials, url: str, data: str = None, params
     # Skip if missing credentials
     if credentials == None:
         raise Exception("Invalid Credentials: No valid credentials were passed into the POST requets.")
+    
+    # Add the session ID parameter
+    if credentials.session_id != None:
+        params["session_id"] = credentials.session_id
 
     # Create the DELETE request
     log("Attempting a DELETE request '/%s' with data: %s" % (url, data))
