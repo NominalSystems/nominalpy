@@ -15,26 +15,21 @@ import numpy as np
 from .. import printer
 
 
-def vector3(x: float, y: float, z: float) -> np.ndarray:
+def vector3(x: float, y: float, z: float) -> dict:
     '''
     Defines a way for specifying a particular value based
     on a Vector3 structure.
     '''
-    value: np.ndarray = np.array([x, y, z], dtype=np.float64)
+    value: dict = {"X": x, "Y": y, "Z": z}
     return value
 
 
-def matrix33(m1: tuple, m2: tuple, m3: tuple) -> np.ndarray:
+def matrix33(m1: tuple, m2: tuple, m3: tuple) -> list:
     '''
     Defines a way for specifying a particular value based
     on a Matrix3x3 structure.
     '''
-    value: np.ndarray = np.array(
-        [[m1[0], m1[1], m1[2]],
-         [m2[0], m2[1], m2[2]],
-         [m3[0], m3[1], m3[2]]],
-        dtype=np.float64
-    )
+    value: list = [[m1[0], m1[1], m1[2]], [m2[0], m2[1], m2[2]], [m3[0], m3[1], m3[2]]]
     return value
 
 
