@@ -226,3 +226,48 @@ def keplerian_to_pci(
         planet=planet,
     )
 
+
+def keplerian_to_pci_deg(
+        semi_major_axis: float,
+        eccentricity: float = 0.0,
+        inclination: float = 0.0,
+        right_ascension: float = 0.0,
+        argument_of_periapsis: float = 0.0,
+        true_anomaly: float = 0.0,
+        planet: str = "earth"
+) -> tuple:
+    """
+    Transforms Keplerian orbital elements into position and velocity in Planet-Centered Inertial (PCI) coordinates.
+
+    Given the Keplerian orbital elements, this function calculates the orbital state (position and velocity) in the PCI
+    coordinate system. This transformation is essential in astrodynamics for orbit propagation and analysis.
+
+    :param semi_major_axis: Semi-major axis of the orbit in meters.
+    :type semi_major_axis: float
+    :param eccentricity: Eccentricity of the orbit (default 0.0).
+    :type eccentricity: float
+    :param inclination: Inclination of the orbit in degrees (default 0.0).
+    :type inclination: float
+    :param right_ascension: Right ascension of the ascending node in degrees (default 0.0).
+    :type right_ascension: float
+    :param argument_of_periapsis: Argument of periapsis in degrees (default 0.0).
+    :type argument_of_periapsis: float
+    :param true_anomaly: True anomaly at the epoch in degrees (default 0.0).
+    :type true_anomaly: float
+    :param planet: Name of the central body being orbited (default "earth").
+    :type planet: str
+    :return: A tuple containing position and velocity vectors in PCI coordinates.
+    :rtype: tuple
+
+    The function first computes the gravitational parameter of the planet, then calculates the semi-latus rectum, and
+    finally computes the position and velocity in perifocal coordinates. These are then transformed into PCI coordinates.
+    """
+    return keplerian_to_pci(
+        semi_major_axis=semi_major_axis,
+        eccentricity=eccentricity,
+        inclination=np.radians(inclination),
+        right_ascension=np.radians(right_ascension),
+        argument_of_periapsis=np.radians(argument_of_periapsis),
+        true_anomaly=np.radians(true_anomaly),
+        planet=planet
+    )
