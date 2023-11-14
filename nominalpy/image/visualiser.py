@@ -1,6 +1,7 @@
 from ..mqtt import MqttClient
 import json, os
 from ..printer import *
+from uuid import uuid4
 
 TOPIC_REQUEST: str = "NominalSystems/APIVisualiser/Request"
 
@@ -28,11 +29,21 @@ class Visualiser:
     '''
     capture_data: list = []
 
+    '''
+    This defines the unique request ID that is generated when a new
+    request is made.
+    '''
+    request_id: str = ""
+
     def __init__(self) -> None:
         '''
         Initialises the class and sets up the Mqtt client with the
         appropriate callback functions for the response.
         '''
+        
+        # Generate the request ID
+        self.request_id = str(uuid4())
+        self.topic_response = "NominalSystems/APIVisualiser/Response/%s" % self.request_id
 
         self.client: MqttClient = MqttClient()
         self.client.connect(wait=True)
@@ -40,7 +51,7 @@ class Visualiser:
 
     def capture (self, epoch: dict = None, zero_base: str = "earth", position: dict = None, attitude: dict = None, 
         format: str = "png", fov: float = 90.0, exposure: float = 0.0, ray_tracing: bool = False, size: tuple = (500, 500),
-        camera_position: dict = None, camera_rotation: tuple = (0, 0, 0), file_name: str = "capture") -> None:
+        camera_position: dict = None, camera_rotation: tuple = (0, 0, 0), cesium: dict = None, file_name: str = "capture") -> None:
         '''
         Attempts to capture the simulation at a particular point in time, with a particular set
         of parameters for both the position of the object as well as the position of the camera
@@ -56,6 +67,7 @@ class Visualiser:
          - size:            A tuple containing the X and Y pixel size of the image as (X, Y)
          - camera_position: The JSON formatted position of the camera relative to the base object as X, Y, Z
          - camera_rotation: A tuple containing pitch, roll and yaw angle values in degrees of the camera relative to the base object
+         - cesium:          A dictionary containing information if Cesium is required for the imnage
          - file_name:       The name of the file to save the image as when the data is received
         '''
 
@@ -69,9 +81,14 @@ class Visualiser:
             attitude = { "x": 0.0, "y": 0.0, "z": 0.0 }
         if camera_position == None:
             camera_position = { "x": 0.0, "y": 0.0, "z": 0.15 }
+        if cesium == None:
+            cesium = {
+                "enabled": False
+            }
 
         # Construct the JSON formatted data
         data = {
+            "request_id": self.request_id,
             "epoch": json.loads(json.dumps(epoch).lower()),
             "zero_base": zero_base,
             "spacecraft": {
@@ -97,6 +114,7 @@ class Visualiser:
             "mqtt": {
                 "topic": self.topic_response
             },
+            "cesium": cesium,
             "file": file_name
         }
 
@@ -134,3 +152,4 @@ class Visualiser:
 
         # Print a success
         success("Successfully saved image from simulation to file '%s'." % self.file)
+        success(self.topic_response)

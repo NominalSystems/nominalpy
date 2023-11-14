@@ -52,6 +52,12 @@ class Simulation:
     '''
     __visualiser: Visualiser = None
 
+    '''
+    Defines the Cesium configuration for the image request that can be
+    sent through to the system.
+    '''
+    __cesium: dict = {}
+
     
     def __init__ (self, credentials: Credentials, reset: bool = True) -> None:
         '''
@@ -236,7 +242,7 @@ class Simulation:
             obj.__require_update__()
 
     def capture_image (self, file_name, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0, ray_tracing: bool = False, 
-        size: tuple = (500, 500), camera_position: dict = None, camera_rotation: tuple = (0, 0, 0), timeout: float = 3.0) -> bool:
+        size: tuple = (500, 500), camera_position: dict = None, camera_rotation: tuple = (0, 0, 0), cesium: bool = False, timeout: float = 3.0) -> bool:
         '''
         Attempts to capture an image of the simulation using the visualisation
         tool. This will capture an image based on a component's position and
@@ -249,6 +255,7 @@ class Simulation:
          - size:            A tuple containing the X and Y pixel size of the image as (X, Y)
          - camera_position: The JSON formatted position of the camera relative to the base object as X, Y, Z
          - camera_rotation: A tuple containing pitch, roll and yaw angle values in degrees of the camera relative to the base object
+         - cesium:          A flag whether Cesium is enabled. Cesium must have been configured before this can be enabled
          - timeout:         A timeout for pausing the thread waiting for an image. If the timeout is <= 0, it will run asynchronously.
         '''
 
@@ -269,10 +276,13 @@ class Simulation:
         if self.__visualiser == None:
             self.__visualiser = Visualiser()
 
+        # Fetch the cesium values
+        cesium_data: dict = self.__cesium if cesium else None
+
         # Capture the image with the parameters
         self.__visualiser.capture(epoch=epoch, zero_base=zero_base, position=spacecraft_position, attitude=spacecraft_attitude, 
             format=format, fov=fov, exposure=exposure, ray_tracing=ray_tracing, size=size, camera_position=camera_position, 
-            camera_rotation=camera_rotation, file_name=file_name)
+            camera_rotation=camera_rotation, cesium=cesium_data, file_name=file_name)
         
         # If pausing thread
         if timeout > 0:
@@ -288,6 +298,25 @@ class Simulation:
             if not completed:
                 warning("The capture image from the visualiser was not returned within a %ss timeout. The image may still be received asynchronously but requests may be lost." % timeout)
                 
+    def confiure_cesium (self, access_token: str, terrain_id: int = 1, imagery_id: int = 2) -> None:
+        '''
+        Configures Cesium within the imagery system to capture photos using
+        a Cesium account. The access token must be valid or the imagery
+        request will not work correctly.
+        '''
+        if access_token == "" or access_token == None:
+            error("Invalid Cesium Ion Access Token.")
+        if terrain_id == 0 or imagery_id == 0:
+            error("Invalid Terrain or Imagery asset IDs entered.")
+        
+        # Configure the Cesium data
+        self.__cesium = {
+            "enabled": True,
+            "access_token": access_token,
+            "terrain_id": terrain_id,
+            "imagery_id": imagery_id
+        }
+
     def get_time (self) -> float:
         '''
         Returns the current simulation time based on the number of
