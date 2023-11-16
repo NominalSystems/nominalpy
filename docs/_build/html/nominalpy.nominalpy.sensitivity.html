@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nominalpy.nominalpy.sensitivity package &mdash; nominalpy 2023 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a4664895"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="nominalpy.nominalpy.objects package" href="nominalpy.nominalpy.objects.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            nominalpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">nominalpy</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="nominalpy.html">nominalpy package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="nominalpy.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="nominalpy.nominalpy.html">nominalpy.nominalpy package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#nominalpy-setup-module">nominalpy.setup module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#module-nominalpy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">nominalpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">nominalpy</a></li>
+          <li class="breadcrumb-item"><a href="nominalpy.html">nominalpy package</a></li>
+          <li class="breadcrumb-item"><a href="nominalpy.nominalpy.html">nominalpy.nominalpy package</a></li>
+      <li class="breadcrumb-item active">nominalpy.nominalpy.sensitivity package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/nominalpy.nominalpy.sensitivity.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nominalpy-nominalpy-sensitivity-package">
+<h1>nominalpy.nominalpy.sensitivity package<a class="headerlink" href="#nominalpy-nominalpy-sensitivity-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-nominalpy.nominalpy.sensitivity.analysis">
+<span id="nominalpy-nominalpy-sensitivity-analysis-module"></span><h2>nominalpy.nominalpy.sensitivity.analysis module<a class="headerlink" href="#module-nominalpy.nominalpy.sensitivity.analysis" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>[ NOMINAL SYSTEMS ]</p>
+</div></blockquote>
+<p>This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.nominalpy.sensitivity.analysis.</span></span><span class="sig-name descname"><span class="pre">SensitivityAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nominalpy.nominalpy.http.html#nominalpy.nominalpy.http.credentials.Credentials" title="nominalpy.nominalpy.http.credentials.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration" title="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration"><span class="pre">SensitivityConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="nominalpy.nominalpy.objects.html#nominalpy.nominalpy.objects.entity.Entity" title="nominalpy.nominalpy.objects.entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></a></p>
+<p>The Sensitivity Analysis class is able to create multiple simulations
+with varying parameters and allow the data to be extracted from at the
+end of the simulation. Each simulation will be identical with the
+exception of some user defined parameters within the configuration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.add_case">
+<span class="sig-name descname"><span class="pre">add_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nominalpy.nominalpy.sensitivity.case.SensitivityCase" title="nominalpy.nominalpy.sensitivity.case.SensitivityCase"><span class="pre">SensitivityCase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.add_case" title="Link to this definition"></a></dt>
+<dd><p>Attempts to add a new sensitivity case to the sensitivity analysis system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>case</strong> (<a class="reference internal" href="#nominalpy.nominalpy.sensitivity.case.SensitivityCase" title="nominalpy.nominalpy.sensitivity.case.SensitivityCase"><em>SensitivityCase</em></a>) – The new sensitivity case that should be analysed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.cases">
+<span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.cases" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.config">
+<span class="sig-name descname"><span class="pre">config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration" title="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration"><span class="pre">SensitivityConfiguration</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.config" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.get_values">
+<span class="sig-name descname"><span class="pre">get_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.get_values" title="Link to this definition"></a></dt>
+<dd><p>Returns all of the values from particular messages stored in the database 
+based on the name of the message. If the message does not exist, then this 
+will return an empty list. This also fetches data within the minimum and 
+maximum time (if applicable). This requires a valid parameter name to search 
+for.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> (<em>str</em>) – The name of the object that should be searched for in the analysis</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – The name of the message that should be searched for in the object</p></li>
+<li><p><strong>parameter</strong> (<em>str</em>) – The name of the parameter within the message that should be read</p></li>
+<li><p><strong>min_time</strong> (<em>float</em>) – The minimum time in simulation seconds that should be returned as a value</p></li>
+<li><p><strong>max_time</strong> (<em>float</em>) – The maximum time in simulation seconds that should be returned as a value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of JSON values associated with the data within the subscription, if it exists</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.ids">
+<span class="sig-name descname"><span class="pre">ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.ids" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.message_ids">
+<span class="sig-name descname"><span class="pre">message_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.message_ids" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.new_case">
+<span class="sig-name descname"><span class="pre">new_case</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nominalpy.nominalpy.sensitivity.case.SensitivityCase" title="nominalpy.nominalpy.sensitivity.case.SensitivityCase"><span class="pre">SensitivityCase</span></a></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.new_case" title="Link to this definition"></a></dt>
+<dd><p>Creates a new sensitivity case and added into the sensitivity analysis
+list to be edited.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A new sensitivity case that has been added</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#nominalpy.nominalpy.sensitivity.case.SensitivityCase" title="nominalpy.nominalpy.sensitivity.case.SensitivityCase">SensitivityCase</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.run" title="Link to this definition"></a></dt>
+<dd><p>This will run the simulation based on the configuration and the 
+parameters. This will have a fixed step size and will run each
+simulation for the desired time in seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>float</em>) – The simulation time that the analysis should be run for in seconds</p></li>
+<li><p><strong>step</strong> (<em>float</em>) – The time-step in simulation seconds that the simulation should be ticked</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.subscribe">
+<span class="sig-name descname"><span class="pre">subscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.subscribe" title="Link to this definition"></a></dt>
+<dd><p>Registers a new message to be subscribed to in the database system based
+on the object name and the message name, if it exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> (<em>str</em>) – The name of the object that should be searched for in the analysis</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – The name of the message that should be subscribed to in the object</p></li>
+<li><p><strong>interval</strong> (<em>float</em>) – The time interval that data should be captured at in simulation seconds</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.subscriptions">
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.analysis.SensitivityAnalysis.subscriptions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-nominalpy.nominalpy.sensitivity.case">
+<span id="nominalpy-nominalpy-sensitivity-case-module"></span><h2>nominalpy.nominalpy.sensitivity.case module<a class="headerlink" href="#module-nominalpy.nominalpy.sensitivity.case" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>[ NOMINAL SYSTEMS ]</p>
+</div></blockquote>
+<p>This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.case.SensitivityCase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.nominalpy.sensitivity.case.</span></span><span class="sig-name descname"><span class="pre">SensitivityCase</span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.case.SensitivityCase" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Sensitivity Case class enables the user to define a particular
+case with a series of parameters that will be adjusted in this
+ID. These will be the parameters compared to the initial case in
+the simulation configuration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.case.SensitivityCase.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.case.SensitivityCase.add" title="Link to this definition"></a></dt>
+<dd><p>Adds a new entry into the data, including the object to modify,
+the parameter to change and the new value in a valid JSOn format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> (<em>str</em>) – The name of the object that should be modified</p></li>
+<li><p><strong>param</strong> (<em>str</em>) – The name of the parameter within the object that should be modified</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – The new value of the parameter that should be updated in the analysis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The current instance of the sensitivity case</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#nominalpy.nominalpy.sensitivity.case.SensitivityCase" title="nominalpy.nominalpy.sensitivity.case.SensitivityCase">SensitivityCase</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-nominalpy.nominalpy.sensitivity.configuration">
+<span id="nominalpy-nominalpy-sensitivity-configuration-module"></span><h2>nominalpy.nominalpy.sensitivity.configuration module<a class="headerlink" href="#module-nominalpy.nominalpy.sensitivity.configuration" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>[ NOMINAL SYSTEMS ]</p>
+</div></blockquote>
+<p>This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.nominalpy.sensitivity.configuration.</span></span><span class="sig-name descname"><span class="pre">SensitivityConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nominalpy.nominalpy.http.html#nominalpy.nominalpy.http.credentials.Credentials" title="nominalpy.nominalpy.http.credentials.Credentials"><span class="pre">Credentials</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>The Configuration class allows for a custom simulation configuration
+to be created and iterated upon. This allows for an external runner
+to use the configuration and perform Monte-Carlo simulations with
+the specified configuration. For this to work correctly, all <em>CHANGING</em>
+components must be made public in the class (using the self keyword)
+and the configuration must be implemented in the ‘configure’ method.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.add_credentials">
+<span class="sig-name descname"><span class="pre">add_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nominalpy.nominalpy.http.html#nominalpy.nominalpy.http.credentials.Credentials" title="nominalpy.nominalpy.http.credentials.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.add_credentials" title="Link to this definition"></a></dt>
+<dd><p>Sets the credentials of the configuration based on the values
+passed in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>credentials</strong> (<a class="reference internal" href="nominalpy.nominalpy.http.html#nominalpy.nominalpy.http.credentials.Credentials" title="nominalpy.nominalpy.http.credentials.Credentials"><em>Credentials</em></a>) – The application credentials for calling the API</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.configure">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.configure" title="Link to this definition"></a></dt>
+<dd><p>This method must be overridden by the base class and will ensure
+that the scenario is configured correctly. This is an abstract
+method and cannot be called manually on the base class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.find_object">
+<span class="sig-name descname"><span class="pre">find_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.find_object" title="Link to this definition"></a></dt>
+<dd><p>Attempts to find an object of a particular name (not case sensitive)
+as part of the self. parameters. Only objects that have been associated
+with the class object will be found. This can also ensure the types
+match if the optional type is passed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the object to find within the configuration</p></li>
+<li><p><strong>type</strong> (<em>type</em>) – The type of object to search for if required</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Python object if it is found of the correct type</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.find_object_of_type">
+<span class="sig-name descname"><span class="pre">find_object_of_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.find_object_of_type" title="Link to this definition"></a></dt>
+<dd><p>Attempts to find an object of a particular type on the class-level
+of the object. Only objects that have been associated with the class 
+object will be found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>type</strong> (<em>type</em>) – The type of object to search for in the class’s variables</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Python object if it is found of the correct type</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.get_credentials">
+<span class="sig-name descname"><span class="pre">get_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="nominalpy.nominalpy.http.html#nominalpy.nominalpy.http.credentials.Credentials" title="nominalpy.nominalpy.http.credentials.Credentials"><span class="pre">Credentials</span></a></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.get_credentials" title="Link to this definition"></a></dt>
+<dd><p>Returns the current credentials of the configuration based on
+what has been passed in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The credentials associated with the current configuration</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="nominalpy.nominalpy.http.html#nominalpy.nominalpy.http.credentials.Credentials" title="nominalpy.nominalpy.http.credentials.Credentials">Credentials</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.get_id">
+<span class="sig-name descname"><span class="pre">get_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.get_id" title="Link to this definition"></a></dt>
+<dd><p>Returns the ID of the simulation before the simulation is reset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The unique ID of the simulation</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.get_simulation">
+<span class="sig-name descname"><span class="pre">get_simulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="nominalpy.nominalpy.objects.html#nominalpy.nominalpy.objects.simulation.Simulation" title="nominalpy.nominalpy.objects.simulation.Simulation"><span class="pre">Simulation</span></a></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.get_simulation" title="Link to this definition"></a></dt>
+<dd><p>Attempts to get the simulation from the class based on the
+objects within the class. This will ensure that a simulation
+object exists within the simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The simulation that exists within the object</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="nominalpy.nominalpy.objects.html#nominalpy.nominalpy.objects.simulation.Simulation" title="nominalpy.nominalpy.objects.simulation.Simulation">Simulation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.reset" title="Link to this definition"></a></dt>
+<dd><p>Attempts to reset the simulation and send through the configuration
+of the spacecraft and components again.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether the simulation has been reset correctly</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.set_value">
+<span class="sig-name descname"><span class="pre">set_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.set_value" title="Link to this definition"></a></dt>
+<dd><p>Adjusts a particular parameter on an object that can be searched
+for within the simulation. This will find an object, of a certain
+name (provided that the object is a self. object) and will attempt
+to set a parameter with a value. This will also return a boolean
+that is the success result of setting the parameter value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> (<em>str</em>) – The name of the object that should be modified</p></li>
+<li><p><strong>param</strong> (<em>str</em>) – The name of the parameter within the object that should be modified</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – The new value of the parameter that should be updated in the analysis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A successful write process for setting the value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.subscribe">
+<span class="sig-name descname"><span class="pre">subscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.subscribe" title="Link to this definition"></a></dt>
+<dd><p>Attempts to subscribe to a message of a particular name on an object
+of a particular name that exists within the configuration. This will
+return the ID of the message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> (<em>str</em>) – The name of the object that should be searched for in the analysis</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – The name of the message that should be subscribed to in the object</p></li>
+<li><p><strong>interval</strong> (<em>float</em>) – The time interval that data should be captured at in simulation seconds</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ID of the message that is subscribed to</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.tick">
+<span class="sig-name descname"><span class="pre">tick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#nominalpy.nominalpy.sensitivity.configuration.SensitivityConfiguration.tick" title="Link to this definition"></a></dt>
+<dd><p>Attempts to tick the simulation found within the configuration
+with some time-step and some iterations. This will be done by
+attempting to fetch the simulation object from the class object,
+if it does exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>float</em>) – The simulation tick step in simulation seconds</p></li>
+<li><p><strong>iterations</strong> (<em>int</em>) – The number of iterations with the desired step to run</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether the simulation is available and valid</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-nominalpy.nominalpy.sensitivity">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nominalpy.nominalpy.sensitivity" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nominalpy.nominalpy.objects.html" class="btn btn-neutral float-left" title="nominalpy.nominalpy.objects package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Nominal Systems.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

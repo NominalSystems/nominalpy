@@ -9,8 +9,8 @@ the simulation, making it easier to instantiate these objects.
 '''
 
 # Define all systems
-UNIVERSE = "NominalSystems.Universe.UniverseSystem"
+UNIVERSE        = "NominalSystems.Universe.UniverseSystem"
 
 # Define Universe common classes
-GROUND_STATION = "NominalSystems.Universe.GroundStation"
-SPACECRAFT = "NominalSystems.Universe.Spacecraft"
+GROUND_STATION  = "NominalSystems.Universe.GroundStation"
+SPACECRAFT      = "NominalSystems.Universe.Spacecraft"

@@ -3,53 +3,50 @@
 This code is developed by Nominal Systems to aid with communication 
 to the public API. All code is under the the license provided along
 with the 'nominalpy' module. Copyright Nominal Systems, 2023.
-
-The Credentials class stores the credential access to the Nominal API 
-for making API calls to the server. This can allow for both a remote 
-or a local server call.
 '''
 
 import requests, time
 from ..printer import *
 
 class Credentials:
+    '''
+    The Credentials class stores the credential access to the Nominal API 
+    for making API calls to the server. This can allow for both a remote 
+    or a local server call.
+    '''
 
-    '''
-    Defines the base URL for the API. If empty, it assumes
-    that the URL is localhost.
-    '''
+    # Defines the base URL for the API. If empty, it assumes that the URL is localhost.
     url: str = ""
 
-    '''
-    Defines the port for the API. If left as None, no port
-    will be used.
-    '''
+    # Defines the port for the API. If left as None, no port will be used.
     port: int = None
 
-    '''
-    Defines the access key if it exists for the API. This is
-    required for cloud based API calls.
-    '''
+    # Defines the access key if it exists for the API. This is required for cloud based API calls.
     access_key: str = ""
 
-    '''
-    Defines whether the URL is a localhost one or not, which
-    can be used to ensure that a connection is valid.
-    '''
+    # Defines whether the URL is a localhost one or not; used to ensure that a connection is valid.
     is_local: bool = False
 
-    '''
-    This defines the session ID for the current working session.
-    This will need to be stored for public API keys.
-    '''
+    # This defines the session ID for the current working session, stored for public API keys.
     session_id: str = None
 
 
     def __init__ (self, url: str = "https://api.nominalsys.com", port: int = None, access: str = "") -> None:
         '''
         Initialises some credentials to access the API and will be called
-        by the simulation when making requests.     
+        by the simulation when making requests. If using a public API
+        connection, this will create a new session or attempt to find if a
+        session already exists. For new sessions, this may take a couple of
+        minutes to initialise.
+
+        :param url:     The URL or HTTP link to the API endpoint
+        :type url:      str
+        :param port:    The port number of the API endpoint
+        :type port:     int
+        :param access:  The access key or token for a public API request
+        :type access:   str
         '''
+
         self.url = url
         if url == "" or url == None:
             self.url = "https://localhost"
@@ -68,14 +65,14 @@ class Credentials:
 
         # Attempt to authenticate with the session
         if "nominalsys" in self.url:
-            self.connect()
+            self.__connect()
     
 
-    def connect (self) -> None:
+    def __connect (self) -> None:
         '''
         Connects to a session or retrieves the current session and updates the
-        session ID to the new IP address of the session if it exists. This
-        will also check to see if the health is valid
+        session ID to the new IP address of the session if it exists. This will 
+        also check to see if the health is valid
         '''
 
         # If this is a local-host, skip
@@ -139,6 +136,9 @@ class Credentials:
         '''
         Returns whether the current session with the instance that is available
         is healthy as of right now. This will return a true or false flag.
+
+        :returns:   A healthy success flag
+        :rtype:     bool
         '''
 
         try:

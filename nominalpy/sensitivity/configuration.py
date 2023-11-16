@@ -3,32 +3,35 @@
 This code is developed by Nominal Systems to aid with communication 
 to the public API. All code is under the the license provided along
 with the 'nominalpy' module. Copyright Nominal Systems, 2023.
-
-The Configuration class allows for a custom simulation configuration
-to be created and iterated upon. This allows for an external runner
-to use the configuration and perform Monte-Carlo simulations with
-the specified configuration. For this to work correctly, all *CHANGING*
-components must be made public in the class (using the self keyword)
-and the configuration must be implemented in the 'configure' method.
 '''
-from abc import ABC, abstractmethod
 
+from abc import ABC, abstractmethod
 from .. import Component, Credentials, Message, Simulation, NominalException, printer
 from ..objects.object import Object
 
 
 class SensitivityConfiguration (ABC):
+    '''
+    The Configuration class allows for a custom simulation configuration
+    to be created and iterated upon. This allows for an external runner
+    to use the configuration and perform Monte-Carlo simulations with
+    the specified configuration. For this to work correctly, all *CHANGING*
+    components must be made public in the class (using the self keyword)
+    and the configuration must be implemented in the 'configure' method.
+    '''
 
-    '''
-    Specifies the credentials for accessing the API correctly.
-    '''
+    # Specifies the credentials for accessing the API correctly.
     __credentials: Credentials = None
 
     def __init__ (self, credentials: Credentials = None) -> None:
         '''
         This initialiases the configuration. This will not perform
         any tasks by itself.
+        
+        :param credentials: The credentials used in the API calls
+        :type credenitals:  Credentials
         '''
+
         self.__credentials = credentials
 
     @abstractmethod
@@ -46,6 +49,14 @@ class SensitivityConfiguration (ABC):
         with some time-step and some iterations. This will be done by
         attempting to fetch the simulation object from the class object,
         if it does exist.
+
+        :param step:        The simulation tick step in simulation seconds
+        :type step:         float
+        :param iterations:  The number of iterations with the desired step to run
+        :type iterations:   int
+
+        :returns:           Whether the simulation is available and valid
+        :rtype:             bool
         '''
         
         # Get the simulation and return if it does not exist
@@ -61,6 +72,9 @@ class SensitivityConfiguration (ABC):
         '''
         Attempts to reset the simulation and send through the configuration
         of the spacecraft and components again.
+
+        :returns:   Whether the simulation has been reset correctly
+        :rtype:     bool
         '''
 
         # Get the simulation and return if it does not exists
@@ -72,13 +86,22 @@ class SensitivityConfiguration (ABC):
         simulation.reset()
         return True
     
-    def find_object (self, name: str, type: type = None):
+    def find_object (self, name: str, type: type = None) -> object:
         '''
         Attempts to find an object of a particular name (not case sensitive)
         as part of the self. parameters. Only objects that have been associated
         with the class object will be found. This can also ensure the types
         match if the optional type is passed.
+
+        :param name:    The name of the object to find within the configuration
+        :type name:     str
+        :param type:    The type of object to search for if required
+        :type type:     type
+
+        :returns:       The Python object if it is found of the correct type
+        :rtype:         object
         '''
+
         name = name.lower()
         for param, value in vars(self).items():
             if param.lower() == name:
@@ -88,12 +111,19 @@ class SensitivityConfiguration (ABC):
                     return value
         return None
     
-    def find_object_of_type (self, type: type):
+    def find_object_of_type (self, type: type) -> object:
         '''
         Attempts to find an object of a particular type on the class-level
         of the object. Only objects that have been associated with the class 
         object will be found.
+
+        :param type:    The type of object to search for in the class's variables
+        :type type:     type
+
+        :returns:       The Python object if it is found of the correct type
+        :rtype:         object
         '''
+
         for _, value in vars(self).items():
             if isinstance(value, type):
                 return value
@@ -104,13 +134,18 @@ class SensitivityConfiguration (ABC):
         Attempts to get the simulation from the class based on the
         objects within the class. This will ensure that a simulation
         object exists within the simulation.
+
+        :returns:   The simulation that exists within the object
+        :rtype:     Simulation
         '''
         return self.find_object_of_type(Simulation)
     
     def get_id (self) -> str:
         '''
-        Returns the ID of the simulation before the simulation is
-        reset.
+        Returns the ID of the simulation before the simulation is reset.
+
+        :returns:   The unique ID of the simulation
+        :rtype:     str
         '''
 
         # Get the simulation and return if it does not exist
@@ -126,6 +161,16 @@ class SensitivityConfiguration (ABC):
         name (provided that the object is a self. object) and will attempt
         to set a parameter with a value. This will also return a boolean
         that is the success result of setting the parameter value.
+
+        :param object:  The name of the object that should be modified
+        :type object:   str
+        :param param:   The name of the parameter within the object that should be modified
+        :type param:    str
+        :param value:   The new value of the parameter that should be updated in the analysis
+        :type value:    str
+
+        :returns:       A successful write process for setting the value
+        :rtype:         bool
         '''
 
         # Attempt to find the object of the name
@@ -143,6 +188,16 @@ class SensitivityConfiguration (ABC):
         Attempts to subscribe to a message of a particular name on an object
         of a particular name that exists within the configuration. This will
         return the ID of the message.
+
+        :param object:      The name of the object that should be searched for in the analysis
+        :type object:       str
+        :param message:     The name of the message that should be subscribed to in the object
+        :type message:      str
+        :param interval:    The time interval that data should be captured at in simulation seconds
+        :type interval:     float
+
+        :returns:           The ID of the message that is subscribed to
+        :rtype:             str
         '''
 
         # Attempt to find the object of the name
@@ -167,12 +222,20 @@ class SensitivityConfiguration (ABC):
         '''
         Sets the credentials of the configuration based on the values
         passed in.
+
+        :param credentials: The application credentials for calling the API
+        :type credentials:  Credentials
         '''
+
         self.__credentials = credentials
     
     def get_credentials (self) -> Credentials:
         '''
         Returns the current credentials of the configuration based on
         what has been passed in.
+
+        :returns:   The credentials associated with the current configuration
+        :rtype:     Credentials
         '''
+        
         return self.__credentials

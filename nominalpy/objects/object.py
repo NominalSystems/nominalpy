@@ -11,7 +11,7 @@ on an API call and if no simulation events have occurred, the data is
 not fetched again.
 '''
 
-from .. import request_helper as rh
+from ..http.http_request import *
 from ..http.credentials import Credentials
 from ..printer import *
 from ..objects.entity import Entity
@@ -73,10 +73,10 @@ class Object(Entity):
             return
         
         # Perform the request on the data
-        request_data: str = rh.jsonify({
+        request_data: str = jsonify({
             "guid": self.id
         })
-        response = rh.post_request(self._credentials, "query/" + self._api_type, data=request_data)
+        response = post_request(self._credentials, "query/" + self._api_type, data=request_data)
         
         # Check for a valid response and update the data
         if response == None or response == {}:
@@ -160,10 +160,10 @@ class Object(Entity):
         body["data"] = kwargs
 
         # Create the data
-        request_data: str = rh.jsonify(body)
+        request_data: str = jsonify(body)
 
         # Create the response from the PATCH request and get the IDs
-        response = rh.patch_request(self._credentials, self._api_type, data=request_data)
+        response = patch_request(self._credentials, self._api_type, data=request_data)
         if response == False:
             error("Failed to set data on %s." % self._api_type)
             return False
@@ -187,14 +187,14 @@ class Object(Entity):
         remove access to all objects associated with this.
         '''
         # Construct the JSON body
-        request_data: str = rh.jsonify(
+        request_data: str = jsonify(
             {
                 "guid": self.id
             }
         )
 
         # Create the response
-        response = rh.delete_request(self._credentials, self._api_type, data=request_data)
+        response = delete_request(self._credentials, self._api_type, data=request_data)
         if response == True:
             success("Successfully deleted object '%s' of type '%s'." % (self.id, self.__type))
             self.id = None

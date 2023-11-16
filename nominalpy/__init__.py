@@ -2,7 +2,7 @@ from .exception import NominalException
 from .printer import log, error, warning, success, set_verbosity, LOG_VERBOSITY, SUCCESS_VERBOSITY, WARNING_VERBOSITY, ERROR_VERBOSITY
 from .types import *
 
-# Import the standard classes
+# Import the standard classes that are commonly used
 from .http.credentials import Credentials
 from .objects.component import Component
 from .objects.message import Message

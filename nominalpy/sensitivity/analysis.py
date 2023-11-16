@@ -3,58 +3,53 @@
 This code is developed by Nominal Systems to aid with communication 
 to the public API. All code is under the the license provided along
 with the 'nominalpy' module. Copyright Nominal Systems, 2023.
-
-The Sensitivity Analysis class is able to create multiple simulations
-with varying parameters and allow the data to be extracted from at the
-end of the simulation. Each simulation will be identical with the
-exception of some user defined parameters within the configuration.
 '''
 
+from ..objects import Entity
 from .. import Credentials, Message, printer
 from .case import SensitivityCase
 from .configuration import SensitivityConfiguration
 
-class SensitivityAnalysis:
+class SensitivityAnalysis (Entity):
+    '''
+    The Sensitivity Analysis class is able to create multiple simulations
+    with varying parameters and allow the data to be extracted from at the
+    end of the simulation. Each simulation will be identical with the
+    exception of some user defined parameters within the configuration.
+    '''
 
-    '''
-    Specifies the credentials for accessing the API correctly.
-    '''
-    __credentials: Credentials = None
-
-    '''
-    This defines the simulation configuration that is being used for the
-    sensitivity analysis.
-    '''
+    # This defines the simulation configuration that is being used for the sensitivity analysis.
     config: SensitivityConfiguration = None
 
-    '''
-    A list of JSON simulation cases that defines all the case studies that
-    will be executed on the run.
-    '''
+    # A list of JSON simulation cases that defines all the case studies that will be executed 
+    # on the run.
     cases: list = []
 
-    '''
-    A list of all messages to register and keep track of in the database
-    system based on the object they exist on.
-    '''
+    # A list of all messages to register and keep track of in the database system based on the 
+    # object they exist on.
     subscriptions: list = []
 
-    '''
-    A list of all message IDs that have been subscribed to correctly.
-    '''
+    # A list of all message IDs that have been subscribed to correctly.
     message_ids: list = []
 
-    '''
-    A self-populating list of simulation IDs based on the simulations that
-    are run in the analysis.
-    '''
+    # A self-populating list of simulation IDs based on the simulations that are run in the 
+    # analysis.
     ids: list = []
+
 
     def __init__(self, credentials: Credentials, config: SensitivityConfiguration) -> None:
         '''
         Initialises the sensitivity analysis with a particular simulation
         configuration. This must be passed in as a parameter.
+
+        :param credentials: The Credentials object that is used for the API
+        :type credentials:  Credentials
+        :param config:      The sensitivity analysis configuration setup for this scenario
+        :type config:       SensitivityConfiguration
         '''
+
+        # Initialise the credentials
+        super().__init__(credentials=credentials, id=None)
 
         # Throw error if no config and update
         if config == None:
@@ -64,9 +59,12 @@ class SensitivityAnalysis:
 
     def add_case (self, case: SensitivityCase) -> None:
         '''
-        Attempts to add a new sensitivity case to the sensitivity analysis
-        system.
+        Attempts to add a new sensitivity case to the sensitivity analysis system.
+
+        :param case:    The new sensitivity case that should be analysed
+        :type case:     SensitivityCase
         '''
+
         if case == None:
             raise Exception("Invalid sensitivity case added.")
         self.cases.append(case)
@@ -75,6 +73,9 @@ class SensitivityAnalysis:
         '''
         Creates a new sensitivity case and added into the sensitivity analysis
         list to be edited. 
+
+        :returns:   A new sensitivity case that has been added
+        :rtype:     SensitivityCase
         '''
         self.cases.append(SensitivityCase())
         return self.cases[-1]
@@ -83,6 +84,13 @@ class SensitivityAnalysis:
         '''
         Registers a new message to be subscribed to in the database system based
         on the object name and the message name, if it exists.
+
+        :param object:      The name of the object that should be searched for in the analysis
+        :type object:       str
+        :param message:     The name of the message that should be subscribed to in the object
+        :type message:      str
+        :param interval:    The time interval that data should be captured at in simulation seconds
+        :type interval:     float
         '''
 
         # Add a subscription to the configuration
@@ -97,6 +105,11 @@ class SensitivityAnalysis:
         This will run the simulation based on the configuration and the 
         parameters. This will have a fixed step size and will run each
         simulation for the desired time in seconds.
+
+        :param time:    The simulation time that the analysis should be run for in seconds
+        :type time:     float
+        :param step:    The time-step in simulation seconds that the simulation should be ticked
+        :type step:     float
         '''
 
         # Determine the iterations
@@ -136,11 +149,25 @@ class SensitivityAnalysis:
     
     def get_values (self, object: str, message: str, parameter: str, min_time: float = 0.0, max_time: float = 0.0) -> list:
         '''
-        Returns all of the values from particular messages stored in
-        the database based on the name of the message. If the message
-        does not exist, then this will return an empty list. This also
-        fetches data within the minimum and maximum time (if applicable).
-        This requires a valid parameter name to search for.
+        Returns all of the values from particular messages stored in the database 
+        based on the name of the message. If the message does not exist, then this 
+        will return an empty list. This also fetches data within the minimum and 
+        maximum time (if applicable). This requires a valid parameter name to search 
+        for.
+
+        :param object:      The name of the object that should be searched for in the analysis
+        :type object:       str
+        :param message:     The name of the message that should be searched for in the object
+        :type message:      str
+        :param parameter:   The name of the parameter within the message that should be read
+        :type parameter:    str
+        :param min_time:    The minimum time in simulation seconds that should be returned as a value
+        :type min_time:     float
+        :param max_time:    The maximum time in simulation seconds that should be returned as a value
+        :type max_time:     float
+
+        :returns:           A list of JSON values associated with the data within the subscription, if it exists
+        :rtype:             list
         '''
 
         # Find the index of the message name

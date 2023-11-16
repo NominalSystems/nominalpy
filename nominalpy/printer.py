@@ -7,7 +7,6 @@ with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 This file contains helper functions for printing lines to the console. 
 By default, any calls made to these functions will not print any data. 
 If the verbosity is enabled, then data will be printed to the console. 
-Additioanlly, data can be printed in a text file if set.
 '''
 
 import datetime
@@ -48,6 +47,7 @@ def set_verbosity (level: str) -> None:
     a particular verbosity level. The levels are either
     LOG_VERBOSITY, WARNING_VERBOSITY or ERROR_VERBOSITY.
     '''
+
     global __verbose, __verbose_level
     if level.lower() in [LOG_VERBOSITY, SUCCESS_VERBOSITY, WARNING_VERBOSITY, ERROR_VERBOSITY]:
         __verbose_level = level.lower()
@@ -56,14 +56,15 @@ def set_verbosity (level: str) -> None:
         __verbose_level = ""
         __verbose = False
 
-def output(data: str, color: str = "") -> None:
+def output (data: str, color: str = "") -> None:
     '''
     Outputs text to the console assuming that the verbose
     level is enabled.
     '''
+
     if __verbose:
         if __display_time:
-            data = "[%s] %s" % (__get_time_str__(), data)
+            data = "[%s] %s" % (__get_time_str(), data)
         print(color + data + __RESET)
 
 def log (data: str) -> None:
@@ -71,14 +72,25 @@ def log (data: str) -> None:
     Prints general log text to the console, providing some 
     information about the API calls.
     '''
+
     if __verbose_level == LOG_VERBOSITY:
         output(data, __LOG)
+
+def success (data: str) -> None:
+    '''
+    Prints success messages to the console, providing information
+    about key events that occurred.
+    '''
+
+    if __verbose_level in [LOG_VERBOSITY, SUCCESS_VERBOSITY]:
+        output(data, __SUCCESS)
 
 def warning (data: str) -> None:
     '''
     Prints warning messages to the console, providing information
     about potential errors.
     '''
+
     if __verbose_level in [LOG_VERBOSITY, SUCCESS_VERBOSITY, WARNING_VERBOSITY]:
         output(data, __WARNING)
 
@@ -87,30 +99,25 @@ def error (data: str) -> None:
     Prints error messages to the console, providing information
     about errors that occurred.
     '''
+
     if __verbose_level in [LOG_VERBOSITY, SUCCESS_VERBOSITY, WARNING_VERBOSITY, ERROR_VERBOSITY]:
         output(data, __ERROR)
-
-def success (data: str) -> None:
-    '''
-    Prints success messages to the console, providing information
-    about key events that occurred.
-    '''
-    if __verbose_level in [LOG_VERBOSITY, SUCCESS_VERBOSITY]:
-        output(data, __SUCCESS)
 
 def display_time (enable: bool) -> None:
     '''
     Defines whether time should be enabled on the printing output
     messages or not.
     '''
+
     global __display_time
     __display_time = enable
 
-def __get_time_str__ () -> str:
+def __get_time_str () -> str:
     '''
     Returns the current datetime in the suitable datetime
     format that can be printed.
     '''
+
     return datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S.%f")[:-3]
     
 # Define the base verbosity by default

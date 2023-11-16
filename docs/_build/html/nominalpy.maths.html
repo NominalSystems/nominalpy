@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nominalpy.maths package &mdash; nominalpy 2023 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a4664895"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            nominalpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">nominalpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">nominalpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">nominalpy.maths package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/nominalpy.maths.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nominalpy-maths-package">
+<h1>nominalpy.maths package<a class="headerlink" href="#nominalpy-maths-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-nominalpy.maths.astro">
+<span id="nominalpy-maths-astro-module"></span><h2>nominalpy.maths.astro module<a class="headerlink" href="#module-nominalpy.maths.astro" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>[ NOMINAL SYSTEMS ]</p>
+</div></blockquote>
+<p>This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
+<p>This file contains public methods that can calculate various
+astrophysical parameters. These include fetching planetary gravity
+or return the position and velocity from an orbit.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.classical_to_vector_elements">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">classical_to_vector_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.classical_to_vector_elements" title="Link to this definition"></a></dt>
+<dd><p>Transforms Keplerian orbital elements into position and velocity in Planet-Centered Inertial (PCI) coordinates.</p>
+<p>Given the Keplerian orbital elements, this function calculates the orbital state (position and velocity) in the PCI
+coordinate system. This transformation is essential in astrodynamics for orbit propagation and analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – Semi-major axis of the orbit in meters.</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – Eccentricity of the orbit (default 0.0).</p></li>
+<li><p><strong>inclination</strong> (<em>float</em>) – Inclination of the orbit in radians (default 0.0).</p></li>
+<li><p><strong>right_ascension</strong> (<em>float</em>) – Right ascension of the ascending node in radians (default 0.0).</p></li>
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – Argument of periapsis in radians (default 0.0).</p></li>
+<li><p><strong>true_anomaly</strong> (<em>float</em>) – True anomaly at the epoch in radians (default 0.0).</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – Name of the central body being orbited (default “earth”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing position and velocity vectors in PCI coordinates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p>The function first computes the gravitational parameter of the planet, then calculates the semi-latus rectum, and
+finally computes the position and velocity in perifocal coordinates. These are then transformed into PCI coordinates.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.classical_to_vector_elements_deg">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">classical_to_vector_elements_deg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.classical_to_vector_elements_deg" title="Link to this definition"></a></dt>
+<dd><p>Transforms Keplerian orbital elements into position and velocity in Planet-Centered Inertial (PCI) coordinates.</p>
+<p>Given the Keplerian orbital elements, this function calculates the orbital state (position and velocity) in the PCI
+coordinate system. This transformation is essential in astrodynamics for orbit propagation and analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – Semi-major axis of the orbit in meters.</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – Eccentricity of the orbit (default 0.0).</p></li>
+<li><p><strong>inclination</strong> (<em>float</em>) – Inclination of the orbit in degrees (default 0.0).</p></li>
+<li><p><strong>right_ascension</strong> (<em>float</em>) – Right ascension of the ascending node in degrees (default 0.0).</p></li>
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – Argument of periapsis in degrees (default 0.0).</p></li>
+<li><p><strong>true_anomaly</strong> (<em>float</em>) – True anomaly at the epoch in degrees (default 0.0).</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – Name of the central body being orbited (default “earth”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing position and velocity vectors in PCI coordinates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p>The function first computes the gravitational parameter of the planet, then calculates the semi-latus rectum, and
+finally computes the position and velocity in perifocal coordinates. These are then transformed into PCI coordinates.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.get_planet_mu">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">get_planet_mu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.get_planet_mu" title="Link to this definition"></a></dt>
+<dd><p>Returns the planet’s gravitational mu parameter, equal to GM of the
+planet’s body in units of [m^3/s^2]. If the planet does not exist,
+then an exception will be thrown.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.perifocal_to_vector_elements">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">perifocal_to_vector_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bp_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bp_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.perifocal_to_vector_elements" title="Link to this definition"></a></dt>
+<dd><p>Converts position and velocity vectors from perifocal to Planet-Centered Inertial (PCI) coordinates.</p>
+<p>Given position and velocity vectors in the perifocal coordinate system (PQW), along with orbital elements
+such as right ascension of the ascending node, inclination, and argument of perigee, this function
+transforms these vectors into the ECI coordinate system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_bp_p</strong> (<em>numpy.ndarray</em>) – Position vector in perifocal coordinates.</p></li>
+<li><p><strong>v_bp_p</strong> (<em>numpy.ndarray</em>) – Velocity vector in perifocal coordinates.</p></li>
+<li><p><strong>right_ascension</strong> (<em>float</em>) – Right ascension of the ascending node in radians. Defaults to 0.</p></li>
+<li><p><strong>inclination</strong> (<em>float</em>) – Orbital inclination in radians. Defaults to 0.</p></li>
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – Argument of periapsis in radians. Defaults to 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of transformed position and velocity vectors in ECI coordinates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(numpy.ndarray, numpy.ndarray)</p>
+</dd>
+</dl>
+<p>The transformation is performed using a matrix obtained from the <cite>t_perifocal_to_vector</cite> function, which
+constructs the transformation matrix based on the provided orbital elements.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.semi_latus_rectum_to_vector_elements">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">semi_latus_rectum_to_vector_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_latus_rectum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.semi_latus_rectum_to_vector_elements" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Transforms Keplerian orbital elements into position and velocity in Planet-Centered Inertial (PCI) coordinates.</dt><dd><p>by taking semi-latus rectum as direct input, this function is valid for all orbits including parabolic and
+hyperbolic</p>
+</dd>
+</dl>
+<p>Given the Keplerian orbital elements, this function calculates the orbital state (position and velocity) in the PCI
+coordinate system. This transformation is essential in astrodynamics for orbit propagation and analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_latus_rectum</strong> (<em>float</em>) – Semi-latus rectum of the orbit in meters.</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – Eccentricity of the orbit (default 0.0).</p></li>
+<li><p><strong>inclination</strong> (<em>float</em>) – Inclination of the orbit in radians (default 0.0).</p></li>
+<li><p><strong>right_ascension</strong> (<em>float</em>) – Right ascension of the ascending node in radians (default 0.0).</p></li>
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – Argument of periapsis in radians (default 0.0).</p></li>
+<li><p><strong>true_anomaly</strong> (<em>float</em>) – True anomaly at the epoch in radians (default 0.0).</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – Name of the central body being orbited (default “earth”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing position and velocity vectors in PCI coordinates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p>The function first computes the gravitational parameter of the planet, then calculates the semi-latus rectum, and
+finally computes the position and velocity in perifocal coordinates. These are then transformed into PCI coordinates.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.t_perifocal_to_vector_elements">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">t_perifocal_to_vector_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.t_perifocal_to_vector_elements" title="Link to this definition"></a></dt>
+<dd><p>Creates the transformation matrix to convert perifocal coordinates into Planet-Centered Inertial (PCI) coordinates.</p>
+<p>This function computes the transformation matrix using the right ascension of the ascending node, the argument
+of periapsis, and the orbital inclination. These parameters are expected to be in radians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>right_ascension</strong> (<em>float</em>) – The right ascension of the ascending node in radians.</p></li>
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – The argument of periapsis in radians.</p></li>
+<li><p><strong>inclination</strong> (<em>float</em>) – The orbital inclination in radians.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 3x3 numpy matrix representing the transformation from perifocal to ECI coordinates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.matrix</p>
+</dd>
+</dl>
+<p>The transformation matrix is computed based on classical orbital elements, and it’s used in orbital mechanics
+to convert coordinates from the perifocal (or orbital plane) coordinate system, where the x-axis points towards
+the periapsis, to the ECI coordinate system.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.vector_to_classical_elements">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">vector_to_classical_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bn_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.vector_to_classical_elements" title="Link to this definition"></a></dt>
+<dd><p>Convert state vectors to classical orbital elements.</p>
+<p>This function calculates the classical orbital elements from the given position and velocity vectors. It supports different planetary bodies by adjusting the gravitational parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_bn_n</strong> (<em>np.ndarray</em>) – The position vector in a Cartesian coordinate system in metres.</p></li>
+<li><p><strong>v_bn_n</strong> (<em>np.ndarray</em>) – The velocity vector in the same Cartesian coordinate system as r_bn_n in metres per second.</p></li>
+<li><p><strong>planet</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the planet for which the gravitational parameter is needed. Defaults to ‘earth’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple of classical orbital elements: semi-major axis, eccentricity, inclination, right ascension of the ascending node (RAAN), argument of periapsis, and true anomaly.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ArithmeticError</strong> – If the orbit is parabolic, which is not supported by this function.</p>
+</dd>
+</dl>
+<p>The function calculates various orbital elements including angular momentum, node vector, eccentricity vector, semi-major axis, inclination, RAAN, argument of periapsis, and true anomaly. It handles different types of orbits: circular equatorial, equatorial elliptical, circular inclined, and classical elliptical inclined.</p>
+</dd></dl>
+
+</section>
+<section id="module-nominalpy.maths.constants">
+<span id="nominalpy-maths-constants-module"></span><h2>nominalpy.maths.constants module<a class="headerlink" href="#module-nominalpy.maths.constants" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>[ NOMINAL SYSTEMS ]</p>
+</div></blockquote>
+<p>This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
+<p>This file contains public constants related to general mathematics,
+as well as astrophysical constants. These include planetary data
+and useful values that can be used for conversions.</p>
+</section>
+<section id="module-nominalpy.maths.utils">
+<span id="nominalpy-maths-utils-module"></span><h2>nominalpy.maths.utils module<a class="headerlink" href="#module-nominalpy.maths.utils" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.utils.acos_quadrant_check">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.utils.</span></span><span class="sig-name descname"><span class="pre">acos_quadrant_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adjacent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypotenuse</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.utils.acos_quadrant_check" title="Link to this definition"></a></dt>
+<dd><p>Calculate an angle using the arccosine function and perform a quadrant check.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adjacent</strong> (<em>float</em>) – The length of the adjacent side of a right triangle.</p></li>
+<li><p><strong>hypotenuse</strong> (<em>float</em>) – The length of the hypotenuse of the triangle.</p></li>
+<li><p><strong>test</strong> (<em>float</em>) – A value to determine the quadrant of the angle.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The calculated angle in radians.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p>The function calculates the angle using the arccosine of the ratio of the adjacent side to the hypotenuse.
+It adjusts the angle based on the quadrant determined by the ‘test’ parameter.</p>
+</dd></dl>
+
+</section>
+<section id="module-nominalpy.maths.value">
+<span id="nominalpy-maths-value-module"></span><h2>nominalpy.maths.value module<a class="headerlink" href="#module-nominalpy.maths.value" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>[ NOMINAL SYSTEMS ]</p>
+</div></blockquote>
+<p>This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
+<p>This file contains public static class methods that can be used to 
+convert standard types to the correct JSON format. It also includes
+methods that can filter JSON data by a particular parameter for use 
+of data analysis. This class should not be instantiated.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.value.datetime">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.datetime" title="Link to this definition"></a></dt>
+<dd><p>Defines a way of specifying a particular value based on
+a DateTime structure.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.value.get_array">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">get_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.maths.value.get_array" title="Link to this definition"></a></dt>
+<dd><p>Attempts to fetch a particular set of data from a returned
+set of data over time. This assumes the format is of the
+type [{ “data”: {} }] as JSON. The field parameter specifies a
+sub-parameter within the data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.value.matrix33">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">matrix33</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.maths.value.matrix33" title="Link to this definition"></a></dt>
+<dd><p>Defines a way for specifying a particular value based
+on a Matrix3x3 structure.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.value.timespan">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">timespan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">milliseconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.timespan" title="Link to this definition"></a></dt>
+<dd><p>Defines a way of specifying a particular value based on
+a TimeSpan structure</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.value.vector3">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">vector3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.vector3" title="Link to this definition"></a></dt>
+<dd><p>Defines a way for specifying a particular value based
+on a Vector3 structure.</p>
+</dd></dl>
+
+</section>
+<section id="module-nominalpy.maths">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nominalpy.maths" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Nominal Systems.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
