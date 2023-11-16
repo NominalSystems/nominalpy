@@ -14,7 +14,7 @@ import numpy as np
 from . import constants
 from . import value
 from . import utils
-from ..exception import NominalException
+from ..utils import NominalException
 
 
 def get_planet_mu (planet: str) -> float:

@@ -12,7 +12,7 @@ of data analysis. This class should not be instantiated.
 
 import datetime as dt
 import numpy as np
-from .. import printer
+from ..utils import printer
 
 
 def vector3(x: float, y: float, z: float) -> dict:

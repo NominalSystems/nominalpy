@@ -1,9 +1,17 @@
-from ..mqtt.client import Client as MqttClient
-import json, os
-from ..printer import *
+'''
+                    [ NOMINAL SYSTEMS ]
+This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+'''
+
+import json, os, datetime
 from uuid import uuid4
+from ..mqtt import MqttClient
+from ..utils import printer
 
 TOPIC_REQUEST: str = "NominalSystems/APIVisualiser/Request"
+
 
 '''
 TODO: Write this description
@@ -151,5 +159,5 @@ class Visualiser:
             f.close
 
         # Print a success
-        success("Successfully saved image from simulation to file '%s'." % self.file)
-        success(self.topic_response)
+        printer.success("Successfully saved image from simulation to file '%s'." % self.file)
+        printer.success(self.topic_response)

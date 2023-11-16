@@ -10,9 +10,8 @@ data from the API and ensuring the data is in the correct form.
 
 import requests, json
 import urllib3
-from ..printer import *
+from ..utils import printer, NominalException
 from .credentials import Credentials
-from ..exception import NominalException
 
 # Disable the insecure request warning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -65,7 +64,7 @@ def handle_request_data (response: requests.Response) -> dict:
         return data
     
     # Throw an error if not
-    error("Invalid request with status code %d." % response.status_code)
+    printer.error("Invalid request with status code %d." % response.status_code)
     raise create_web_exception(response.status_code)
 
 
@@ -86,7 +85,7 @@ def get_request (credentials: Credentials, url: str, params: dict = {}) -> dict:
         params["session_id"] = credentials.session_id
 
     # Create the GET request
-    log("Attempting a GET request '/%s' with parameters: %s" % (url, params))
+    printer.log("Attempting a GET request '/%s' with parameters: %s" % (url, params))
     response = requests.get(
         credentials.url + url, 
         verify=False, 
@@ -115,7 +114,7 @@ def post_request (credentials: Credentials, url: str, data: str = None, params: 
         params["session_id"] = credentials.session_id
 
     # Create the POST request
-    log("Attempting a POST request '/%s' with data: %s" % (url, data))
+    printer.log("Attempting a POST request '/%s' with data: %s" % (url, data))
     response = requests.post(
         credentials.url + url, 
         verify=False, 
@@ -145,7 +144,7 @@ def put_request (credentials: Credentials, url: str, data: str = None, params: d
         params["session_id"] = credentials.session_id
 
     # Create the PUT request
-    log("Attempting a PUT request '/%s' with data: %s" % (url, data))
+    printer.log("Attempting a PUT request '/%s' with data: %s" % (url, data))
     response = requests.put(
         credentials.url + url, 
         verify=False, 
@@ -174,7 +173,7 @@ def patch_request (credentials: Credentials, url: str, data: str = None, params:
         params["session_id"] = credentials.session_id
 
     # Create the PATCH request
-    log("Attempting a PATCH request '/%s' with data: %s" % (url, data))
+    printer.log("Attempting a PATCH request '/%s' with data: %s" % (url, data))
     response = requests.patch(
         credentials.url + url, 
         verify=False, 
@@ -203,7 +202,7 @@ def delete_request (credentials: Credentials, url: str, data: str = None, params
         params["session_id"] = credentials.session_id
 
     # Create the DELETE request
-    log("Attempting a DELETE request '/%s' with data: %s" % (url, data))
+    printer.log("Attempting a DELETE request '/%s' with data: %s" % (url, data))
     response = requests.delete(
         credentials.url + url, 
         verify=False, 

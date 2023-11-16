@@ -6,13 +6,9 @@ with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 '''
 
 from abc import ABC, abstractmethod
-from ..objects.component import Component
-from ..objects.message import Message
-from ..objects.simulation import Simulation
-from ..exception import NominalException
-from ..http.credentials import Credentials
-from .. import printer
-from ..objects.object import Object
+from ..objects import Component, Message, Object, Simulation
+from ..connection import Credentials
+from ..utils import NominalException
 
 
 class SensitivityConfiguration (ABC):

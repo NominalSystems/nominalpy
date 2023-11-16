@@ -12,16 +12,14 @@ tick all objects within the simulation.
 
 import time
 
-from ..objects.object import Object
-from ..objects.object import Entity
-from ..objects.component import Component
-from ..http.http_request import *
-from ..http.credentials import Credentials
+from .component import Component
+from .entity import Entity
+from .message import Message
+from .object import Object
+from ..connection import Credentials, http
 from ..maths import value
-from ..printer import *
-from ..objects.message import Message
-from ..image.visualiser import Visualiser
-from ..types import UNIVERSE
+from ..utils import NominalException, printer, types
+from ..image import Visualiser
 
 
 class Simulation(Entity):
@@ -64,7 +62,7 @@ class Simulation(Entity):
         
         # Attempt a simple request
         if not self.__credentials.is_local:
-            validate_credentials(self.__credentials)
+            http.validate_credentials(self.__credentials)
 
         # Resets the simulation if valid credentials
         if reset and self.__credentials != None:
@@ -80,7 +78,7 @@ class Simulation(Entity):
         Attempts to fetch the current timeline information from the simulation, 
         including the initial epoch, ID and current time.
         '''
-        response = get_request(self.__credentials, "timeline")
+        response = http.get_request(self.__credentials, "timeline")
         if response == {}:
             return None
         return response
@@ -94,7 +92,7 @@ class Simulation(Entity):
         '''
 
         # Create the get request
-        return get_request(self.__credentials, "object/types")
+        return http.get_request(self.__credentials, "object/types")
 
     def add_component (self, type: str, owner: Component = None, **kwargs) -> Component:
         '''
@@ -128,25 +126,25 @@ class Simulation(Entity):
             body["data"] = kwargs
 
         # Create the data
-        request_data: str = jsonify(body, True)
+        request_data: str = http.jsonify(body, True)
 
         # Create the response from the PUT request and get the IDs
-        response = put_request(self.__credentials, "objects", data=request_data)
-        log("Attempted to create %d component(s) with IDs: \n\t%s" % (len(response), response))
+        response = http.put_request(self.__credentials, "objects", data=request_data)
+        printer.log("Attempted to create %d component(s) with IDs: \n\t%s" % (len(response), response))
 
         # Skip on empty list
         if len(response) == 0: return None
 
         # Check the GUID and return a new component with that ID or a None component
         guid: str = response[0]
-        if is_valid_guid(guid):
-            success("Component of type '%s' created." % type)
+        if http.is_valid_guid(guid):
+            printer.success("Component of type '%s' created." % type)
             obj: Component = Component(self.__credentials, guid)
             self.__components.append(obj)
             return obj
         
         # Throw an error if no object or valid ID
-        error("Could not construct object of class '%s'" % type)
+        printer.error("Could not construct object of class '%s'" % type)
         return None
     
     def get_system (self, type: str, **kwargs) -> Object:
@@ -164,7 +162,7 @@ class Simulation(Entity):
         '''
 
         # Create the get request
-        return get_request(self.__credentials, "message/types")
+        return http.get_request(self.__credentials, "message/types")
 
     def get_planet_message(self, planet: str) -> Message:
         """
@@ -178,12 +176,12 @@ class Simulation(Entity):
         # Create the data packet to be submitted to the api
         body = dict(planet=str(planet))
         body["data"] = {}
-        request_data: str = jsonify(body)
+        request_data: str = http.jsonify(body)
         # Make the request to get the data
-        response = post_request(self._credentials, f"query/planet", data=request_data)
+        response = http.post_request(self._credentials, f"query/planet", data=request_data)
         # Check for a valid response and update the data
         if response == None or response == {}:
-            error(f"Failed to retrieve data from planet.")
+            printer.error(f"Failed to retrieve data from planet.")
             return
         # Transform the data into a Message object
         msg: Message = Message(credentials=self._credentials, id=response["guid"])
@@ -211,7 +209,7 @@ class Simulation(Entity):
         timespan: str = value.timespan(0, 0, 0, int(step), int(step * 1000) - int(step) * 1000)
         
         # Construct the JSON body
-        request_data: str = jsonify(
+        request_data: str = http.jsonify(
             {
                 "timestep": timespan,
                 "iterations": iterations
@@ -219,8 +217,8 @@ class Simulation(Entity):
         )
 
         # Create the response from the POST request on the timeline
-        post_request(self.__credentials, "timeline/tick", data=request_data)
-        success('Ticked the simulation with a step of %.3fs %d time(s).' % (step, iterations))
+        http.post_request(self.__credentials, "timeline/tick", data=request_data)
+        printer.success('Ticked the simulation with a step of %.3fs %d time(s).' % (step, iterations))
 
         # Increase the time
         self.__time += step * float(iterations)
@@ -262,8 +260,8 @@ class Simulation(Entity):
         format: str = file_name.split(".")[-1]
 
         # Fetches the current epoch
-        epoch: dict = self.get_system(UNIVERSE).get_value("Epoch")
-        zero_base: str = self.get_system(UNIVERSE).get_value("ZeroBase")
+        epoch: dict = self.get_system(types.UNIVERSE).get_value("Epoch")
+        zero_base: str = self.get_system(types.UNIVERSE).get_value("ZeroBase")
 
         # Fetches the spacecraft information
         spacecraft_position: dict = spacecraft.get_value("Position")
@@ -295,7 +293,7 @@ class Simulation(Entity):
 
             # Throw a warning if the timeout passes
             if not completed:
-                warning(
+                printer.warning(
                     "The capture image from the visualiser was not returned within a %ss timeout. The image may still be received asynchronously but requests may be lost." % timeout)
 
     def confiure_cesium(self, access_token: str, terrain_id: int = 1, imagery_id: int = 2) -> None:
@@ -305,9 +303,9 @@ class Simulation(Entity):
         request will not work correctly.
         '''
         if access_token == "" or access_token == None:
-            error("Invalid Cesium Ion Access Token.")
+            printer.error("Invalid Cesium Ion Access Token.")
         if terrain_id == 0 or imagery_id == 0:
-            error("Invalid Terrain or Imagery asset IDs entered.")
+            printer.error("Invalid Terrain or Imagery asset IDs entered.")
 
         # Configure the Cesium data
         self.__cesium = {
@@ -323,7 +321,7 @@ class Simulation(Entity):
         and messages associated with the timeline on the simulation
         will be deleted.
         '''
-        delete_request(self.__credentials, "timeline")
+        http.delete_request(self.__credentials, "timeline")
         self.__components = []
         self.__time = 0.0
         self.id = None

@@ -6,7 +6,8 @@ with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 '''
 
 import requests, time
-from ..printer import *
+from ..utils import printer
+
 
 class Credentials:
     '''
@@ -98,10 +99,10 @@ class Credentials:
             
             # Print some information
             if first_attempt:
-                warning("New sessions may take up to 3 minutes to start up. Please wait while your session is being configured.")
+                printer.warning("New sessions may take up to 3 minutes to start up. Please wait while your session is being configured.")
                 first_attempt = False
             else:
-                log("Unable to find session. Attempting again in 10 seconds.")
+                printer.log("Unable to find session. Attempting again in 10 seconds.")
             
             # Wait some time
             delta: float = 10.0
@@ -116,7 +117,7 @@ class Credentials:
         '''
 
         # Fetch the data
-        log("Attempting to find or create a new user session. This may take a few seconds.")
+        printer.log("Attempting to find or create a new user session. This may take a few seconds.")
         response = requests.get(
             self.url + "session", 
             verify=False, 
@@ -127,9 +128,9 @@ class Credentials:
         # Update the data and get the data
         if response.status_code == 200:
             self.session_id = response.text
-            log("A session has been created successfully.")
+            printer.log("A session has been created successfully.")
         else:
-            error("Failed to create an API user session or retrieve previous session.")
+            printer.error("Failed to create an API user session or retrieve previous session.")
 
 
     def __is_healthy (self) -> bool:

@@ -12,10 +12,9 @@ time.
 '''
 import pandas as pd
 from copy import deepcopy
-from ..http.http_request import *
-from ..http.credentials import Credentials
-from ..objects.object import Object
-from ..printer import *
+from ..connection import Credentials, http
+from .object import Object
+from ..utils import printer
 
 
 class Message (Object):
@@ -48,12 +47,12 @@ class Message (Object):
         }
 
         # Create the data
-        request_data: str = jsonify(body)
+        request_data: str = http.jsonify(body)
 
         # Create the response from the PATCH request and get the IDs
-        response = put_request(self._credentials, "database/message", data=request_data)
+        response = http.put_request(self._credentials, "database/message", data=request_data)
         if response == False:
-            error("Failed to subscribe message to the database system.")
+            printer.error("Failed to subscribe message to the database system.")
             return False
         self.__subscribed = True
         return True
@@ -70,7 +69,7 @@ class Message (Object):
 
         # Throw an error if not subscribed
         if not self.__subscribed:
-            error("Unable to fetch data. Ensure that this message has been subscribed to the database system.")
+            printer.error("Unable to fetch data. Ensure that this message has been subscribed to the database system.")
             return []
 
         # Construct the JSON body parameters
@@ -85,10 +84,10 @@ class Message (Object):
                 body["data"].append(param)
 
         # Create the data
-        request_data: str = jsonify(body)
+        request_data: str = http.jsonify(body)
 
         # Create the response from the POST request and get the data
-        response = post_request(self._credentials, "query/database/message", data=request_data)
+        response = http.post_request(self._credentials, "query/database/message", data=request_data)
         return response
 
     def fetch (self, *values) -> list:
@@ -164,10 +163,10 @@ class Message (Object):
                 body["data"].append(param)
 
         # Create the data
-        request_data: str = jsonify(body)
+        request_data: str = http.jsonify(body)
 
         # Create the response from the POST request and get the data
-        response = post_request(credentials, "query/database/message", data=request_data)
+        response = http.post_request(credentials, "query/database/message", data=request_data)
         return response
     
     @classmethod

@@ -1,21 +1,28 @@
-# Include all Packages
+'''
+                    [ NOMINAL SYSTEMS ]
+This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+'''
+
 import paho.mqtt.client as mqtt
 import uuid as Guid
 import json, time
-from ..printer import *
+from ..utils import printer
 
 # These are some static constants for the client
 HIVEMQ_SERVER: str = "broker.hivemq.com"
 SERVER_PORT: int = 1883
 SERVER_TIMEOUT: int = 5
 
-'''
-This client acts as an MQTT interface with python, allowing for
-callbacks from topic subscriptions and publishing messages over
-topics. This acts as a wrapper for the PAHO MQTT client, which
-must be installed to work correctly.
-'''
+
 class Client ():
+    '''
+    This client acts as an MQTT interface with python, allowing for
+    callbacks from topic subscriptions and publishing messages over
+    topics. This acts as a wrapper for the PAHO MQTT client, which
+    must be installed to work correctly.
+    '''
 
     # Defines the name of the server
     server: str = ""
@@ -56,7 +63,7 @@ class Client ():
 
         # Ensure the client has already connected
         if not self.connected:
-            error("Failed to subscribe to topic. Mqtt client is not yet connected.")
+            printer.error("Failed to subscribe to topic. Mqtt client is not yet connected.")
             return
 
         # Check if the callback exists
@@ -69,7 +76,7 @@ class Client ():
             self.callbacks[topic] = [func]
             
         # Add a message
-        log("Successfully subscribed to topic '%s'." % topic)
+        printer.log("Successfully subscribed to topic '%s'." % topic)
 
     def connect (self, wait: bool = False):
         '''
@@ -83,7 +90,7 @@ class Client ():
         self.client.connect(self.server, SERVER_PORT, SERVER_TIMEOUT)
 
         # Loop until connected
-        log("Mqtt client '%s' is attempting to connect to the server..." % self.client_name)
+        printer.log("Mqtt client '%s' is attempting to connect to the server..." % self.client_name)
         self.client.loop_start()
 
         # Wait for the connection if required
@@ -100,7 +107,7 @@ class Client ():
             if self.connected:
                 return True
             time.sleep(0.1)
-        warning("Failed to connect with a timeout of %f seconds." % timeout)
+        printer.warning("Failed to connect with a timeout of %f seconds." % timeout)
         return False
 
     def on_connect (self, client, userdata, flags, rc):
@@ -108,7 +115,7 @@ class Client ():
         This handles the callback from the connection and
         will display a message outlining if it has been connected.
         '''
-        log("Mqtt client has connected with result code: '%s'." % str(rc))
+        printer.log("Mqtt client has connected with result code: '%s'." % str(rc))
         self.connected = True
 
     def on_connect_fail (self):
@@ -116,7 +123,7 @@ class Client ():
         This method is executed if the connection with a server fails
         and is unable to connect.
         '''
-        error("Mqtt client has failed to connect.")
+        printer.error("Mqtt client has failed to connect.")
         self.fail = True
 
     def on_message (self, client, userdata, message):
@@ -128,7 +135,7 @@ class Client ():
 
         # Check if the topic is valid
         if message.topic not in self.callbacks.keys():
-            warning("Undefined message on topic '%s'." % message.topic)
+            printer.warning("Undefined message on topic '%s'." % message.topic)
         
         # Execute each of the callbacks
         else:
@@ -148,7 +155,7 @@ class Client ():
         string data.
         '''
         self.client.publish(topic, payload=data)
-        log("Published a message over the topic '%s'." % topic)
+        printer.log("Published a message over the topic '%s'." % topic)
     
     def publish_json (self, topic: str, data: dict) -> None:
         '''

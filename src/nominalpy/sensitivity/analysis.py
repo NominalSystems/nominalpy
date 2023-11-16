@@ -5,11 +5,12 @@ to the public API. All code is under the the license provided along
 with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 '''
 
-from ..objects.entity import Entity
-from ..http.credentials import Credentials
-from .. import printer
+from ..objects import Entity, Message
+from ..connection import Credentials
+from ..utils import printer
 from .case import SensitivityCase
 from .configuration import SensitivityConfiguration
+
 
 class SensitivityAnalysis (Entity):
     '''

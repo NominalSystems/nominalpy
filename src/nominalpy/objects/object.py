@@ -11,10 +11,9 @@ on an API call and if no simulation events have occurred, the data is
 not fetched again.
 '''
 
-from ..http.http_request import *
-from ..http.credentials import Credentials
-from ..printer import *
-from ..objects.entity import Entity
+from ..connection import Credentials, http
+from ..utils import printer
+from .entity import Entity
 
 
 class Object(Entity):
@@ -73,14 +72,14 @@ class Object(Entity):
             return
         
         # Perform the request on the data
-        request_data: str = jsonify({
+        request_data: str = http.jsonify({
             "guid": self.id
         })
-        response = post_request(self._credentials, "query/" + self._api_type, data=request_data)
+        response = http.post_request(self._credentials, "query/" + self._api_type, data=request_data)
         
         # Check for a valid response and update the data
         if response == None or response == {}:
-            error("Failed to retrieve data from %s '%s'." % (self._api_type, self.id))
+            printer.error("Failed to retrieve data from %s '%s'." % (self._api_type, self.id))
         else:
             self.__update_required = False
             self.__type = response["type"]
@@ -105,7 +104,7 @@ class Object(Entity):
         # Attempt to get the current object data or throw an error.
         self.__get_object__()
         if self.__data == None:
-            error("No data available on the component.")
+            printer.error("No data available on the component.")
             return {}
         
         # If no values, return all of the data
@@ -128,7 +127,7 @@ class Object(Entity):
         # Fetch all values and parse only the one in the parameter
         data: dict = self.get_values(param)
         if data == {}:
-            error("Failed to find parameter '%s' in class '%s'. Please check the documentation for valid variables." % (param, self.__type))
+            printer.error("Failed to find parameter '%s' in class '%s'. Please check the documentation for valid variables." % (param, self.__type))
             return None
         return data[param]
     
@@ -147,7 +146,7 @@ class Object(Entity):
 
         # Check if no values exists and set the data
         if len(kwargs) == 0:
-            error("No values to set.")
+            printer.error("No values to set.")
             return False
         
         # Clean up if using the 'set_value' function
@@ -160,12 +159,12 @@ class Object(Entity):
         body["data"] = kwargs
 
         # Create the data
-        request_data: str = jsonify(body)
+        request_data: str = http.jsonify(body)
 
         # Create the response from the PATCH request and get the IDs
-        response = patch_request(self._credentials, self._api_type, data=request_data)
+        response = http.patch_request(self._credentials, self._api_type, data=request_data)
         if response == False:
-            error("Failed to set data on %s." % self._api_type)
+            printer.error("Failed to set data on %s." % self._api_type)
             return False
         
         # Update the flag for needing to get values
@@ -187,16 +186,16 @@ class Object(Entity):
         remove access to all objects associated with this.
         '''
         # Construct the JSON body
-        request_data: str = jsonify(
+        request_data: str = http.jsonify(
             {
                 "guid": self.id
             }
         )
 
         # Create the response
-        response = delete_request(self._credentials, self._api_type, data=request_data)
+        response = http.delete_request(self._credentials, self._api_type, data=request_data)
         if response == True:
-            success("Successfully deleted object '%s' of type '%s'." % (self.id, self.__type))
+            printer.success("Successfully deleted object '%s' of type '%s'." % (self.id, self.__type))
             self.id = None
             self.__type = None
             self.__update_required = True
@@ -205,7 +204,7 @@ class Object(Entity):
         
         # Failed to delete
         else:
-            error("Failed to delete object '%s'." % self.id)
+            printer.error("Failed to delete object '%s'." % self.id)
             return False
     
     def __str__ (self) -> str:

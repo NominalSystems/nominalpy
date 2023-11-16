@@ -5,7 +5,8 @@ to the public API. All code is under the the license provided along
 with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 '''
 
-from ..http.credentials import Credentials
+from ..connection import Credentials
+
 
 class Entity:
     '''

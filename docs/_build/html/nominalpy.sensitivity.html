@@ -19,6 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="nominalpy.utils package" href="nominalpy.utils.html" />
     <link rel="prev" title="nominalpy.objects package" href="nominalpy.objects.html" /> 
 </head>
 
@@ -46,7 +47,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">nominalpy</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="nominalpy.html">nominalpy package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="nominalpy.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.http.html">nominalpy.http package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.connection.html">nominalpy.connection package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.image.html">nominalpy.image package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html">nominalpy.maths package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.mqtt.html">nominalpy.mqtt package</a></li>
@@ -59,12 +60,9 @@
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.sensitivity">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.utils.html">nominalpy.utils package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#module-nominalpy.exception">nominalpy.exception module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#module-nominalpy.printer">nominalpy.printer module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#module-nominalpy.types">nominalpy.types module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.html#module-nominalpy">Module contents</a></li>
 </ul>
 </li>
@@ -113,7 +111,7 @@ to the public API. All code is under the the license provided along
 with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.analysis.SensitivityAnalysis">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.sensitivity.analysis.</span></span><span class="sig-name descname"><span class="pre">SensitivityAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials" title="nominalpy.http.credentials.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nominalpy.sensitivity.configuration.SensitivityConfiguration" title="nominalpy.sensitivity.configuration.SensitivityConfiguration"><span class="pre">SensitivityConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.sensitivity.analysis.SensitivityAnalysis" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.sensitivity.analysis.</span></span><span class="sig-name descname"><span class="pre">SensitivityAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Credentials</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nominalpy.sensitivity.configuration.SensitivityConfiguration" title="nominalpy.sensitivity.configuration.SensitivityConfiguration"><span class="pre">SensitivityConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.sensitivity.analysis.SensitivityAnalysis" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.entity.Entity" title="nominalpy.objects.entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></a></p>
 <p>The Sensitivity Analysis class is able to create multiple simulations
 with varying parameters and allow the data to be extracted from at the
@@ -283,7 +281,7 @@ to the public API. All code is under the the license provided along
 with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.configuration.SensitivityConfiguration">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.sensitivity.configuration.</span></span><span class="sig-name descname"><span class="pre">SensitivityConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials" title="nominalpy.http.credentials.Credentials"><span class="pre">Credentials</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.sensitivity.configuration.SensitivityConfiguration" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.sensitivity.configuration.</span></span><span class="sig-name descname"><span class="pre">SensitivityConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Credentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.sensitivity.configuration.SensitivityConfiguration" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>The Configuration class allows for a custom simulation configuration
 to be created and iterated upon. This allows for an external runner
@@ -293,12 +291,12 @@ components must be made public in the class (using the self keyword)
 and the configuration must be implemented in the ‘configure’ method.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.configuration.SensitivityConfiguration.add_credentials">
-<span class="sig-name descname"><span class="pre">add_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials" title="nominalpy.http.credentials.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.sensitivity.configuration.SensitivityConfiguration.add_credentials" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Credentials</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.sensitivity.configuration.SensitivityConfiguration.add_credentials" title="Link to this definition"></a></dt>
 <dd><p>Sets the credentials of the configuration based on the values
 passed in.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>credentials</strong> (<a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials" title="nominalpy.http.credentials.Credentials"><em>Credentials</em></a>) – The application credentials for calling the API</p>
+<dd class="field-odd"><p><strong>credentials</strong> (<em>Credentials</em>) – The application credentials for calling the API</p>
 </dd>
 </dl>
 </dd></dl>
@@ -355,7 +353,7 @@ object will be found.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.configuration.SensitivityConfiguration.get_credentials">
-<span class="sig-name descname"><span class="pre">get_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials" title="nominalpy.http.credentials.Credentials"><span class="pre">Credentials</span></a></span></span><a class="headerlink" href="#nominalpy.sensitivity.configuration.SensitivityConfiguration.get_credentials" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Credentials</span></span></span><a class="headerlink" href="#nominalpy.sensitivity.configuration.SensitivityConfiguration.get_credentials" title="Link to this definition"></a></dt>
 <dd><p>Returns the current credentials of the configuration based on
 what has been passed in.</p>
 <dl class="field-list simple">
@@ -363,7 +361,7 @@ what has been passed in.</p>
 <dd class="field-odd"><p>The credentials associated with the current configuration</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials" title="nominalpy.http.credentials.Credentials">Credentials</a></p>
+<dd class="field-even"><p>Credentials</p>
 </dd>
 </dl>
 </dd></dl>
@@ -497,6 +495,7 @@ if it does exist.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="nominalpy.objects.html" class="btn btn-neutral float-left" title="nominalpy.objects package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nominalpy.utils.html" class="btn btn-neutral float-right" title="nominalpy.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

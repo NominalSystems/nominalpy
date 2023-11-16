@@ -5,6 +5,7 @@ to the public API. All code is under the the license provided along
 with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 '''
 
+
 class SensitivityCase:
     '''
     The Sensitivity Case class enables the user to define a particular

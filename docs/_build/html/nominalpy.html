@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="nominalpy.http package" href="nominalpy.http.html" />
+    <link rel="next" title="nominalpy.connection package" href="nominalpy.connection.html" />
     <link rel="prev" title="nominalpy" href="modules.html" /> 
 </head>
 
@@ -47,30 +47,15 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">nominalpy</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">nominalpy package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.http.html">nominalpy.http package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.connection.html">nominalpy.connection package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.image.html">nominalpy.image package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html">nominalpy.maths package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.mqtt.html">nominalpy.mqtt package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html">nominalpy.objects package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.sensitivity.html">nominalpy.sensitivity package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.utils.html">nominalpy.utils package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-nominalpy.exception">nominalpy.exception module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#nominalpy.exception.NominalException"><code class="docutils literal notranslate"><span class="pre">NominalException</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#module-nominalpy.printer">nominalpy.printer module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#nominalpy.printer.display_time"><code class="docutils literal notranslate"><span class="pre">display_time()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#nominalpy.printer.error"><code class="docutils literal notranslate"><span class="pre">error()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#nominalpy.printer.log"><code class="docutils literal notranslate"><span class="pre">log()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#nominalpy.printer.output"><code class="docutils literal notranslate"><span class="pre">output()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#nominalpy.printer.set_verbosity"><code class="docutils literal notranslate"><span class="pre">set_verbosity()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#nominalpy.printer.success"><code class="docutils literal notranslate"><span class="pre">success()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#nominalpy.printer.warning"><code class="docutils literal notranslate"><span class="pre">warning()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#module-nominalpy.types">nominalpy.types module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-nominalpy">Module contents</a></li>
 </ul>
 </li>
@@ -109,33 +94,11 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="nominalpy.http.html">nominalpy.http package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nominalpy.http.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nominalpy.http.html#module-nominalpy.http.credentials">nominalpy.http.credentials module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials"><code class="docutils literal notranslate"><span class="pre">Credentials</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials.access_key"><code class="docutils literal notranslate"><span class="pre">Credentials.access_key</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials.is_local"><code class="docutils literal notranslate"><span class="pre">Credentials.is_local</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials.port"><code class="docutils literal notranslate"><span class="pre">Credentials.port</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials.session_id"><code class="docutils literal notranslate"><span class="pre">Credentials.session_id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.credentials.Credentials.url"><code class="docutils literal notranslate"><span class="pre">Credentials.url</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nominalpy.http.html#module-nominalpy.http.http_request">nominalpy.http.http_request module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.http_request.create_web_exception"><code class="docutils literal notranslate"><span class="pre">create_web_exception()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.http_request.delete_request"><code class="docutils literal notranslate"><span class="pre">delete_request()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.http_request.get_request"><code class="docutils literal notranslate"><span class="pre">get_request()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.http_request.handle_request_data"><code class="docutils literal notranslate"><span class="pre">handle_request_data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.http_request.is_valid_guid"><code class="docutils literal notranslate"><span class="pre">is_valid_guid()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.http_request.jsonify"><code class="docutils literal notranslate"><span class="pre">jsonify()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.http_request.patch_request"><code class="docutils literal notranslate"><span class="pre">patch_request()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.http_request.post_request"><code class="docutils literal notranslate"><span class="pre">post_request()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.http_request.put_request"><code class="docutils literal notranslate"><span class="pre">put_request()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nominalpy.http.html#nominalpy.http.http_request.validate_credentials"><code class="docutils literal notranslate"><span class="pre">validate_credentials()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nominalpy.http.html#module-nominalpy.http">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nominalpy.connection.html">nominalpy.connection package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nominalpy.connection.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nominalpy.connection.html#nominalpy-connection-credentials-module">nominalpy.connection.credentials module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nominalpy.connection.html#nominalpy-connection-http-module">nominalpy.connection.http module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nominalpy.connection.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="nominalpy.image.html">nominalpy.image package</a><ul>
@@ -315,103 +278,16 @@
 <li class="toctree-l2"><a class="reference internal" href="nominalpy.sensitivity.html#module-nominalpy.sensitivity">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="nominalpy.utils.html">nominalpy.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nominalpy.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nominalpy.utils.html#nominalpy-utils-exception-module">nominalpy.utils.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nominalpy.utils.html#nominalpy-utils-printer-module">nominalpy.utils.printer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nominalpy.utils.html#nominalpy-utils-types-module">nominalpy.utils.types module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nominalpy.utils.html#module-contents">Module contents</a></li>
+</ul>
+</li>
 </ul>
 </div>
-</section>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
-</section>
-<section id="module-nominalpy.exception">
-<span id="nominalpy-exception-module"></span><h2>nominalpy.exception module<a class="headerlink" href="#module-nominalpy.exception" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>[ NOMINAL SYSTEMS ]</p>
-</div></blockquote>
-<p>This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="nominalpy.exception.NominalException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.exception.</span></span><span class="sig-name descname"><span class="pre">NominalException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.exception.NominalException" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>The Nominal Exception class defines a custom exception that is able 
-to track errors with the Nominal API. Any connection errors or issues 
-with the objects will throw an Nominal API if there are configuration 
-issues.</p>
-</dd></dl>
-
-</section>
-<section id="module-nominalpy.printer">
-<span id="nominalpy-printer-module"></span><h2>nominalpy.printer module<a class="headerlink" href="#module-nominalpy.printer" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>[ NOMINAL SYSTEMS ]</p>
-</div></blockquote>
-<p>This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
-<p>This file contains helper functions for printing lines to the console. 
-By default, any calls made to these functions will not print any data. 
-If the verbosity is enabled, then data will be printed to the console.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.printer.display_time">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.printer.</span></span><span class="sig-name descname"><span class="pre">display_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.printer.display_time" title="Link to this definition"></a></dt>
-<dd><p>Defines whether time should be enabled on the printing output
-messages or not.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.printer.error">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.printer.</span></span><span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.printer.error" title="Link to this definition"></a></dt>
-<dd><p>Prints error messages to the console, providing information
-about errors that occurred.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.printer.log">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.printer.</span></span><span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.printer.log" title="Link to this definition"></a></dt>
-<dd><p>Prints general log text to the console, providing some 
-information about the API calls.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.printer.output">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.printer.</span></span><span class="sig-name descname"><span class="pre">output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.printer.output" title="Link to this definition"></a></dt>
-<dd><p>Outputs text to the console assuming that the verbose
-level is enabled.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.printer.set_verbosity">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.printer.</span></span><span class="sig-name descname"><span class="pre">set_verbosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.printer.set_verbosity" title="Link to this definition"></a></dt>
-<dd><p>Updates the verbosity level of the printing to
-a particular verbosity level. The levels are either
-LOG_VERBOSITY, WARNING_VERBOSITY or ERROR_VERBOSITY.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.printer.success">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.printer.</span></span><span class="sig-name descname"><span class="pre">success</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.printer.success" title="Link to this definition"></a></dt>
-<dd><p>Prints success messages to the console, providing information
-about key events that occurred.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.printer.warning">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.printer.</span></span><span class="sig-name descname"><span class="pre">warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.printer.warning" title="Link to this definition"></a></dt>
-<dd><p>Prints warning messages to the console, providing information
-about potential errors.</p>
-</dd></dl>
-
-</section>
-<section id="module-nominalpy.types">
-<span id="nominalpy-types-module"></span><h2>nominalpy.types module<a class="headerlink" href="#module-nominalpy.types" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>[ NOMINAL SYSTEMS ]</p>
-</div></blockquote>
-<p>This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
-<p>This file includes some common class types that are used throughout
-the simulation, making it easier to instantiate these objects.</p>
 </section>
 <section id="module-nominalpy">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nominalpy" title="Link to this heading"></a></h2>
@@ -423,7 +299,7 @@ the simulation, making it easier to instantiate these objects.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="modules.html" class="btn btn-neutral float-left" title="nominalpy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="nominalpy.http.html" class="btn btn-neutral float-right" title="nominalpy.http package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="nominalpy.connection.html" class="btn btn-neutral float-right" title="nominalpy.connection package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
