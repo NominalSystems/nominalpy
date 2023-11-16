@@ -18,7 +18,9 @@
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="nominalpy.image package" href="nominalpy.image.html" />
+    <link rel="prev" title="nominalpy package" href="nominalpy.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,8 +43,33 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">nominalpy</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">nominalpy</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="nominalpy.html">nominalpy package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="nominalpy.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">nominalpy.http package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.http.credentials">nominalpy.http.credentials module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.http.http_request">nominalpy.http.http_request module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.http">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.image.html">nominalpy.image package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html">nominalpy.maths package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.mqtt.html">nominalpy.mqtt package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html">nominalpy.objects package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.sensitivity.html">nominalpy.sensitivity package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#module-nominalpy.exception">nominalpy.exception module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#module-nominalpy.printer">nominalpy.printer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#module-nominalpy.types">nominalpy.types module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.html#module-nominalpy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -59,6 +86,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">nominalpy</a></li>
+          <li class="breadcrumb-item"><a href="nominalpy.html">nominalpy package</a></li>
       <li class="breadcrumb-item active">nominalpy.http package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/nominalpy.http.rst.txt" rel="nofollow"> View page source</a>
@@ -129,7 +158,7 @@ with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
 data from the API and ensuring the data is in the correct form.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.http.http_request.create_web_exception">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.http.http_request.</span></span><span class="sig-name descname"><span class="pre">create_web_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NominalException</span></span></span><a class="headerlink" href="#nominalpy.http.http_request.create_web_exception" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">nominalpy.http.http_request.</span></span><span class="sig-name descname"><span class="pre">create_web_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="nominalpy.html#nominalpy.exception.NominalException" title="nominalpy.exception.NominalException"><span class="pre">NominalException</span></a></span></span><a class="headerlink" href="#nominalpy.http.http_request.create_web_exception" title="Link to this definition"></a></dt>
 <dd><p>This method creates an exception based on the status code
 that exists. This is useful for any status code that is not
 200, which is an OK status.</p>
@@ -221,7 +250,10 @@ This can be used to validate whether the API is live.</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nominalpy.html" class="btn btn-neutral float-left" title="nominalpy package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nominalpy.image.html" class="btn btn-neutral float-right" title="nominalpy.image package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

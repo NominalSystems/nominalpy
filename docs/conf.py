@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 import os, sys
-sys.path.insert(0, os.path.abspath('../../'))
+sys.path.insert(0, os.path.abspath('../nominalpy/src/'))
 
 project = 'nominalpy'
 copyright = '2023, Nominal Systems'
@@ -21,6 +21,11 @@ extensions = [
     'sphinx.ext.autodoc'
 ]
 
+autodoc_default_options = {
+    'members': True,  # Include class members (methods, attributes)
+    'show-inheritance': True,  # Show inheritance information
+}
+
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
@@ -31,3 +36,5 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+
+html_theme_options = {'navigation_depth': 5}

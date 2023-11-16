@@ -7,15 +7,36 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   nominalpy.nominalpy
+   nominalpy.http
+   nominalpy.image
+   nominalpy.maths
+   nominalpy.mqtt
+   nominalpy.objects
+   nominalpy.sensitivity
 
 Submodules
 ----------
 
-nominalpy.setup module
+nominalpy.exception module
+--------------------------
+
+.. automodule:: nominalpy.exception
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+nominalpy.printer module
+------------------------
+
+.. automodule:: nominalpy.printer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+nominalpy.types module
 ----------------------
 
-.. automodule:: nominalpy.setup
+.. automodule:: nominalpy.types
    :members:
    :undoc-members:
    :show-inheritance:
