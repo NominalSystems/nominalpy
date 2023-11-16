@@ -13,6 +13,7 @@ import math
 import numpy as np
 from . import constants
 from . import value
+from . import utils
 from .. import NominalException
 
 
@@ -33,7 +34,7 @@ def get_planet_mu (planet: str) -> float:
         raise NominalException("No planet or body named '%s' exists." % planet)
 
 
-def t_perifocal_to_pci(right_ascension: float = 0, argument_of_periapsis: float = 0, inclination: float = 0) -> np.ndarray:
+def t_perifocal_to_vector_elements(right_ascension: float = 0, argument_of_periapsis: float = 0, inclination: float = 0) -> np.ndarray:
     """
     Creates the transformation matrix to convert perifocal coordinates into Planet-Centered Inertial (PCI) coordinates.
 
@@ -67,7 +68,7 @@ def t_perifocal_to_pci(right_ascension: float = 0, argument_of_periapsis: float 
     return TIP
 
 
-def perifocal_to_pci(
+def perifocal_to_vector_elements(
         r_bp_p: np.ndarray,
         v_bp_p: np.ndarray,
         right_ascension: float = 0,
@@ -97,7 +98,7 @@ def perifocal_to_pci(
     The transformation is performed using a matrix obtained from the `t_perifocal_to_vector` function, which
     constructs the transformation matrix based on the provided orbital elements.
     """
-    TIP = t_perifocal_to_pci(
+    TIP = t_perifocal_to_vector_elements(
         right_ascension=right_ascension,
         argument_of_periapsis=argument_of_periapsis,
         inclination=inclination
@@ -108,7 +109,7 @@ def perifocal_to_pci(
     return r_bn_n, v_bn_n
 
 
-def semi_latus_rectum_to_pci(
+def semi_latus_rectum_to_vector_elements(
         semi_latus_rectum: float,
         eccentricity: float = 0.0,
         inclination: float = 0.0,
@@ -162,7 +163,7 @@ def semi_latus_rectum_to_pci(
         0
     ])
     # calculate the pci position and velocity
-    return perifocal_to_pci(
+    return perifocal_to_vector_elements(
         r_bp_p=r_bp_p,
         v_bp_p=v_bp_p,
         right_ascension=right_ascension,
@@ -171,7 +172,7 @@ def semi_latus_rectum_to_pci(
     )
 
 
-def keplerian_to_pci(
+def classical_to_vector_elements(
         semi_major_axis: float,
         eccentricity: float = 0.0,
         inclination: float = 0.0,
@@ -216,7 +217,7 @@ def keplerian_to_pci(
         p = semi_major_axis * (1 - eccentricity * eccentricity)
     else:
         raise ValueError("The input eccentricity is invalid")
-    return semi_latus_rectum_to_pci(
+    return semi_latus_rectum_to_vector_elements(
         semi_latus_rectum=p,
         eccentricity=eccentricity,
         inclination=inclination,
@@ -227,7 +228,7 @@ def keplerian_to_pci(
     )
 
 
-def keplerian_to_pci_deg(
+def classical_to_vector_elements_deg(
         semi_major_axis: float,
         eccentricity: float = 0.0,
         inclination: float = 0.0,
@@ -262,7 +263,7 @@ def keplerian_to_pci_deg(
     The function first computes the gravitational parameter of the planet, then calculates the semi-latus rectum, and
     finally computes the position and velocity in perifocal coordinates. These are then transformed into PCI coordinates.
     """
-    return keplerian_to_pci(
+    return classical_to_vector_elements(
         semi_major_axis=semi_major_axis,
         eccentricity=eccentricity,
         inclination=np.radians(inclination),
@@ -271,3 +272,96 @@ def keplerian_to_pci_deg(
         true_anomaly=np.radians(true_anomaly),
         planet=planet
     )
+
+
+def vector_to_classical_elements(
+        r_bn_n: np.ndarray,
+        v_bn_n: np.ndarray,
+        planet: str = "earth") -> tuple:
+    """
+    Convert state vectors to classical orbital elements.
+
+    This function calculates the classical orbital elements from the given position and velocity vectors. It supports different planetary bodies by adjusting the gravitational parameter.
+
+    :param r_bn_n: The position vector in a Cartesian coordinate system in metres.
+    :type r_bn_n: np.ndarray
+    :param v_bn_n: The velocity vector in the same Cartesian coordinate system as r_bn_n in metres per second.
+    :type v_bn_n: np.ndarray
+    :param planet: The name of the planet for which the gravitational parameter is needed. Defaults to 'earth'.
+    :type planet: str, optional
+    :return: A tuple of classical orbital elements: semi-major axis, eccentricity, inclination, right ascension of the ascending node (RAAN), argument of periapsis, and true anomaly.
+    :rtype: tuple
+
+    :raises ArithmeticError: If the orbit is parabolic, which is not supported by this function.
+
+    The function calculates various orbital elements including angular momentum, node vector, eccentricity vector, semi-major axis, inclination, RAAN, argument of periapsis, and true anomaly. It handles different types of orbits: circular equatorial, equatorial elliptical, circular inclined, and classical elliptical inclined.
+    """
+    # find the gravitational parameter for the planet
+    mu: float = get_planet_mu(planet)
+    # calculate the magnitude of the position and velocity vectors
+    r_mag: float = np.linalg.norm(r_bn_n)
+    v_mag: float = np.linalg.norm(v_bn_n)
+
+    v_mag_sqrd: float = v_mag * v_mag
+    r_mag_dot_v_mag: float = np.dot(r_bn_n, v_bn_n)
+
+    # angular momentum
+    H: np.ndarray = np.cross(r_bn_n, v_bn_n)
+
+    # the NODE is the cross product of K = [0 0 1] and H. For efficiency, directly assign the cross product result
+    NODE: np.ndarray = np.array([-H[1], H[0], 0])
+    node: float = np.linalg.norm(NODE)
+
+    # the eccentricity vector
+    ECC: np.ndarray = (r_bn_n * (v_mag_sqrd - mu / r_mag) - v_bn_n * r_mag_dot_v_mag) / mu
+    eccentricity: float = np.linalg.norm(ECC)  # eccentricity
+
+    # find the type of orbit and adjust the orbital element set accordingly
+    if eccentricity == 1:
+        raise ArithmeticError("The orbit is parabolic. Consider using a different function.")
+    # calculate the semi-major axis
+    energy: float = v_mag_sqrd / 2 - mu / r_mag
+    semi_major_axis: float = -mu / (2 * energy)
+    # calculate the inclination
+    inclination: float = np.arccos(H[2] / np.linalg.norm(H))
+    if np.fabs(node) == 0:
+        if eccentricity == 0:
+            # circular equatorial orbit
+            return (
+                semi_major_axis,
+                eccentricity,
+                inclination,
+                utils.acos_quadrant_check(r_bn_n[0], r_mag, r_bn_n[1]),  # true longitude
+                0,
+                0
+            )
+        else:
+            # equatorial elliptical orbit
+            return (
+                semi_major_axis,
+                eccentricity,
+                inclination,
+                0,
+                utils.acos_quadrant_check(ECC[0], eccentricity, ECC[1]),  # longitude of periapsis
+                utils.acos_quadrant_check(np.dot(ECC, r_bn_n), eccentricity * r_mag, r_mag_dot_v_mag)  # true anomaly
+            )
+    elif eccentricity == 0:
+        # circular inclined orbit
+        return (
+            semi_major_axis,
+            eccentricity,
+            inclination,
+            utils.acos_quadrant_check(NODE[0], node, NODE[1]),  # RAAN
+            utils.acos_quadrant_check(np.dot(NODE, r_bn_n), node * r_mag, r_bn_n[2]),  # true argument of latitude
+            0
+        )
+    else:
+        # classical elliptical inclined orbit
+        return (
+            semi_major_axis,
+            eccentricity,
+            inclination,
+            utils.acos_quadrant_check(NODE[0], node, NODE[1]),  # RAAN
+            utils.acos_quadrant_check(np.dot(NODE, ECC), node * eccentricity, ECC[2]),  # argument of periapsis
+            utils.acos_quadrant_check(np.dot(ECC, r_bn_n), eccentricity * r_mag, r_mag_dot_v_mag)  # true anomaly
+        )
