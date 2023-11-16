@@ -14,10 +14,10 @@ not fetched again.
 from .. import request_helper as rh
 from ..credentials import Credentials
 from ..printer import *
-from ..objects.object_base import ObjectBase
+from ..objects.entity import Entity
 
 
-class Object(ObjectBase):
+class Object(Entity):
 
     '''
     A flag that defines whether the caching needs updated on the parameter.

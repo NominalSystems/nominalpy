@@ -11,7 +11,7 @@ tick all objects within the simulation.
 '''
 
 from ..objects.object import Object
-from ..objects.object import ObjectBase
+from ..objects.object import Entity
 from ..objects.component import Component
 from ..request_helper import *
 from ..credentials import Credentials
@@ -20,7 +20,7 @@ from ..printer import *
 from ..objects.message import Message
 
 
-class Simulation(ObjectBase):
+class Simulation(Entity):
 
     '''
     Defines a list of components added to the simulation. This will be 
