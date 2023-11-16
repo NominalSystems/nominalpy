@@ -49,9 +49,9 @@
 <li class="toctree-l3 current"><a class="reference internal" href="nominalpy.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">nominalpy.connection package</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l5"><a class="reference internal" href="#nominalpy-connection-credentials-module">nominalpy.connection.credentials module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="#nominalpy-connection-http-module">nominalpy.connection.http module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.connection.credentials">nominalpy.connection.credentials module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.connection.http">nominalpy.connection.http module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.connection">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.image.html">nominalpy.image package</a></li>
@@ -100,14 +100,147 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="nominalpy-connection-credentials-module">
-<h2>nominalpy.connection.credentials module<a class="headerlink" href="#nominalpy-connection-credentials-module" title="Link to this heading"></a></h2>
+<section id="module-nominalpy.connection.credentials">
+<span id="nominalpy-connection-credentials-module"></span><h2>nominalpy.connection.credentials module<a class="headerlink" href="#module-nominalpy.connection.credentials" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>[ NOMINAL SYSTEMS ]</p>
+</div></blockquote>
+<p>This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="nominalpy.connection.credentials.Credentials">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.connection.credentials.</span></span><span class="sig-name descname"><span class="pre">Credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://api.nominalsys.com'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.connection.credentials.Credentials" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Credentials class stores the credential access to the Nominal API 
+for making API calls to the server. This can allow for both a remote 
+or a local server call.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nominalpy.connection.credentials.Credentials.access_key">
+<span class="sig-name descname"><span class="pre">access_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#nominalpy.connection.credentials.Credentials.access_key" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nominalpy.connection.credentials.Credentials.is_local">
+<span class="sig-name descname"><span class="pre">is_local</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#nominalpy.connection.credentials.Credentials.is_local" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nominalpy.connection.credentials.Credentials.port">
+<span class="sig-name descname"><span class="pre">port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#nominalpy.connection.credentials.Credentials.port" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nominalpy.connection.credentials.Credentials.session_id">
+<span class="sig-name descname"><span class="pre">session_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#nominalpy.connection.credentials.Credentials.session_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nominalpy.connection.credentials.Credentials.url">
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#nominalpy.connection.credentials.Credentials.url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="nominalpy-connection-http-module">
-<h2>nominalpy.connection.http module<a class="headerlink" href="#nominalpy-connection-http-module" title="Link to this heading"></a></h2>
+<section id="module-nominalpy.connection.http">
+<span id="nominalpy-connection-http-module"></span><h2>nominalpy.connection.http module<a class="headerlink" href="#module-nominalpy.connection.http" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>[ NOMINAL SYSTEMS ]</p>
+</div></blockquote>
+<p>This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
+<p>This code assists with having some helper functions for requesting
+data from the API and ensuring the data is in the correct form.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.connection.http.create_web_exception">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.connection.http.</span></span><span class="sig-name descname"><span class="pre">create_web_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="nominalpy.utils.html#nominalpy.utils.exception.NominalException" title="nominalpy.utils.exception.NominalException"><span class="pre">NominalException</span></a></span></span><a class="headerlink" href="#nominalpy.connection.http.create_web_exception" title="Link to this definition"></a></dt>
+<dd><p>This method creates an exception based on the status code
+that exists. This is useful for any status code that is not
+200, which is an OK status.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.connection.http.delete_request">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.connection.http.</span></span><span class="sig-name descname"><span class="pre">delete_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nominalpy.connection.credentials.Credentials" title="nominalpy.connection.credentials.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.connection.http.delete_request" title="Link to this definition"></a></dt>
+<dd><p>Creates a DELETE request with some suffix URL data and returns
+the result of the request in a JSON form. If there was an
+error, then a None will be returned. This requires valid
+credentials to be passed through.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.connection.http.get_request">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.connection.http.</span></span><span class="sig-name descname"><span class="pre">get_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nominalpy.connection.credentials.Credentials" title="nominalpy.connection.credentials.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.connection.http.get_request" title="Link to this definition"></a></dt>
+<dd><p>Creates a GET request with some suffix URL data and returns
+the result of the request in a JSON form. If there was an
+error, then a None will be returned. This requires valid
+credentials to be passed through.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.connection.http.handle_request_data">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.connection.http.</span></span><span class="sig-name descname"><span class="pre">handle_request_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Response</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.connection.http.handle_request_data" title="Link to this definition"></a></dt>
+<dd><p>Handles the standard request data created from a HTTP
+web request. This will attempt to return a JSON or throw
+a web</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.connection.http.is_valid_guid">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.connection.http.</span></span><span class="sig-name descname"><span class="pre">is_valid_guid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#nominalpy.connection.http.is_valid_guid" title="Link to this definition"></a></dt>
+<dd><p>Determines if a parsed GUID, as a string,
+is valid. This will ensure that it is of
+the correct format.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.connection.http.jsonify">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.connection.http.</span></span><span class="sig-name descname"><span class="pre">jsonify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#nominalpy.connection.http.jsonify" title="Link to this definition"></a></dt>
+<dd><p>Converts a particular data as a dictionary to string
+using the JSON payload and has an optional parameter
+to wrap the data inside of an array.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.connection.http.patch_request">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.connection.http.</span></span><span class="sig-name descname"><span class="pre">patch_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nominalpy.connection.credentials.Credentials" title="nominalpy.connection.credentials.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.connection.http.patch_request" title="Link to this definition"></a></dt>
+<dd><p>Creates a PATCH request with some suffix URL data and returns
+the result of the request in a JSON form. If there was an
+error, then a None will be returned. This requires valid
+credentials to be passed through.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.connection.http.post_request">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.connection.http.</span></span><span class="sig-name descname"><span class="pre">post_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nominalpy.connection.credentials.Credentials" title="nominalpy.connection.credentials.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.connection.http.post_request" title="Link to this definition"></a></dt>
+<dd><p>Creates a POST request with some suffix URL data and returns
+the result of the request in a JSON form. If there was an
+error, then a None will be returned. This requires valid
+credentials to be passed through.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.connection.http.put_request">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.connection.http.</span></span><span class="sig-name descname"><span class="pre">put_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nominalpy.connection.credentials.Credentials" title="nominalpy.connection.credentials.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.connection.http.put_request" title="Link to this definition"></a></dt>
+<dd><p>Creates a PUT request with some suffix URL data and returns
+the result of the request in a JSON form. If there was an
+error, then a None will be returned. This requires valid
+credentials to be passed through.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.connection.http.validate_credentials">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.connection.http.</span></span><span class="sig-name descname"><span class="pre">validate_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nominalpy.connection.credentials.Credentials" title="nominalpy.connection.credentials.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.connection.http.validate_credentials" title="Link to this definition"></a></dt>
+<dd><p>Creates a GET request to test if the credentials are valid by
+calling the root directory of the URL passed through the credentials.
+This can be used to validate whether the API is live.</p>
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="module-nominalpy.connection">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nominalpy.connection" title="Link to this heading"></a></h2>
 </section>
 </section>
 

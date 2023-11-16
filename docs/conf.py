@@ -8,6 +8,7 @@
 
 import os, sys
 sys.path.insert(0, os.path.abspath('../nominalpy/src/'))
+sys.path.insert(0, os.path.abspath('../nominalpy/src/nominalpy/'))
 
 project = 'nominalpy'
 copyright = '2023, Nominal Systems'
@@ -35,6 +36,5 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
 
 html_theme_options = {'navigation_depth': 5}

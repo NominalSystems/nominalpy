@@ -101,10 +101,20 @@
 </section>
 <section id="module-nominalpy.mqtt.client">
 <span id="nominalpy-mqtt-client-module"></span><h2>nominalpy.mqtt.client module<a class="headerlink" href="#module-nominalpy.mqtt.client" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>[ NOMINAL SYSTEMS ]</p>
+</div></blockquote>
+<p>This code is developed by Nominal Systems to aid with communication 
+to the public API. All code is under the the license provided along
+with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="nominalpy.mqtt.client.Client">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.mqtt.client.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'broker.hivemq.com'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.mqtt.client.Client" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This client acts as an MQTT interface with python, allowing for
+callbacks from topic subscriptions and publishing messages over
+topics. This acts as a wrapper for the PAHO MQTT client, which
+must be installed to work correctly.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.mqtt.client.Client.add_callback">
 <span class="sig-name descname"><span class="pre">add_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.mqtt.client.Client.add_callback" title="Link to this definition"></a></dt>
@@ -195,15 +205,6 @@ object.</p>
 for a certain time until it time’s out and returns out of the loop.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="nominalpy.mqtt.client.SERVER_TIMEOUT">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.mqtt.client.</span></span><span class="sig-name descname"><span class="pre">SERVER_TIMEOUT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#nominalpy.mqtt.client.SERVER_TIMEOUT" title="Link to this definition"></a></dt>
-<dd><p>This client acts as an MQTT interface with python, allowing for
-callbacks from topic subscriptions and publishing messages over
-topics. This acts as a wrapper for the PAHO MQTT client, which
-must be installed to work correctly.</p>
 </dd></dl>
 
 </section>
