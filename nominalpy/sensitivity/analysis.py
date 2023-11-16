@@ -10,7 +10,7 @@ end of the simulation. Each simulation will be identical with the
 exception of some user defined parameters within the configuration.
 '''
 
-from .. import Component, Credentials, Message, NominalException, printer
+from .. import Credentials, Message, printer
 from .case import SensitivityCase
 from .configuration import SensitivityConfiguration
 

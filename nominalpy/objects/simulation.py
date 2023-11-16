@@ -10,29 +10,17 @@ need to be created via the simulation and the simulation can also
 tick all objects within the simulation.
 '''
 
-from .object import Object
-from .component import Component
-from .message import Message
-from .request_helper import *
-from .credentials import Credentials
-from .maths import value
-from .image import Visualiser
-from .printer import *
-from .types import *
-import time
+from ..objects.object import Object
+from ..objects.object import Entity
+from ..objects.component import Component
+from ..request_helper import *
+from ..credentials import Credentials
+from ..maths import value
+from ..printer import *
+from ..objects.message import Message
 
-class Simulation:
 
-    '''
-    Defines the unique GUID identifier of the simulation that is created
-    when the simulation is defined.
-    '''
-    id: str = None
-
-    '''
-    Specifies the credentials for accessing the API correctly.
-    '''
-    __credentials: Credentials = None
+class Simulation(Entity):
 
     '''
     Defines a list of components added to the simulation. This will be 
@@ -46,28 +34,21 @@ class Simulation:
     '''
     __time: float = 0.0
 
-    '''
-    Defines the image visualiser if it has been created and initialised
-    with a particular object connected to MQTT.
-    '''
-    __visualiser: Visualiser = None
-
-    '''
-    Defines the Cesium configuration for the image request that can be
-    sent through to the system.
-    '''
-    __cesium: dict = {}
-
-    
     def __init__ (self, credentials: Credentials, reset: bool = True) -> None:
         '''
         Default constructor for the simulation handler which takes 
         in the credentials to access the API. The reset flag will attempt
         to reset the simulation when initialised by default.
         '''
+        super().__init__(credentials=credentials, id=None)
+
         self.__credentials = credentials
         if self.__credentials == None:
             raise NominalException("Invalid Credentials: No credentials passed into the Simulation.")
+        
+        # Attempt a simple request
+        if not self.__credentials.is_local:
+            validate_credentials(self.__credentials)
 
         # Resets the simulation if valid credentials
         if reset and self.__credentials != None:
@@ -152,47 +133,6 @@ class Simulation:
         error("Could not construct object of class '%s'" % type)
         return None
     
-    def create_message (self, type: str, **kwargs) -> Message:
-        '''
-        Attempts to create a new message of a particular type with
-        some sample values, if they are passed in and returns the message
-        if it exists. This is message that is owned by the user and not
-        by the simulation.
-        '''
-
-        # Sanitise the type
-        if "NominalSystems" not in type:
-            if "." not in type:
-                type = "NominalSystems.Messages." + type
-            else:
-                type = "NominalSystems." + type
-
-        # Construct the JSON parameters
-        body: dict = {
-            "type": type
-        }
-        # If there are keyword arguments
-        if len(kwargs) > 0:
-            body["values"] = kwargs
-
-        # Create the data
-        request_data: str = jsonify(body)
-
-        # Create the response from the PUT request
-        guid: str = put_request(self.__credentials, "message", data=request_data)
-        log("Attempted to create a message of type %s with IDs: \n\t%s" % (type, guid))
-
-        # Check the GUID and return a new component with that ID or a None component
-        if is_valid_guid(guid):
-            success("Message of type '%s' created." % type)
-            obj: Message = Message(self.__credentials, guid)
-            return obj
-        
-        # Throw an error if no object or valid ID
-        error("Could not construct message of class '%s'" % type)
-        return None
-        
-    
     def get_system (self, type: str, **kwargs) -> Object:
         '''
         Fetches a particular simulation system that is valid
@@ -209,7 +149,39 @@ class Simulation:
 
         # Create the get request
         return get_request(self.__credentials, "message/types")
-    
+
+    def get_planet_message(self, planet: str) -> Message:
+        """
+        Get the spice state message for an input planet
+
+        :param planet: the name of the planet whose state msg will be returned
+        :type planet: str
+        :return: return the Message object containing the spice planet state message
+        :rtype: Message
+        """
+        # Create the data packet to be submitted to the api
+        body = dict(planet=str(planet))
+        body["data"] = {}
+        request_data: str = jsonify(body)
+        # Make the request to get the data
+        response = post_request(self._credentials, f"query/planet", data=request_data)
+        # Check for a valid response and update the data
+        if response == None or response == {}:
+            error(f"Failed to retrieve data from planet.")
+            return
+        # Transform the data into a Message object
+        msg: Message = Message(credentials=self._credentials, id=response["guid"])
+        # Return the message
+        return msg
+
+    def get_planet_message_id(self, planet: str) -> str:
+        """
+        Get the spice planet message id
+        :param planet: the name of the planet whose state msg will be returned
+        :return: the guid of the spice planet state message
+        """
+        return self.get_planet_message(planet=planet).id
+
     def tick (self, step: float = 1e-3, iterations: int = 1) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will
@@ -240,83 +212,7 @@ class Simulation:
         # Update all objects so their data needs to be fetched
         for obj in self.__components:
             obj.__require_update__()
-
-    def capture_image (self, file_name, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0, ray_tracing: bool = False, 
-        size: tuple = (500, 500), camera_position: dict = None, camera_rotation: tuple = (0, 0, 0), cesium: bool = False, timeout: float = 3.0) -> bool:
-        '''
-        Attempts to capture an image of the simulation using the visualisation
-        tool. This will capture an image based on a component's position and
-        attitude.
-         - file_name:       [REQUIRED] The name of the file to save the image as when the data is received
-         - spacecraft:      [REQUIRED] The simulation object for ths spacecraft in
-         - fov:             The field of view of the camera in degrees
-         - exposure:        The exposure level of the camera to take an image with
-         - ray_tracing:     A flag whether to enable ray-tracing on the camera
-         - size:            A tuple containing the X and Y pixel size of the image as (X, Y)
-         - camera_position: The JSON formatted position of the camera relative to the base object as X, Y, Z
-         - camera_rotation: A tuple containing pitch, roll and yaw angle values in degrees of the camera relative to the base object
-         - cesium:          A flag whether Cesium is enabled. Cesium must have been configured before this can be enabled
-         - timeout:         A timeout for pausing the thread waiting for an image. If the timeout is <= 0, it will run asynchronously.
-        '''
-
-        # Puts a default file extension
-        if "." not in file_name:
-            file_name += ".png"
-        format: str = file_name.split(".")[-1]
-
-        # Fetches the current epoch
-        epoch: dict = self.get_system(UNIVERSE).get_value("Epoch")
-        zero_base: str = self.get_system(UNIVERSE).get_value("ZeroBase")
-
-        # Fetches the spacecraft information
-        spacecraft_position: dict = spacecraft.get_value("Position")
-        spacecraft_attitude: dict = spacecraft.get_value("Attitude")
-
-        # Create the visualiser if it doesn't exist
-        if self.__visualiser == None:
-            self.__visualiser = Visualiser()
-
-        # Fetch the cesium values
-        cesium_data: dict = self.__cesium if cesium else None
-
-        # Capture the image with the parameters
-        self.__visualiser.capture(epoch=epoch, zero_base=zero_base, position=spacecraft_position, attitude=spacecraft_attitude, 
-            format=format, fov=fov, exposure=exposure, ray_tracing=ray_tracing, size=size, camera_position=camera_position, 
-            camera_rotation=camera_rotation, cesium=cesium_data, file_name=file_name)
         
-        # If pausing thread
-        if timeout > 0:
-            end_time: float = time.time() + timeout
-            completed: bool = False
-            while time.time() < end_time:
-                if self.__visualiser.file == file_name:
-                    completed = True
-                    break
-                time.sleep(0.1)
-
-            # Throw a warning if the timeout passes
-            if not completed:
-                warning("The capture image from the visualiser was not returned within a %ss timeout. The image may still be received asynchronously but requests may be lost." % timeout)
-                
-    def confiure_cesium (self, access_token: str, terrain_id: int = 1, imagery_id: int = 2) -> None:
-        '''
-        Configures Cesium within the imagery system to capture photos using
-        a Cesium account. The access token must be valid or the imagery
-        request will not work correctly.
-        '''
-        if access_token == "" or access_token == None:
-            error("Invalid Cesium Ion Access Token.")
-        if terrain_id == 0 or imagery_id == 0:
-            error("Invalid Terrain or Imagery asset IDs entered.")
-        
-        # Configure the Cesium data
-        self.__cesium = {
-            "enabled": True,
-            "access_token": access_token,
-            "terrain_id": terrain_id,
-            "imagery_id": imagery_id
-        }
-
     def get_time (self) -> float:
         '''
         Returns the current simulation time based on the number of

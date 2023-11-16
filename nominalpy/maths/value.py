@@ -11,17 +11,20 @@ of data analysis. This class should not be instantiated.
 '''
 
 import datetime as dt
+import numpy as np
 from .. import printer
 
-def vector3 (x: float, y: float, z: float) -> dict:
+
+def vector3(x: float, y: float, z: float) -> dict:
     '''
     Defines a way for specifying a particular value based
     on a Vector3 structure.
     '''
-    value: dict = {'X': x, 'Y': y, 'Z': z}
+    value: dict = {"X": x, "Y": y, "Z": z}
     return value
 
-def matrix33 (m1: tuple, m2: tuple, m3: tuple) -> list:
+
+def matrix33(m1: tuple, m2: tuple, m3: tuple) -> list:
     '''
     Defines a way for specifying a particular value based
     on a Matrix3x3 structure.
@@ -29,7 +32,8 @@ def matrix33 (m1: tuple, m2: tuple, m3: tuple) -> list:
     value: list = [[m1[0], m1[1], m1[2]], [m2[0], m2[1], m2[2]], [m3[0], m3[1], m3[2]]]
     return value
 
-def datetime (year: int, month: int, day: int, hour: int = 0, min: int = 0, sec: int = 0) -> dict:
+
+def datetime(year: int, month: int, day: int, hour: int = 0, min: int = 0, sec: int = 0) -> dict:
     '''
     Defines a way of specifying a particular value based on
     a DateTime structure.
@@ -38,13 +42,15 @@ def datetime (year: int, month: int, day: int, hour: int = 0, min: int = 0, sec:
     value: dict = {'Year': date.year, 'Month': date.month, 'Day': date.day, 'Hour': date.hour, 'Minute': date.minute, 'Second': date.second}
     return value
 
-def timespan (days: int = 0, hours: int = 0, mins: int = 0, secs: int = 0, milliseconds: int = 0) -> dict:
+
+def timespan(days: int = 0, hours: int = 0, mins: int = 0, secs: int = 0, milliseconds: int = 0) -> dict:
     '''
     Defines a way of specifying a particular value based on
     a TimeSpan structure
     '''
     value: dict = {'Days': days, 'Hours': hours, 'Minutes': mins, 'Seconds': secs, 'Milliseconds': milliseconds}
     return value
+
 
 def get_array (data: list, param: str, field: str = None, index: int = None) -> list:
     '''
