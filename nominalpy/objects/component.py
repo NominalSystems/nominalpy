@@ -9,7 +9,7 @@ simulation or to other objects within the simulation. Components
 have messages that can store data.
 '''
 
-from ..credentials import Credentials
+from ..http.credentials import Credentials
 from ..objects.message import Message
 from ..objects.object import Object
 

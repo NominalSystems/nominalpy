@@ -10,9 +10,9 @@ data from the API and ensuring the data is in the correct form.
 
 import requests, json
 import urllib3
-from .printer import *
+from ..printer import *
 from .credentials import Credentials
-from .exception import NominalException
+from ..exception import NominalException
 
 # Disable the insecure request warning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

@@ -15,8 +15,8 @@ import time
 from ..objects.object import Object
 from ..objects.object import Entity
 from ..objects.component import Component
-from ..request_helper import *
-from ..credentials import Credentials
+from ..http.http_request import *
+from ..http.credentials import Credentials
 from ..maths import value
 from ..printer import *
 from ..objects.message import Message

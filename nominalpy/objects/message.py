@@ -12,8 +12,8 @@ time.
 '''
 import pandas as pd
 from copy import deepcopy
-
-from ..request_helper import *
+from ..http.http_request import *
+from ..http.credentials import Credentials
 from ..objects.object import Object
 from ..printer import *
 

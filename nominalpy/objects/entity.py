@@ -1,4 +1,4 @@
-from ..credentials import Credentials
+from ..http.credentials import Credentials
 
 
 class Entity:

@@ -12,7 +12,7 @@ not fetched again.
 '''
 
 from .. import request_helper as rh
-from ..credentials import Credentials
+from ..http.credentials import Credentials
 from ..printer import *
 from ..objects.entity import Entity
 

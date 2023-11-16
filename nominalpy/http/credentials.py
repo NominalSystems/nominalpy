@@ -10,7 +10,7 @@ or a local server call.
 '''
 
 import requests, time
-from .printer import *
+from ..printer import *
 
 class Credentials:
 
