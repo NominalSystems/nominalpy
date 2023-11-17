@@ -104,71 +104,71 @@
 </section>
 <section id="module-nominalpy.maths.astro">
 <span id="nominalpy-maths-astro-module"></span><h2>nominalpy.maths.astro module<a class="headerlink" href="#module-nominalpy.maths.astro" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>[ NOMINAL SYSTEMS ]</p>
-</div></blockquote>
-<p>This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
-<p>This file contains public methods that can calculate various
+<p>This module contains public methods that can calculate various
 astrophysical parameters. These include fetching planetary gravity
 or return the position and velocity from an orbit.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.classical_to_vector_elements">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">classical_to_vector_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.classical_to_vector_elements" title="Link to this definition"></a></dt>
-<dd><p>Transforms Keplerian orbital elements into position and velocity in Planet-Centered Inertial (PCI) coordinates.</p>
-<p>Given the Keplerian orbital elements, this function calculates the orbital state (position and velocity) in the PCI
-coordinate system. This transformation is essential in astrodynamics for orbit propagation and analysis.</p>
+<dd><p>Transforms Keplerian orbital elements into position and velocity in Planet-Centered 
+Inertial (PCI) coordinates.</p>
+<p>Given the Keplerian orbital elements, this function calculates the orbital state 
+(position and velocity) in the PCI coordinate system. This transformation is
+essential in astrodynamics for orbit propagation and analysis. The function first 
+computes the gravitational parameter of the planet, then calculates the semi-latus 
+rectum, and finally computes the position and velocity in perifocal coordinates.
+These are then transformed into PCI coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>semi_major_axis</strong> (<em>float</em>) – Semi-major axis of the orbit in meters.</p></li>
-<li><p><strong>eccentricity</strong> (<em>float</em>) – Eccentricity of the orbit (default 0.0).</p></li>
-<li><p><strong>inclination</strong> (<em>float</em>) – Inclination of the orbit in radians (default 0.0).</p></li>
-<li><p><strong>right_ascension</strong> (<em>float</em>) – Right ascension of the ascending node in radians (default 0.0).</p></li>
-<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – Argument of periapsis in radians (default 0.0).</p></li>
-<li><p><strong>true_anomaly</strong> (<em>float</em>) – True anomaly at the epoch in radians (default 0.0).</p></li>
-<li><p><strong>planet</strong> (<em>str</em>) – Name of the central body being orbited (default “earth”).</p></li>
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – Semi-major axis of the orbit in meters</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – Eccentricity of the orbit (default 0.0)</p></li>
+<li><p><strong>inclination</strong> (<em>float</em>) – Inclination of the orbit in radians (default 0.0)</p></li>
+<li><p><strong>right_ascension</strong> (<em>float</em>) – Right ascension of the ascending node in radians (default 0.0)</p></li>
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – Argument of periapsis in radians (default 0.0)</p></li>
+<li><p><strong>true_anomaly</strong> (<em>float</em>) – True anomaly at the epoch in radians (default 0.0)</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – Name of the central body being orbited (default “earth”)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A tuple containing position and velocity vectors in PCI coordinates.</p>
+<dd class="field-even"><p>A tuple containing position and velocity vectors in PCI coordinates</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
-<p>The function first computes the gravitational parameter of the planet, then calculates the semi-latus rectum, and
-finally computes the position and velocity in perifocal coordinates. These are then transformed into PCI coordinates.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.classical_to_vector_elements_deg">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">classical_to_vector_elements_deg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.classical_to_vector_elements_deg" title="Link to this definition"></a></dt>
-<dd><p>Transforms Keplerian orbital elements into position and velocity in Planet-Centered Inertial (PCI) coordinates.</p>
-<p>Given the Keplerian orbital elements, this function calculates the orbital state (position and velocity) in the PCI
-coordinate system. This transformation is essential in astrodynamics for orbit propagation and analysis.</p>
+<dd><p>Transforms Keplerian orbital elements into position and velocity in Planet-Centered 
+Inertial (PCI) coordinates.</p>
+<p>Given the Keplerian orbital elements, this function calculates the orbital state 
+(position and velocity) in the PCI coordinate system. This transformation is 
+essential in astrodynamics for orbit propagation and analysis. The function first 
+computes the gravitational parameter of the planet, then calculates the semi-latus 
+rectum, and finally computes the position and velocity in perifocal coordinates. 
+These are then transformed into PCI coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>semi_major_axis</strong> (<em>float</em>) – Semi-major axis of the orbit in meters.</p></li>
-<li><p><strong>eccentricity</strong> (<em>float</em>) – Eccentricity of the orbit (default 0.0).</p></li>
-<li><p><strong>inclination</strong> (<em>float</em>) – Inclination of the orbit in degrees (default 0.0).</p></li>
-<li><p><strong>right_ascension</strong> (<em>float</em>) – Right ascension of the ascending node in degrees (default 0.0).</p></li>
-<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – Argument of periapsis in degrees (default 0.0).</p></li>
-<li><p><strong>true_anomaly</strong> (<em>float</em>) – True anomaly at the epoch in degrees (default 0.0).</p></li>
-<li><p><strong>planet</strong> (<em>str</em>) – Name of the central body being orbited (default “earth”).</p></li>
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – Semi-major axis of the orbit in meters</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – Eccentricity of the orbit (default 0.0)</p></li>
+<li><p><strong>inclination</strong> (<em>float</em>) – Inclination of the orbit in degrees (default 0.0)</p></li>
+<li><p><strong>right_ascension</strong> (<em>float</em>) – Right ascension of the ascending node in degrees (default 0.0)</p></li>
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – Argument of periapsis in degrees (default 0.0)</p></li>
+<li><p><strong>true_anomaly</strong> (<em>float</em>) – True anomaly at the epoch in degrees (default 0.0)</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – Name of the central body being orbited (default “earth”)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A tuple containing position and velocity vectors in PCI coordinates.</p>
+<dd class="field-even"><p>A tuple containing position and velocity vectors in PCI coordinates</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
-<p>The function first computes the gravitational parameter of the planet, then calculates the semi-latus rectum, and
-finally computes the position and velocity in perifocal coordinates. These are then transformed into PCI coordinates.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -177,15 +177,30 @@ finally computes the position and velocity in perifocal coordinates. These are t
 <dd><p>Returns the planet’s gravitational mu parameter, equal to GM of the
 planet’s body in units of [m^3/s^2]. If the planet does not exist,
 then an exception will be thrown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>planet</strong> (<em>str</em>) – The name of the planet to fetch the MU from</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The gravitational MU parameter</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.perifocal_to_vector_elements">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">perifocal_to_vector_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bp_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bp_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.perifocal_to_vector_elements" title="Link to this definition"></a></dt>
-<dd><p>Converts position and velocity vectors from perifocal to Planet-Centered Inertial (PCI) coordinates.</p>
-<p>Given position and velocity vectors in the perifocal coordinate system (PQW), along with orbital elements
-such as right ascension of the ascending node, inclination, and argument of perigee, this function
-transforms these vectors into the ECI coordinate system.</p>
+<dd><p>Converts position and velocity vectors from perifocal to Planet-Centered 
+Inertial (PCI) coordinates.</p>
+<p>Given position and velocity vectors in the perifocal coordinate system (PQW), 
+along with orbital elements such as right ascension of the ascending node, 
+inclination, and argument of perigee, this function transforms these vectors 
+into the ECI coordinate system. The transformation is performed using a matrix 
+obtained from the <cite>t_perifocal_to_vector</cite> function, which constructs the 
+transformation matrix based on the provided orbital elements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -203,55 +218,59 @@ transforms these vectors into the ECI coordinate system.</p>
 <dd class="field-odd"><p>(numpy.ndarray, numpy.ndarray)</p>
 </dd>
 </dl>
-<p>The transformation is performed using a matrix obtained from the <cite>t_perifocal_to_vector</cite> function, which
-constructs the transformation matrix based on the provided orbital elements.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.semi_latus_rectum_to_vector_elements">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">semi_latus_rectum_to_vector_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_latus_rectum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.semi_latus_rectum_to_vector_elements" title="Link to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>Transforms Keplerian orbital elements into position and velocity in Planet-Centered Inertial (PCI) coordinates.</dt><dd><p>by taking semi-latus rectum as direct input, this function is valid for all orbits including parabolic and
-hyperbolic</p>
-</dd>
-</dl>
-<p>Given the Keplerian orbital elements, this function calculates the orbital state (position and velocity) in the PCI
-coordinate system. This transformation is essential in astrodynamics for orbit propagation and analysis.</p>
+<dd><p>Transforms Keplerian orbital elements into position and velocity in Planet-Centered 
+Inertial (PCI) coordinates. by taking semi-latus rectum as direct input, this 
+function is valid for all orbits including parabolic and hyperbolic.</p>
+<p>Given the Keplerian orbital elements, this function calculates the orbital state 
+(position and velocity) in the PCI coordinate system. This transformation is essential 
+in astrodynamics for orbit propagation and analysis. The function first computes the 
+gravitational parameter of the planet, then calculates the semi-latus rectum, and 
+finally computes the position and velocity in perifocal coordinates. These are then 
+transformed into PCI coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>semi_latus_rectum</strong> (<em>float</em>) – Semi-latus rectum of the orbit in meters.</p></li>
-<li><p><strong>eccentricity</strong> (<em>float</em>) – Eccentricity of the orbit (default 0.0).</p></li>
-<li><p><strong>inclination</strong> (<em>float</em>) – Inclination of the orbit in radians (default 0.0).</p></li>
-<li><p><strong>right_ascension</strong> (<em>float</em>) – Right ascension of the ascending node in radians (default 0.0).</p></li>
-<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – Argument of periapsis in radians (default 0.0).</p></li>
-<li><p><strong>true_anomaly</strong> (<em>float</em>) – True anomaly at the epoch in radians (default 0.0).</p></li>
-<li><p><strong>planet</strong> (<em>str</em>) – Name of the central body being orbited (default “earth”).</p></li>
+<li><p><strong>semi_latus_rectum</strong> (<em>float</em>) – Semi-latus rectum of the orbit in meters</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – Eccentricity of the orbit (default 0.0)</p></li>
+<li><p><strong>inclination</strong> (<em>float</em>) – Inclination of the orbit in radians (default 0.0)</p></li>
+<li><p><strong>right_ascension</strong> (<em>f        loat</em>) – Right ascension of the ascending node in radians (default 0.0)</p></li>
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – Argument of periapsis in radians (default 0.0)</p></li>
+<li><p><strong>true_anomaly</strong> (<em>float</em>) – True anomaly at the epoch in radians (default 0.0)</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – Name of the central body being orbited (default “earth”)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A tuple containing position and velocity vectors in PCI coordinates.</p>
+<dd class="field-even"><p>A tuple containing position and velocity vectors in PCI coordinates</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
-<p>The function first computes the gravitational parameter of the planet, then calculates the semi-latus rectum, and
-finally computes the position and velocity in perifocal coordinates. These are then transformed into PCI coordinates.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.t_perifocal_to_vector_elements">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">t_perifocal_to_vector_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.t_perifocal_to_vector_elements" title="Link to this definition"></a></dt>
-<dd><p>Creates the transformation matrix to convert perifocal coordinates into Planet-Centered Inertial (PCI) coordinates.</p>
-<p>This function computes the transformation matrix using the right ascension of the ascending node, the argument
-of periapsis, and the orbital inclination. These parameters are expected to be in radians.</p>
+<dd><p>Creates the transformation matrix to convert perifocal coordinates into 
+Planet-Centered Inertial (PCI) coordinates.</p>
+<p>This function computes the transformation matrix using the right ascension 
+of the ascending node, the argument of periapsis, and the orbital inclination. 
+These parameters are expected to be in radians. The transformation matrix 
+is computed based on classical orbital elements, and it’s used in orbital 
+mechanics to convert coordinates from the perifocal (or orbital plane) 
+coordinate system, where the x-axis points towards the periapsis, to the 
+PCI coordinate system.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>right_ascension</strong> (<em>float</em>) – The right ascension of the ascending node in radians.</p></li>
-<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – The argument of periapsis in radians.</p></li>
-<li><p><strong>inclination</strong> (<em>float</em>) – The orbital inclination in radians.</p></li>
+<li><p><strong>right_ascension</strong> (<em>float</em>) – The right ascension of the ascending node in radians</p></li>
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – The argument of periapsis in radians</p></li>
+<li><p><strong>inclination</strong> (<em>float</em>) – The orbital inclination in radians</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -261,22 +280,26 @@ of periapsis, and the orbital inclination. These parameters are expected to be i
 <dd class="field-odd"><p>numpy.matrix</p>
 </dd>
 </dl>
-<p>The transformation matrix is computed based on classical orbital elements, and it’s used in orbital mechanics
-to convert coordinates from the perifocal (or orbital plane) coordinate system, where the x-axis points towards
-the periapsis, to the ECI coordinate system.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.vector_to_classical_elements">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">vector_to_classical_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bn_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.vector_to_classical_elements" title="Link to this definition"></a></dt>
-<dd><p>Convert state vectors to classical orbital elements.</p>
-<p>This function calculates the classical orbital elements from the given position and velocity vectors. It supports different planetary bodies by adjusting the gravitational parameter.</p>
+<dd><p>Convert state vectors to classical orbital elements. This function 
+calculates the classical orbital elements from the given position 
+and velocity vectors. It supports different planetary bodies by 
+adjusting the gravitational parameter. The function calculates 
+various orbital elements including angular momentum, node vector, 
+eccentricity vector, semi-major axis, inclination, RAAN, argument 
+of periapsis, and true anomaly. It handles different types of orbits: 
+circular equatorial, equatorial elliptical, circular inclined, and 
+classical elliptical inclined.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r_bn_n</strong> (<em>np.ndarray</em>) – The position vector in a Cartesian coordinate system in metres.</p></li>
 <li><p><strong>v_bn_n</strong> (<em>np.ndarray</em>) – The velocity vector in the same Cartesian coordinate system as r_bn_n in metres per second.</p></li>
-<li><p><strong>planet</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the planet for which the gravitational parameter is needed. Defaults to ‘earth’.</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – The name of the planet for which the gravitational parameter is needed. Defaults to ‘earth’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -289,34 +312,836 @@ the periapsis, to the ECI coordinate system.</p>
 <dd class="field-even"><p><strong>ArithmeticError</strong> – If the orbit is parabolic, which is not supported by this function.</p>
 </dd>
 </dl>
-<p>The function calculates various orbital elements including angular momentum, node vector, eccentricity vector, semi-major axis, inclination, RAAN, argument of periapsis, and true anomaly. It handles different types of orbits: circular equatorial, equatorial elliptical, circular inclined, and classical elliptical inclined.</p>
 </dd></dl>
 
 </section>
 <section id="module-nominalpy.maths.constants">
 <span id="nominalpy-maths-constants-module"></span><h2>nominalpy.maths.constants module<a class="headerlink" href="#module-nominalpy.maths.constants" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>[ NOMINAL SYSTEMS ]</p>
-</div></blockquote>
-<p>This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
 <p>This file contains public constants related to general mathematics,
 as well as astrophysical constants. These include planetary data
 and useful values that can be used for conversions.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.AU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">AU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">149597870693.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.AU" title="Link to this definition"></a></dt>
+<dd><p>[m] Astronomical unit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.CELCIUS_TO_KELVIN">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">CELCIUS_TO_KELVIN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">273.15</span></em><a class="headerlink" href="#nominalpy.maths.constants.CELCIUS_TO_KELVIN" title="Link to this definition"></a></dt>
+<dd><p>[K] The value of temperature in Kelvin at 0 degrees Celcius</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.D2R">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">D2R</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.017453292519943295</span></em><a class="headerlink" href="#nominalpy.maths.constants.D2R" title="Link to this definition"></a></dt>
+<dd><p>[-] Degrees to Radians constant</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.DEIMOS_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">DEIMOS_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6100</span></em><a class="headerlink" href="#nominalpy.maths.constants.DEIMOS_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] The radius of Deimos</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_ALBEDO_AVG">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_ALBEDO_AVG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.29</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_ALBEDO_AVG" title="Link to this definition"></a></dt>
+<dd><p>[-] A reflection albedo constant from Earth’s surface</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_DENSITY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_DENSITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5514</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_DENSITY" title="Link to this definition"></a></dt>
+<dd><p>[kg/m^3] The density of Earth</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_GRAV">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_GRAV</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9.80665</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_GRAV" title="Link to this definition"></a></dt>
+<dd><p>[m/s] The gravitational acceleration at the surface of the Earth</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_J2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_J2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.001082616</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_J2" title="Link to this definition"></a></dt>
+<dd><p>[-] Earth J2 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_J3">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_J3</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-2.53881e-06</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_J3" title="Link to this definition"></a></dt>
+<dd><p>[-] Earth J3 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_J4">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_J4</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1.65597e-06</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_J4" title="Link to this definition"></a></dt>
+<dd><p>[-] Earth J4 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_J5">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_J5</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1.5e-07</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_J5" title="Link to this definition"></a></dt>
+<dd><p>[-] Earth J5 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_J6">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_J6</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5.7e-07</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_J6" title="Link to this definition"></a></dt>
+<dd><p>[-] Earth J6 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_MASS">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5.97e+24</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_MASS" title="Link to this definition"></a></dt>
+<dd><p>[kg] The total mass of Earth</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_MU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_MU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">398600441400000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_MU" title="Link to this definition"></a></dt>
+<dd><p>[m^3/s^2] The gravitational constant for Earth</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_OMEGA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7.292106590880652e-05</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_OMEGA" title="Link to this definition"></a></dt>
+<dd><p>[rad/s] Rotation rate of the planet</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_ORBIT_E">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_ORBIT_E</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.01671022</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_ORBIT_E" title="Link to this definition"></a></dt>
+<dd><p>[-] The eccentricity for Earth’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_ORBIT_INC">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_ORBIT_INC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8.726646259971648e-07</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_ORBIT_INC" title="Link to this definition"></a></dt>
+<dd><p>[rad] The axis inclination of Earth’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_ORBIT_SMA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_ORBIT_SMA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">149597887148.76578</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_ORBIT_SMA" title="Link to this definition"></a></dt>
+<dd><p>[m] Earth Semi-Major Axis of its orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6378136.6</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] Equatorial radius of Earth</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_RP">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_RP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6356751.9</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_RP" title="Link to this definition"></a></dt>
+<dd><p>[m] Polar radius of Earth</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.EARTH_SOLAR_FLUX">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">EARTH_SOLAR_FLUX</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1372.5398</span></em><a class="headerlink" href="#nominalpy.maths.constants.EARTH_SOLAR_FLUX" title="Link to this definition"></a></dt>
+<dd><p>[W/m^2] Median solar flux at Earth</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.G">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">G</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6.67259e-11</span></em><a class="headerlink" href="#nominalpy.maths.constants.G" title="Link to this definition"></a></dt>
+<dd><p>[m^3/s^2/kg] Universial Gravitational Constant</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.JUPITER_ALBEDO_AVG">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">JUPITER_ALBEDO_AVG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.34</span></em><a class="headerlink" href="#nominalpy.maths.constants.JUPITER_ALBEDO_AVG" title="Link to this definition"></a></dt>
+<dd><p>[-] A reflection albedo constant from Jupiter’s surface</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.JUPITER_DENSITY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">JUPITER_DENSITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1326</span></em><a class="headerlink" href="#nominalpy.maths.constants.JUPITER_DENSITY" title="Link to this definition"></a></dt>
+<dd><p>[kg/m^3] The density of Jupiter</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.JUPITER_J2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">JUPITER_J2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.014736</span></em><a class="headerlink" href="#nominalpy.maths.constants.JUPITER_J2" title="Link to this definition"></a></dt>
+<dd><p>[-] Jupiter J2 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.JUPITER_MASS">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">JUPITER_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.898e+27</span></em><a class="headerlink" href="#nominalpy.maths.constants.JUPITER_MASS" title="Link to this definition"></a></dt>
+<dd><p>[kg] The total mass of Jupiter</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.JUPITER_MU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">JUPITER_MU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.26712767881e+17</span></em><a class="headerlink" href="#nominalpy.maths.constants.JUPITER_MU" title="Link to this definition"></a></dt>
+<dd><p>[m^3/s^2] The gravitational constant for Jupiter</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.JUPITER_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">JUPITER_OMEGA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0001758518138029551</span></em><a class="headerlink" href="#nominalpy.maths.constants.JUPITER_OMEGA" title="Link to this definition"></a></dt>
+<dd><p>[r/s] Rotation rate of the planet</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.JUPITER_ORBIT_E">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">JUPITER_ORBIT_E</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.04839266</span></em><a class="headerlink" href="#nominalpy.maths.constants.JUPITER_ORBIT_E" title="Link to this definition"></a></dt>
+<dd><p>[-] The eccentricity for Jupiter’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.JUPITER_ORBIT_INC">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">JUPITER_ORBIT_INC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.022781782726281983</span></em><a class="headerlink" href="#nominalpy.maths.constants.JUPITER_ORBIT_INC" title="Link to this definition"></a></dt>
+<dd><p>[rad] The axis inclination of Jupiter’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.JUPITER_ORBIT_SMA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">JUPITER_ORBIT_SMA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">778412026738.7194</span></em><a class="headerlink" href="#nominalpy.maths.constants.JUPITER_ORBIT_SMA" title="Link to this definition"></a></dt>
+<dd><p>[m] Jupiter Semi-Major Axis of its orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.JUPITER_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">JUPITER_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">71492000</span></em><a class="headerlink" href="#nominalpy.maths.constants.JUPITER_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] Equatorial radius of Jupiter</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.JUPITER_RP">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">JUPITER_RP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">71492000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.JUPITER_RP" title="Link to this definition"></a></dt>
+<dd><p>[m] Polar radius of Jupiter</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.LIGHT_SPEED">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">LIGHT_SPEED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">299792458</span></em><a class="headerlink" href="#nominalpy.maths.constants.LIGHT_SPEED" title="Link to this definition"></a></dt>
+<dd><p>[m/s] The absolute speed of light in a vacuum in meters per second</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MARS_ALBEDO_AVG">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MARS_ALBEDO_AVG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.16</span></em><a class="headerlink" href="#nominalpy.maths.constants.MARS_ALBEDO_AVG" title="Link to this definition"></a></dt>
+<dd><p>[-] A reflection albedo constant from Mars’s surface</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MARS_DENSITY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MARS_DENSITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3933</span></em><a class="headerlink" href="#nominalpy.maths.constants.MARS_DENSITY" title="Link to this definition"></a></dt>
+<dd><p>[kg/m^3] The density of Mars</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MARS_J2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MARS_J2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.00196045</span></em><a class="headerlink" href="#nominalpy.maths.constants.MARS_J2" title="Link to this definition"></a></dt>
+<dd><p>[-] Mars J2 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MARS_MASS">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MARS_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6.42e+23</span></em><a class="headerlink" href="#nominalpy.maths.constants.MARS_MASS" title="Link to this definition"></a></dt>
+<dd><p>[kg] The total mass of Mars</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MARS_MU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MARS_MU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">42828314000000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.MARS_MU" title="Link to this definition"></a></dt>
+<dd><p>[m^3/s^2] The gravitational constant for Mars</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MARS_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MARS_OMEGA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7.088235959185674e-05</span></em><a class="headerlink" href="#nominalpy.maths.constants.MARS_OMEGA" title="Link to this definition"></a></dt>
+<dd><p>[r/s] Rotation rate of the planet</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MARS_ORBIT_E">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MARS_ORBIT_E</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.09341233</span></em><a class="headerlink" href="#nominalpy.maths.constants.MARS_ORBIT_E" title="Link to this definition"></a></dt>
+<dd><p>[-] The eccentricity for Mars’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MARS_ORBIT_INC">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MARS_ORBIT_INC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.03229923767033226</span></em><a class="headerlink" href="#nominalpy.maths.constants.MARS_ORBIT_INC" title="Link to this definition"></a></dt>
+<dd><p>[rad] The axis inclination of Mars’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MARS_ORBIT_SMA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MARS_ORBIT_SMA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">227936637231.17767</span></em><a class="headerlink" href="#nominalpy.maths.constants.MARS_ORBIT_SMA" title="Link to this definition"></a></dt>
+<dd><p>[m] Mars Semi-Major Axis of its orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MARS_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MARS_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3396190</span></em><a class="headerlink" href="#nominalpy.maths.constants.MARS_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] Equatorial radius of Mars</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MARS_RP">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MARS_RP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3376200</span></em><a class="headerlink" href="#nominalpy.maths.constants.MARS_RP" title="Link to this definition"></a></dt>
+<dd><p>[m] Polar radius of Mars</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MERCURY_ALBEDO_AVG">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MERCURY_ALBEDO_AVG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.119</span></em><a class="headerlink" href="#nominalpy.maths.constants.MERCURY_ALBEDO_AVG" title="Link to this definition"></a></dt>
+<dd><p>[-] A reflection albedo constant from Mercury’s surface</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MERCURY_DENSITY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MERCURY_DENSITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5427</span></em><a class="headerlink" href="#nominalpy.maths.constants.MERCURY_DENSITY" title="Link to this definition"></a></dt>
+<dd><p>[kg/m^3] The density of Mercury</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MERCURY_J2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MERCURY_J2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6e-05</span></em><a class="headerlink" href="#nominalpy.maths.constants.MERCURY_J2" title="Link to this definition"></a></dt>
+<dd><p>[-] Mercury J2 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MERCURY_MASS">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MERCURY_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3.3e+23</span></em><a class="headerlink" href="#nominalpy.maths.constants.MERCURY_MASS" title="Link to this definition"></a></dt>
+<dd><p>[kg] The total mass of Mercury</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MERCURY_MU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MERCURY_MU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">22032080000000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.MERCURY_MU" title="Link to this definition"></a></dt>
+<dd><p>[m^3/s^2] The gravitational constant for Mercury</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MERCURY_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MERCURY_OMEGA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.239932688259683e-06</span></em><a class="headerlink" href="#nominalpy.maths.constants.MERCURY_OMEGA" title="Link to this definition"></a></dt>
+<dd><p>[r/s] Rotation rate of the planet</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MERCURY_ORBIT_E">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MERCURY_ORBIT_E</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.20563069</span></em><a class="headerlink" href="#nominalpy.maths.constants.MERCURY_ORBIT_E" title="Link to this definition"></a></dt>
+<dd><p>[-] The eccentricity for Mercury’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MERCURY_ORBIT_INC">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MERCURY_ORBIT_INC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1222580451741752</span></em><a class="headerlink" href="#nominalpy.maths.constants.MERCURY_ORBIT_INC" title="Link to this definition"></a></dt>
+<dd><p>[rad] The axis inclination of Mercury’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MERCURY_ORBIT_SMA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MERCURY_ORBIT_SMA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">57909175675.53866</span></em><a class="headerlink" href="#nominalpy.maths.constants.MERCURY_ORBIT_SMA" title="Link to this definition"></a></dt>
+<dd><p>[m] Mercury Semi-Major Axis of it’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MERCURY_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MERCURY_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2439700</span></em><a class="headerlink" href="#nominalpy.maths.constants.MERCURY_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] Equatorial radius of Mercury</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MERCURY_RP">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MERCURY_RP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2439700.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.MERCURY_RP" title="Link to this definition"></a></dt>
+<dd><p>[m] Polar radius of Mercury</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MOON_ALBEDO_AVG">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MOON_ALBEDO_AVG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.123</span></em><a class="headerlink" href="#nominalpy.maths.constants.MOON_ALBEDO_AVG" title="Link to this definition"></a></dt>
+<dd><p>[-] A reflection albedo constant from the Moon’s surface</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MOON_DENSITY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MOON_DENSITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3340</span></em><a class="headerlink" href="#nominalpy.maths.constants.MOON_DENSITY" title="Link to this definition"></a></dt>
+<dd><p>[kg/m^3] The density of the Moon</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MOON_J2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MOON_J2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0002027</span></em><a class="headerlink" href="#nominalpy.maths.constants.MOON_J2" title="Link to this definition"></a></dt>
+<dd><p>[-] J2 constant for the Moon</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MOON_MASS">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MOON_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7.3e+22</span></em><a class="headerlink" href="#nominalpy.maths.constants.MOON_MASS" title="Link to this definition"></a></dt>
+<dd><p>[kg] The total mass of the Moon</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MOON_MU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MOON_MU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4904869500000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.MOON_MU" title="Link to this definition"></a></dt>
+<dd><p>[m^3/s^2] The gravitational constant for the Moon</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MOON_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MOON_OMEGA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.6616665019555817e-06</span></em><a class="headerlink" href="#nominalpy.maths.constants.MOON_OMEGA" title="Link to this definition"></a></dt>
+<dd><p>[rad/s] The Moon’s rotation rate</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MOON_ORBIT_E">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MOON_ORBIT_E</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0549</span></em><a class="headerlink" href="#nominalpy.maths.constants.MOON_ORBIT_E" title="Link to this definition"></a></dt>
+<dd><p>[-] Eccentricity of the Moon’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MOON_ORBIT_SMA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MOON_ORBIT_SMA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">384400000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.MOON_ORBIT_SMA" title="Link to this definition"></a></dt>
+<dd><p>[m] Semi-Major Axis of the Moon’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MOON_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MOON_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1737400</span></em><a class="headerlink" href="#nominalpy.maths.constants.MOON_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] Equatorial radius of the Moon</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.MOON_RP">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">MOON_RP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1737400.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.MOON_RP" title="Link to this definition"></a></dt>
+<dd><p>[m] Polar radius of the Moon</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.M_E">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">M_E</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.718281828459045</span></em><a class="headerlink" href="#nominalpy.maths.constants.M_E" title="Link to this definition"></a></dt>
+<dd><p>[-] The value of the exponential constant E</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.M_PI">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">M_PI</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3.141592653589793</span></em><a class="headerlink" href="#nominalpy.maths.constants.M_PI" title="Link to this definition"></a></dt>
+<dd><p>[-] The value of PI</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.M_PI_2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">M_PI_2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.5707963267948966</span></em><a class="headerlink" href="#nominalpy.maths.constants.M_PI_2" title="Link to this definition"></a></dt>
+<dd><p>[-] The value of PI/2</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.NEPTUNE_ALBEDO_AVG">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">NEPTUNE_ALBEDO_AVG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.31</span></em><a class="headerlink" href="#nominalpy.maths.constants.NEPTUNE_ALBEDO_AVG" title="Link to this definition"></a></dt>
+<dd><p>[-] A reflection albedo constant from Neptune’s surface</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.NEPTUNE_DENSITY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">NEPTUNE_DENSITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1638</span></em><a class="headerlink" href="#nominalpy.maths.constants.NEPTUNE_DENSITY" title="Link to this definition"></a></dt>
+<dd><p>[kg/m^3] The density of Neptune</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.NEPTUNE_J2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">NEPTUNE_J2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.003411</span></em><a class="headerlink" href="#nominalpy.maths.constants.NEPTUNE_J2" title="Link to this definition"></a></dt>
+<dd><p>[-] Neptune J2 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.NEPTUNE_MASS">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">NEPTUNE_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.02e+26</span></em><a class="headerlink" href="#nominalpy.maths.constants.NEPTUNE_MASS" title="Link to this definition"></a></dt>
+<dd><p>[kg] The total mass of Neptune</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.NEPTUNE_MU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">NEPTUNE_MU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6836534065000000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.NEPTUNE_MU" title="Link to this definition"></a></dt>
+<dd><p>[m^3/s^2] The gravitational constant for Neptune</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.NEPTUNE_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">NEPTUNE_OMEGA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.00010833825276190748</span></em><a class="headerlink" href="#nominalpy.maths.constants.NEPTUNE_OMEGA" title="Link to this definition"></a></dt>
+<dd><p>[r/s] Rotation rate of the planet</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.NEPTUNE_ORBIT_E">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">NEPTUNE_ORBIT_E</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.00858587</span></em><a class="headerlink" href="#nominalpy.maths.constants.NEPTUNE_ORBIT_E" title="Link to this definition"></a></dt>
+<dd><p>[-] The eccentricity for Neptune’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.NEPTUNE_ORBIT_INC">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">NEPTUNE_ORBIT_INC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.03087784152750808</span></em><a class="headerlink" href="#nominalpy.maths.constants.NEPTUNE_ORBIT_INC" title="Link to this definition"></a></dt>
+<dd><p>[rad] The axis inclination of Neptune’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.NEPTUNE_ORBIT_SMA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">NEPTUNE_ORBIT_SMA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4498252910553.579</span></em><a class="headerlink" href="#nominalpy.maths.constants.NEPTUNE_ORBIT_SMA" title="Link to this definition"></a></dt>
+<dd><p>[m] Neptune Semi-Major Axis of its orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.NEPTUNE_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">NEPTUNE_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">24746000</span></em><a class="headerlink" href="#nominalpy.maths.constants.NEPTUNE_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] Equatorial radius of Neptune</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.NEPTUNE_RP">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">NEPTUNE_RP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">24746000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.NEPTUNE_RP" title="Link to this definition"></a></dt>
+<dd><p>[m] Polar radius of Neptune</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PHOBOS_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PHOBOS_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">11200</span></em><a class="headerlink" href="#nominalpy.maths.constants.PHOBOS_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] The radius of Phobos</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PLUTO_ALBEDO_AVG">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PLUTO_ALBEDO_AVG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.PLUTO_ALBEDO_AVG" title="Link to this definition"></a></dt>
+<dd><p>[-] A reflection albedo constant from Pluto’s surface</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PLUTO_DENSITY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PLUTO_DENSITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2095</span></em><a class="headerlink" href="#nominalpy.maths.constants.PLUTO_DENSITY" title="Link to this definition"></a></dt>
+<dd><p>[kg/m^3] The density of Pluto</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PLUTO_J2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PLUTO_J2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.PLUTO_J2" title="Link to this definition"></a></dt>
+<dd><p>[-] Pluto J2 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PLUTO_MASS">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PLUTO_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.46e+22</span></em><a class="headerlink" href="#nominalpy.maths.constants.PLUTO_MASS" title="Link to this definition"></a></dt>
+<dd><p>[kg] The total mass of Pluto</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PLUTO_MU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PLUTO_MU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">983055000000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.PLUTO_MU" title="Link to this definition"></a></dt>
+<dd><p>[m^3/s^2] The gravitational constant for Pluto</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PLUTO_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PLUTO_OMEGA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1.1385591834674096e-05</span></em><a class="headerlink" href="#nominalpy.maths.constants.PLUTO_OMEGA" title="Link to this definition"></a></dt>
+<dd><p>[r/s] Rotation rate of the planet</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PLUTO_ORBIT_ECC">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PLUTO_ORBIT_ECC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.24880766</span></em><a class="headerlink" href="#nominalpy.maths.constants.PLUTO_ORBIT_ECC" title="Link to this definition"></a></dt>
+<dd><p>[-] The eccentricity for Pluto’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PLUTO_ORBIT_INC">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PLUTO_ORBIT_INC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.29917997705373794</span></em><a class="headerlink" href="#nominalpy.maths.constants.PLUTO_ORBIT_INC" title="Link to this definition"></a></dt>
+<dd><p>[rad] The axis inclination of Pluto’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PLUTO_ORBIT_SMA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PLUTO_ORBIT_SMA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5906376272159.989</span></em><a class="headerlink" href="#nominalpy.maths.constants.PLUTO_ORBIT_SMA" title="Link to this definition"></a></dt>
+<dd><p>[m] Pluto Semi-Major Axis of its orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PLUTO_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PLUTO_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1137000</span></em><a class="headerlink" href="#nominalpy.maths.constants.PLUTO_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] Equatorial radius of Pluto</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.PLUTO_RP">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">PLUTO_RP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1370000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.PLUTO_RP" title="Link to this definition"></a></dt>
+<dd><p>[m] Polar radius of Pluto</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.R2D">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">R2D</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">57.29577951308232</span></em><a class="headerlink" href="#nominalpy.maths.constants.R2D" title="Link to this definition"></a></dt>
+<dd><p>[-] Radians to Degrees constant</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.RPM">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">RPM</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.10471975511965977</span></em><a class="headerlink" href="#nominalpy.maths.constants.RPM" title="Link to this definition"></a></dt>
+<dd><p>[-] Conversion from rad/s to revolutions per minute</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SATURN_ALBEDO_AVG">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SATURN_ALBEDO_AVG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.34</span></em><a class="headerlink" href="#nominalpy.maths.constants.SATURN_ALBEDO_AVG" title="Link to this definition"></a></dt>
+<dd><p>[-] A reflection albedo constant from Saturn’s surface</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SATURN_DENSITY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SATURN_DENSITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">687</span></em><a class="headerlink" href="#nominalpy.maths.constants.SATURN_DENSITY" title="Link to this definition"></a></dt>
+<dd><p>[kg/m^3] The density of Saturn</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SATURN_J2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SATURN_J2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.016298</span></em><a class="headerlink" href="#nominalpy.maths.constants.SATURN_J2" title="Link to this definition"></a></dt>
+<dd><p>[-] Saturn J2 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SATURN_MASS">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SATURN_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5.68e+26</span></em><a class="headerlink" href="#nominalpy.maths.constants.SATURN_MASS" title="Link to this definition"></a></dt>
+<dd><p>[kg] The total mass of Saturn</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SATURN_MU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SATURN_MU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3.7940626068e+16</span></em><a class="headerlink" href="#nominalpy.maths.constants.SATURN_MU" title="Link to this definition"></a></dt>
+<dd><p>[m^3/s^2] The gravitational constant for Saturn</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SATURN_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SATURN_OMEGA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.00016378840578024862</span></em><a class="headerlink" href="#nominalpy.maths.constants.SATURN_OMEGA" title="Link to this definition"></a></dt>
+<dd><p>[r/s] Rotation rate of the planet</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SATURN_ORBIT_E">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SATURN_ORBIT_E</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0541506</span></em><a class="headerlink" href="#nominalpy.maths.constants.SATURN_ORBIT_E" title="Link to this definition"></a></dt>
+<dd><p>[-] The eccentricity for Saturn’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SATURN_ORBIT_INC">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SATURN_ORBIT_INC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.04336200713409832</span></em><a class="headerlink" href="#nominalpy.maths.constants.SATURN_ORBIT_INC" title="Link to this definition"></a></dt>
+<dd><p>[rad] The axis inclination of Saturn’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SATURN_ORBIT_SMA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SATURN_ORBIT_SMA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1426725412521.4082</span></em><a class="headerlink" href="#nominalpy.maths.constants.SATURN_ORBIT_SMA" title="Link to this definition"></a></dt>
+<dd><p>[m] Saturn Semi-Major Axis of its orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SATURN_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SATURN_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">60268000</span></em><a class="headerlink" href="#nominalpy.maths.constants.SATURN_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] Equatorial radius of Saturn</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SATURN_RP">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SATURN_RP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">60268000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.SATURN_RP" title="Link to this definition"></a></dt>
+<dd><p>[m] Polar radius of Saturn</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SEC2DAY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SEC2DAY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.1574074074074073e-05</span></em><a class="headerlink" href="#nominalpy.maths.constants.SEC2DAY" title="Link to this definition"></a></dt>
+<dd><p>[d] The number of days in a second</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SUN_ALBEDO_AVG">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SUN_ALBEDO_AVG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.SUN_ALBEDO_AVG" title="Link to this definition"></a></dt>
+<dd><p>[-] A reflection albedo constant from the Sun’s surface</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SUN_DENSITY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SUN_DENSITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1410</span></em><a class="headerlink" href="#nominalpy.maths.constants.SUN_DENSITY" title="Link to this definition"></a></dt>
+<dd><p>[kg/m^3] The density of Sun</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SUN_J2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SUN_J2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.SUN_J2" title="Link to this definition"></a></dt>
+<dd><p>[-] The Sun J2 value (implicitely zero)</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SUN_MASS">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SUN_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.989e+30</span></em><a class="headerlink" href="#nominalpy.maths.constants.SUN_MASS" title="Link to this definition"></a></dt>
+<dd><p>[kg] The total mass of the Sun</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SUN_MU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SUN_MU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.3271244002331e+20</span></em><a class="headerlink" href="#nominalpy.maths.constants.SUN_MU" title="Link to this definition"></a></dt>
+<dd><p>[m^3/s^2] The Sun Gravitational constant</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SUN_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SUN_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">695000000</span></em><a class="headerlink" href="#nominalpy.maths.constants.SUN_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] The equatorial radius of the Sun</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.SUN_RP">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">SUN_RP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">695508000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.SUN_RP" title="Link to this definition"></a></dt>
+<dd><p>[m] Polar radius of the Sun</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.URANUS_ALBEDO_AVG">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">URANUS_ALBEDO_AVG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.29</span></em><a class="headerlink" href="#nominalpy.maths.constants.URANUS_ALBEDO_AVG" title="Link to this definition"></a></dt>
+<dd><p>[-] A reflection albedo constant from Uranus’s surface</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.URANUS_DENSITY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">URANUS_DENSITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1271</span></em><a class="headerlink" href="#nominalpy.maths.constants.URANUS_DENSITY" title="Link to this definition"></a></dt>
+<dd><p>[kg/m^3] The density of Uranus</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.URANUS_J2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">URANUS_J2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.00334343</span></em><a class="headerlink" href="#nominalpy.maths.constants.URANUS_J2" title="Link to this definition"></a></dt>
+<dd><p>[-] Uranus J2 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.URANUS_MASS">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">URANUS_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8.68e+25</span></em><a class="headerlink" href="#nominalpy.maths.constants.URANUS_MASS" title="Link to this definition"></a></dt>
+<dd><p>[kg] The total mass of Uranus</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.URANUS_MU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">URANUS_MU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5794559128000000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.URANUS_MU" title="Link to this definition"></a></dt>
+<dd><p>[m^3/s^2] The gravitational constant for Uranus</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.URANUS_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">URANUS_OMEGA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-0.00010123719559131843</span></em><a class="headerlink" href="#nominalpy.maths.constants.URANUS_OMEGA" title="Link to this definition"></a></dt>
+<dd><p>[r/s] Rotation rate of the planet</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.URANUS_ORBIT_E">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">URANUS_ORBIT_E</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.04716771</span></em><a class="headerlink" href="#nominalpy.maths.constants.URANUS_ORBIT_E" title="Link to this definition"></a></dt>
+<dd><p>[-] The eccentricity for Uranus’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.URANUS_ORBIT_INC">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">URANUS_ORBIT_INC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.013436591779403545</span></em><a class="headerlink" href="#nominalpy.maths.constants.URANUS_ORBIT_INC" title="Link to this definition"></a></dt>
+<dd><p>[rad] The axis inclination of Uranus’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.URANUS_ORBIT_SMA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">URANUS_ORBIT_SMA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2870972219835.3755</span></em><a class="headerlink" href="#nominalpy.maths.constants.URANUS_ORBIT_SMA" title="Link to this definition"></a></dt>
+<dd><p>[m] Uranus Semi-Major Axis of its orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.URANUS_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">URANUS_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">25559000</span></em><a class="headerlink" href="#nominalpy.maths.constants.URANUS_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] Equatorial radius of Uranus</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.URANUS_RP">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">URANUS_RP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">25559000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.URANUS_RP" title="Link to this definition"></a></dt>
+<dd><p>[m] Polar radius of Uranus</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.VENUS_ALBEDO_AVG">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">VENUS_ALBEDO_AVG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.75</span></em><a class="headerlink" href="#nominalpy.maths.constants.VENUS_ALBEDO_AVG" title="Link to this definition"></a></dt>
+<dd><p>[-] A reflection albedo constant from Venus’s surface</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.VENUS_DENSITY">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">VENUS_DENSITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5243</span></em><a class="headerlink" href="#nominalpy.maths.constants.VENUS_DENSITY" title="Link to this definition"></a></dt>
+<dd><p>[kg/m^3] The density of Venus</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.VENUS_J2">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">VENUS_J2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4.458e-06</span></em><a class="headerlink" href="#nominalpy.maths.constants.VENUS_J2" title="Link to this definition"></a></dt>
+<dd><p>[-] Venus J2 value</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.VENUS_MASS">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">VENUS_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4.87e+24</span></em><a class="headerlink" href="#nominalpy.maths.constants.VENUS_MASS" title="Link to this definition"></a></dt>
+<dd><p>[kg] The total mass of Venus</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.VENUS_MU">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">VENUS_MU</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">324858599000000.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.VENUS_MU" title="Link to this definition"></a></dt>
+<dd><p>[k=m^3/s^2] The gravitational constant for Venus</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.VENUS_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">VENUS_OMEGA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-2.9923691869737844e-07</span></em><a class="headerlink" href="#nominalpy.maths.constants.VENUS_OMEGA" title="Link to this definition"></a></dt>
+<dd><p>[r/s] Rotation rate of the planet</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.VENUS_ORBIT_E">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">VENUS_ORBIT_E</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.00677323</span></em><a class="headerlink" href="#nominalpy.maths.constants.VENUS_ORBIT_E" title="Link to this definition"></a></dt>
+<dd><p>[-] The eccentricity for Venus’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.VENUS_ORBIT_INC">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">VENUS_ORBIT_INC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0592488666503767</span></em><a class="headerlink" href="#nominalpy.maths.constants.VENUS_ORBIT_INC" title="Link to this definition"></a></dt>
+<dd><p>[rad] The axis inclination of Venus’s orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.VENUS_ORBIT_SMA">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">VENUS_ORBIT_SMA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">108208925508.13037</span></em><a class="headerlink" href="#nominalpy.maths.constants.VENUS_ORBIT_SMA" title="Link to this definition"></a></dt>
+<dd><p>[m] Venus Semi-Major Axis of its orbit</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.VENUS_REQ">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">VENUS_REQ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6051800</span></em><a class="headerlink" href="#nominalpy.maths.constants.VENUS_REQ" title="Link to this definition"></a></dt>
+<dd><p>[m] Equatorial radius of Venus</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.maths.constants.VENUS_RP">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constants.</span></span><span class="sig-name descname"><span class="pre">VENUS_RP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6051800.0</span></em><a class="headerlink" href="#nominalpy.maths.constants.VENUS_RP" title="Link to this definition"></a></dt>
+<dd><p>[m] Polar radius of Venus</p>
+</dd></dl>
+
 </section>
 <section id="module-nominalpy.maths.utils">
 <span id="nominalpy-maths-utils-module"></span><h2>nominalpy.maths.utils module<a class="headerlink" href="#module-nominalpy.maths.utils" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>[ NOMINAL SYSTEMS ]</p>
-</div></blockquote>
-<p>This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
+<p>This module contains public methods that aid with mathematical
+calculations and astrophysical dimensions.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.utils.acos_quadrant_check">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.utils.</span></span><span class="sig-name descname"><span class="pre">acos_quadrant_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adjacent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypotenuse</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.utils.acos_quadrant_check" title="Link to this definition"></a></dt>
-<dd><p>Calculate an angle using the arccosine function and perform a quadrant check.</p>
+<dd><p>Calculate an angle using the arccosine function and perform a 
+quadrant check. The function calculates the angle using the arccosine 
+of the ratio of the adjacent side to the hypotenuse. It adjusts the 
+angle based on the quadrant determined by the ‘test’ parameter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -332,20 +1157,12 @@ with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
-<p>The function calculates the angle using the arccosine of the ratio of the adjacent side to the hypotenuse.
-It adjusts the angle based on the quadrant determined by the ‘test’ parameter.</p>
 </dd></dl>
 
 </section>
 <section id="module-nominalpy.maths.value">
 <span id="nominalpy-maths-value-module"></span><h2>nominalpy.maths.value module<a class="headerlink" href="#module-nominalpy.maths.value" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>[ NOMINAL SYSTEMS ]</p>
-</div></blockquote>
-<p>This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
-<p>This file contains public static class methods that can be used to 
+<p>This module contains public static class methods that can be used to 
 convert standard types to the correct JSON format. It also includes
 methods that can filter JSON data by a particular parameter for use 
 of data analysis. This class should not be instantiated.</p>
@@ -354,6 +1171,24 @@ of data analysis. This class should not be instantiated.</p>
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.datetime" title="Link to this definition"></a></dt>
 <dd><p>Defines a way of specifying a particular value based on
 a DateTime structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year</strong> (<em>int</em>) – The year parameter of the datetime</p></li>
+<li><p><strong>month</strong> (<em>int</em>) – The month parameter of the datetime</p></li>
+<li><p><strong>day</strong> (<em>int</em>) – The day parameter of the datetime</p></li>
+<li><p><strong>hour</strong> (<em>int</em>) – The hour parameter of the datetime</p></li>
+<li><p><strong>min</strong> (<em>int</em>) – The minute parameter of the datetime</p></li>
+<li><p><strong>sec</strong> (<em>int</em>) – The second parameter of the datetime</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A correctly formatted dictionary of JSON values with the data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -363,6 +1198,22 @@ a DateTime structure.</p>
 set of data over time. This assumes the format is of the
 type [{ “data”: {} }] as JSON. The field parameter specifies a
 sub-parameter within the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em>) – A list of raw data containing all the data that needs to be formatted</p></li>
+<li><p><strong>param</strong> (<em>str</em>) – A specific parameter to search for in the data</p></li>
+<li><p><strong>field</strong> (<em>str</em>) – An optional field parameter within the parameter to search for</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – The index of the data within the parameter to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of the data in the correct formatted type</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -370,13 +1221,45 @@ sub-parameter within the data.</p>
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">matrix33</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.maths.value.matrix33" title="Link to this definition"></a></dt>
 <dd><p>Defines a way for specifying a particular value based
 on a Matrix3x3 structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m1</strong> (<em>tuple</em>) – The first row of three elements to add to the matrix</p></li>
+<li><p><strong>m2</strong> (<em>tuple</em>) – The second row of three elements to add to the matrix</p></li>
+<li><p><strong>m3</strong> (<em>tuple</em>) – The third row of three elements to add to the matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A matrix3x3 list of data in the correct format</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.value.timespan">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">timespan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">milliseconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.timespan" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">timespan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">millis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.timespan" title="Link to this definition"></a></dt>
 <dd><p>Defines a way of specifying a particular value based on
-a TimeSpan structure</p>
+a TimeSpan structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>days</strong> (<em>int</em>) – The number of days in the timespan</p></li>
+<li><p><strong>hours</strong> (<em>int</em>) – The number of hours in the timespan</p></li>
+<li><p><strong>mins</strong> (<em>int</em>) – The number of minutes in the timespan</p></li>
+<li><p><strong>secs</strong> (<em>int</em>) – The number of seconds in the timespan</p></li>
+<li><p><strong>millis</strong> (<em>int</em>) – The number of milliseconds in the timespan</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A correctly formatted dictionary of JSON values with the data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -384,6 +1267,21 @@ a TimeSpan structure</p>
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">vector3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.vector3" title="Link to this definition"></a></dt>
 <dd><p>Defines a way for specifying a particular value based
 on a Vector3 structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em>) – The X value of the vector</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – The Y value of the vector</p></li>
+<li><p><strong>z</strong> (<em>float</em>) – The Z value of the vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The JSON dictionary of the vector</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

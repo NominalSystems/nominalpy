@@ -101,82 +101,69 @@
 </section>
 <section id="module-nominalpy.image.visualiser">
 <span id="nominalpy-image-visualiser-module"></span><h2>nominalpy.image.visualiser module<a class="headerlink" href="#module-nominalpy.image.visualiser" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>[ NOMINAL SYSTEMS ]</p>
-</div></blockquote>
-<p>This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="nominalpy.image.visualiser.TOPIC_REQUEST">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.image.visualiser.</span></span><span class="sig-name descname"><span class="pre">TOPIC_REQUEST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NominalSystems/APIVisualiser/Request'</span></em><a class="headerlink" href="#nominalpy.image.visualiser.TOPIC_REQUEST" title="Link to this definition"></a></dt>
-<dd><p>TODO: Write this description</p>
+<dd><p>The default request topic for the visualiser, assuming it is the same</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="nominalpy.image.visualiser.Visualiser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.image.visualiser.</span></span><span class="sig-name descname"><span class="pre">Visualiser</span></span><a class="headerlink" href="#nominalpy.image.visualiser.Visualiser" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The name of the file to be saved into the configuration. This will
-be recorded on the capture.</p>
+<p>The visualiser is an interface to the Nominal API visualiser application
+that is able to render images from the simulation when certain data is
+passed in. The visualiser is not enabled by default and must have a valid
+account for taking imagery.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.image.visualiser.Visualiser.capture">
 <span class="sig-name descname"><span class="pre">capture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">90.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_tracing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(500,</span> <span class="pre">500)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_rotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cesium</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'capture'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.image.visualiser.Visualiser.capture" title="Link to this definition"></a></dt>
 <dd><p>Attempts to capture the simulation at a particular point in time, with a particular set
 of parameters for both the position of the object as well as the position of the camera
 relative to the object.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>epoch:           The JSON formatted epoch for the datetime of the simulation</p></li>
-<li><p>zero_base:       The central body name of the origin of the simulation coordinates</p></li>
-<li><p>position:        The JSON formatted position as X, Y, Z of the target object</p></li>
-<li><p>attitude:        The JSON formatted MRP attitude as X, Y, Z of the target object</p></li>
-<li><p>format:          The type of the image, including JPEG, PNG or EXR</p></li>
-<li><p>fov:             The field of view of the camera in degrees</p></li>
-<li><p>exposure:        The exposure level of the camera to take an image with</p></li>
-<li><p>ray_tracing:     A flag whether to enable ray-tracing on the camera</p></li>
-<li><p>size:            A tuple containing the X and Y pixel size of the image as (X, Y)</p></li>
-<li><p>camera_position: The JSON formatted position of the camera relative to the base object as X, Y, Z</p></li>
-<li><p>camera_rotation: A tuple containing pitch, roll and yaw angle values in degrees of the camera relative to the base object</p></li>
-<li><p>cesium:          A dictionary containing information if Cesium is required for the imnage</p></li>
-<li><p>file_name:       The name of the file to save the image as when the data is received</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epoch</strong> (<em>dict</em>) – The current simulation time in the correct Epoch format</p></li>
+<li><p><strong>zero_base</strong> (<em>str</em>) – The name of the central body for the coordinate system</p></li>
+<li><p><strong>position</strong> (<em>dict</em>) – The position of the spacecraft in a JSON Vector3 format in meters</p></li>
+<li><p><strong>attitude</strong> (<em>dict</em>) – The attitude of the spacecraft in a JSON Vector3 format in MRP</p></li>
+<li><p><strong>format</strong> (<em>str</em>) – The type of image to take; either png, jpg or exr</p></li>
+<li><p><strong>fov</strong> (<em>float</em>) – The field of view of the camera in degrees</p></li>
+<li><p><strong>exposure</strong> (<em>float</em>) – The camera exposure levels with a base level of 0</p></li>
+<li><p><strong>ray_tracing</strong> (<em>bool</em>) – A flag whether ray-tracing on the camera is enabled</p></li>
+<li><p><strong>size</strong> (<em>tuple</em>) – A tuple containing the X and Y pixel size of the image as (X, Y)</p></li>
+<li><p><strong>camera_position</strong> (<em>dict</em>) – The JSON formatted position of the camera relative to the base object as X, Y, Z</p></li>
+<li><p><strong>camera_rotation</strong> (<em>dict</em>) – A tuple containing pitch, roll and yaw angle values in degrees of the camera relative to the base object</p></li>
+<li><p><strong>cesium</strong> (<em>dict</em>) – A dictionary set of Cesium parameters if they exist to initialise Cesium with</p></li>
+<li><p><strong>file_name</strong> (<em>str</em>) – The name of the file to save the image as when the data is received</p></li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nominalpy.image.visualiser.Visualiser.capture_data">
 <span class="sig-name descname"><span class="pre">capture_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#nominalpy.image.visualiser.Visualiser.capture_data" title="Link to this definition"></a></dt>
-<dd><p>This defines the unique request ID that is generated when a new
-request is made.</p>
+<dd><p>This records a list of metadata stored in the capture which will be used for updating the images when they are received.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nominalpy.image.visualiser.Visualiser.file">
 <span class="sig-name descname"><span class="pre">file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#nominalpy.image.visualiser.Visualiser.file" title="Link to this definition"></a></dt>
-<dd><p>The response topic to publish the image data back from the byte
-array over.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nominalpy.image.visualiser.Visualiser.on_callback">
-<span class="sig-name descname"><span class="pre">on_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.image.visualiser.Visualiser.on_callback" title="Link to this definition"></a></dt>
-<dd><p>This method is called when the raw binary data from the image
-is called back by the topic. This will attempt to save the photo
-and write it into a file.</p>
+<dd><p>The name of the file to be saved into the configuration. This will be recorded on the capture.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nominalpy.image.visualiser.Visualiser.request_id">
 <span class="sig-name descname"><span class="pre">request_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#nominalpy.image.visualiser.Visualiser.request_id" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>This defines the unique request ID that is generated when a new request is made.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nominalpy.image.visualiser.Visualiser.topic_response">
 <span class="sig-name descname"><span class="pre">topic_response</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NominalSystems/APIVisualiser/Response'</span></em><a class="headerlink" href="#nominalpy.image.visualiser.Visualiser.topic_response" title="Link to this definition"></a></dt>
-<dd><p>This records a list of metadata stored in the capture which will be
-used for updating the images when they are received by the Mqtt
-system.</p>
+<dd><p>The response topic to publish the image data back from the byte array over.</p>
 </dd></dl>
 
 </dd></dl>

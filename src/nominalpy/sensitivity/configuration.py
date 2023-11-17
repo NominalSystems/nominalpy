@@ -1,9 +1,7 @@
-'''
-                    [ NOMINAL SYSTEMS ]
-This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the 'nominalpy' module. Copyright Nominal Systems, 2023.
-'''
+#                     [ NOMINAL SYSTEMS ]
+# This code is developed by Nominal Systems to aid with communication 
+# to the public API. All code is under the the license provided along
+# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 
 from abc import ABC, abstractmethod
 from ..objects import Component, Message, Object, Simulation
@@ -21,8 +19,8 @@ class SensitivityConfiguration (ABC):
     and the configuration must be implemented in the 'configure' method.
     '''
 
-    # Specifies the credentials for accessing the API correctly.
     __credentials: Credentials = None
+    '''Specifies the credentials for accessing the API correctly.'''
 
     def __init__ (self, credentials: Credentials = None) -> None:
         '''

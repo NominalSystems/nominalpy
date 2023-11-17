@@ -1,10 +1,10 @@
-'''
-                    [ NOMINAL SYSTEMS ]
-This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+#                     [ NOMINAL SYSTEMS ]
+# This code is developed by Nominal Systems to aid with communication 
+# to the public API. All code is under the the license provided along
+# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 
-This code assists with having some helper functions for requesting
+'''
+This modules assists with having some helper functions for requesting
 data from the API and ensuring the data is in the correct form.
 '''
 
@@ -12,16 +12,20 @@ import requests, json
 import urllib3
 from ..utils import printer, NominalException
 from .credentials import Credentials
+from . import helper
+
 
 # Disable the insecure request warning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 
 def validate_credentials (credentials: Credentials) -> None:
     '''
     Creates a GET request to test if the credentials are valid by
     calling the root directory of the URL passed through the credentials.
     This can be used to validate whether the API is live.
+
+    :param credentials: The credential information that needs to be validated
+    :type credentials:  Credentials
     '''
 
     # Skip if missing credentials
@@ -44,12 +48,17 @@ def validate_credentials (credentials: Credentials) -> None:
     if response.status_code != 200:
         raise create_web_exception(response.status_code)
 
-
 def handle_request_data (response: requests.Response) -> dict:
     '''
     Handles the standard request data created from a HTTP
     web request. This will attempt to return a JSON or throw
-    a web 
+    a web.
+
+    :param response:    The request response that is returned from a HTTP request
+    :type response:     requests.Response
+
+    :returns:           A JSON dictionary data from the text in the response
+    :rtype:             dict
     '''
 
     # Skip if no response
@@ -67,13 +76,22 @@ def handle_request_data (response: requests.Response) -> dict:
     printer.error("Invalid request with status code %d." % response.status_code)
     raise create_web_exception(response.status_code)
 
-
 def get_request (credentials: Credentials, url: str, params: dict = {}) -> dict:
     '''
     Creates a GET request with some suffix URL data and returns
     the result of the request in a JSON form. If there was an
     error, then a None will be returned. This requires valid
     credentials to be passed through.
+
+    :param credentials: The valid API credentials to make the API call with
+    :type credentials:  Credentials
+    :param url:         The sub-URL to make the HTTP GET request to, added to the credentials URL
+    :type url:          str
+    :param params:      A dictionary of values to parse into the GET request with associated values
+    :type params:       dict
+
+    :returns:           The JSON data from the GET request if the request was valid
+    :rtype:             dict
     '''
 
     # Skip if missing credentials
@@ -96,13 +114,24 @@ def get_request (credentials: Credentials, url: str, params: dict = {}) -> dict:
     # Handle the response
     return handle_request_data(response)
 
-
 def post_request (credentials: Credentials, url: str, data: str = None, params: dict = {}) -> dict:
     '''
     Creates a POST request with some suffix URL data and returns
     the result of the request in a JSON form. If there was an
     error, then a None will be returned. This requires valid
     credentials to be passed through.
+
+    :param credentials: The valid API credentials to make the API call with
+    :type credentials:  Credentials
+    :param url:         The sub-URL to make the HTTP POST request to, added to the credentials URL
+    :type url:          str
+    :param data:        A set of data optional parameters that are passed into the request
+    :type data:         str
+    :param params:      A dictionary of values to parse into the POST request with associated values
+    :type params:       dict
+
+    :returns:           The JSON data from the POST request if the request was valid
+    :rtype:             dict
     '''
 
     # Skip if missing credentials
@@ -126,13 +155,24 @@ def post_request (credentials: Credentials, url: str, data: str = None, params: 
     # Handle the response
     return handle_request_data(response)
 
-
 def put_request (credentials: Credentials, url: str, data: str = None, params: dict = {}) -> dict:
     '''
     Creates a PUT request with some suffix URL data and returns
     the result of the request in a JSON form. If there was an
     error, then a None will be returned. This requires valid
     credentials to be passed through.
+
+    :param credentials: The valid API credentials to make the API call with
+    :type credentials:  Credentials
+    :param url:         The sub-URL to make the HTTP PUT request to, added to the credentials URL
+    :type url:          str
+    :param data:        A set of data optional parameters that are passed into the request
+    :type data:         str
+    :param params:      A dictionary of values to parse into the PUT request with associated values
+    :type params:       dict
+
+    :returns:           The JSON data from the PUT request if the request was valid
+    :rtype:             dict
     '''
 
     # Skip if missing credentials
@@ -162,6 +202,18 @@ def patch_request (credentials: Credentials, url: str, data: str = None, params:
     the result of the request in a JSON form. If there was an
     error, then a None will be returned. This requires valid
     credentials to be passed through.
+
+    :param credentials: The valid API credentials to make the API call with
+    :type credentials:  Credentials
+    :param url:         The sub-URL to make the HTTP PATCH request to, added to the credentials URL
+    :type url:          str
+    :param data:        A set of data optional parameters that are passed into the request
+    :type data:         str
+    :param params:      A dictionary of values to parse into the PATCH request with associated values
+    :type params:       dict
+
+    :returns:           The JSON data from the PATCH request if the request was valid
+    :rtype:             dict
     '''
 
     # Skip if missing credentials
@@ -191,6 +243,18 @@ def delete_request (credentials: Credentials, url: str, data: str = None, params
     the result of the request in a JSON form. If there was an
     error, then a None will be returned. This requires valid
     credentials to be passed through.
+
+    :param credentials: The valid API credentials to make the API call with
+    :type credentials:  Credentials
+    :param url:         The sub-URL to make the HTTP DELETE request to, added to the credentials URL
+    :type url:          str
+    :param data:        A set of data optional parameters that are passed into the request
+    :type data:         str
+    :param params:      A dictionary of values to parse into the DELETE request with associated values
+    :type params:       dict
+
+    :returns:           The JSON data from the DELETE request if the request was valid
+    :rtype:             dict
     '''
 
     # Skip if missing credentials
@@ -214,39 +278,18 @@ def delete_request (credentials: Credentials, url: str, data: str = None, params
     # Handle the response
     return handle_request_data(response)
 
-def jsonify (data: dict, array: bool = False) -> str:
-    '''
-    Converts a particular data as a dictionary to string
-    using the JSON payload and has an optional parameter
-    to wrap the data inside of an array.
-    '''
-    if array:
-        return "[%s]" %  json.dumps(data)
-    return json.dumps(data)
-
-def is_valid_guid (guid: str) -> bool:
-    '''
-    Determines if a parsed GUID, as a string,
-    is valid. This will ensure that it is of
-    the correct format.
-    '''
-    empty: str = "00000000-0000-0000-0000-000000000000"
-    if guid == empty: return False
-    if len(guid) != len(empty): return False
-    if guid[8] != empty[8]: return False
-    if guid[13] != empty[13]: return False
-    if guid[18] != empty[18]: return False
-    if guid[23] != empty[23]: return False
-    return True
-
-def create_web_exception (code: int) -> NominalException:
+def create_web_exception (code: int) -> None:
     '''
     This method creates an exception based on the status code
     that exists. This is useful for any status code that is not
     200, which is an OK status.
+
+    :param code:    The HTTP request code from the request object
+    :type code:     int
     '''
+
     if code == 200:
-        return None
+        return
     elif code == 403:
         raise NominalException("Invalid Credentials: Access key is unauthorised to connect to the API.")
     elif code == 404:

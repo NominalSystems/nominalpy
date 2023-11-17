@@ -1,9 +1,7 @@
-'''
-                    [ NOMINAL SYSTEMS ]
-This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the 'nominalpy' module. Copyright Nominal Systems, 2023.
-'''
+#                     [ NOMINAL SYSTEMS ]
+# This code is developed by Nominal Systems to aid with communication 
+# to the public API. All code is under the the license provided along
+# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 
 from ..objects import Entity, Message
 from ..connection import Credentials
@@ -20,23 +18,20 @@ class SensitivityAnalysis (Entity):
     exception of some user defined parameters within the configuration.
     '''
 
-    # This defines the simulation configuration that is being used for the sensitivity analysis.
     config: SensitivityConfiguration = None
+    '''This defines the simulation configuration that is being used for the sensitivity analysis.'''
 
-    # A list of JSON simulation cases that defines all the case studies that will be executed 
-    # on the run.
     cases: list = []
+    '''A list of JSON simulation cases that defines all the case studies that will be executed on the run.'''
 
-    # A list of all messages to register and keep track of in the database system based on the 
-    # object they exist on.
     subscriptions: list = []
+    '''A list of all messages to register and keep track of in the database system.'''
 
-    # A list of all message IDs that have been subscribed to correctly.
     message_ids: list = []
+    '''A list of all message IDs that have been subscribed to correctly.'''
 
-    # A self-populating list of simulation IDs based on the simulations that are run in the 
-    # analysis.
     ids: list = []
+    '''A self-populating list of simulation IDs based on the simulations that are run in the analysis.'''
 
 
     def __init__(self, credentials: Credentials, config: SensitivityConfiguration) -> None:

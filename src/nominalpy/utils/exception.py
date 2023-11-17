@@ -1,11 +1,10 @@
-'''
-                    [ NOMINAL SYSTEMS ]
-This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the 'nominalpy' module. Copyright Nominal Systems, 2023.
-'''
+#                     [ NOMINAL SYSTEMS ]
+# This code is developed by Nominal Systems to aid with communication 
+# to the public API. All code is under the the license provided along
+# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 
 from . import printer
+
 
 class NominalException (Exception):
     '''
@@ -33,6 +32,9 @@ class NominalException (Exception):
         '''
         This is the automated cast to a string from the message, which is 
         able to return the exception information.
+
+        :returns:   The string formatted text of the message
+        :rtype:     str
         '''
         
         return "[NOMINAL ERROR] %s" % self.message

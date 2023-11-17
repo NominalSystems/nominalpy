@@ -1,9 +1,7 @@
-'''
-                    [ NOMINAL SYSTEMS ]
-This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the 'nominalpy' module. Copyright Nominal Systems, 2023.
-'''
+#                     [ NOMINAL SYSTEMS ]
+# This code is developed by Nominal Systems to aid with communication 
+# to the public API. All code is under the the license provided along
+# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 
 from ..connection import Credentials
 
@@ -16,13 +14,11 @@ class Entity:
     of actual simulation objects.
     '''
 
-    # Defines the unique GUID identifier of the object. This needs to be
-    # in the correct GUID format and is used to call simulation requests.
     id: str = None
+    '''Defines the unique GUID identifier of the object. This needs to be in the correct GUID format.'''
 
-    # Specifies the credentials for accessing the API correctly.
     _credentials: Credentials = None
-
+    '''Specifies the credentials for accessing the API correctly.'''
 
     def __init__ (self, credentials: Credentials, id: str):
         '''
@@ -31,7 +27,7 @@ class Entity:
 
         :param credentials: The Credentials object that is used for the API
         :type credentials:  Credentials
-        :param id:          The unique identifier for the Entity
+        :param id:          The unique identifier for the Entity in a GUID format
         :type id:           str
         '''
         

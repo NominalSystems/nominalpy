@@ -103,12 +103,6 @@
 </section>
 <section id="module-nominalpy.sensitivity.analysis">
 <span id="nominalpy-sensitivity-analysis-module"></span><h2>nominalpy.sensitivity.analysis module<a class="headerlink" href="#module-nominalpy.sensitivity.analysis" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>[ NOMINAL SYSTEMS ]</p>
-</div></blockquote>
-<p>This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.analysis.SensitivityAnalysis">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.sensitivity.analysis.</span></span><span class="sig-name descname"><span class="pre">SensitivityAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nominalpy.connection.html#nominalpy.connection.credentials.Credentials" title="nominalpy.connection.credentials.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nominalpy.sensitivity.configuration.SensitivityConfiguration" title="nominalpy.sensitivity.configuration.SensitivityConfiguration"><span class="pre">SensitivityConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.sensitivity.analysis.SensitivityAnalysis" title="Link to this definition"></a></dt>
@@ -131,12 +125,14 @@ exception of some user defined parameters within the configuration.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.analysis.SensitivityAnalysis.cases">
 <span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#nominalpy.sensitivity.analysis.SensitivityAnalysis.cases" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>A list of JSON simulation cases that defines all the case studies that will be executed on the run.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.analysis.SensitivityAnalysis.config">
 <span class="sig-name descname"><span class="pre">config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#nominalpy.sensitivity.configuration.SensitivityConfiguration" title="nominalpy.sensitivity.configuration.SensitivityConfiguration"><span class="pre">SensitivityConfiguration</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#nominalpy.sensitivity.analysis.SensitivityAnalysis.config" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>This defines the simulation configuration that is being used for the sensitivity analysis.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.analysis.SensitivityAnalysis.get_values">
@@ -168,12 +164,14 @@ for.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.analysis.SensitivityAnalysis.ids">
 <span class="sig-name descname"><span class="pre">ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#nominalpy.sensitivity.analysis.SensitivityAnalysis.ids" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>A self-populating list of simulation IDs based on the simulations that are run in the analysis.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.analysis.SensitivityAnalysis.message_ids">
 <span class="sig-name descname"><span class="pre">message_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#nominalpy.sensitivity.analysis.SensitivityAnalysis.message_ids" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>A list of all message IDs that have been subscribed to correctly.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.analysis.SensitivityAnalysis.new_case">
@@ -225,19 +223,14 @@ on the object name and the message name, if it exists.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.analysis.SensitivityAnalysis.subscriptions">
 <span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#nominalpy.sensitivity.analysis.SensitivityAnalysis.subscriptions" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>A list of all messages to register and keep track of in the database system.</p>
+</dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="module-nominalpy.sensitivity.case">
 <span id="nominalpy-sensitivity-case-module"></span><h2>nominalpy.sensitivity.case module<a class="headerlink" href="#module-nominalpy.sensitivity.case" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>[ NOMINAL SYSTEMS ]</p>
-</div></blockquote>
-<p>This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.case.SensitivityCase">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.sensitivity.case.</span></span><span class="sig-name descname"><span class="pre">SensitivityCase</span></span><a class="headerlink" href="#nominalpy.sensitivity.case.SensitivityCase" title="Link to this definition"></a></dt>
@@ -273,12 +266,6 @@ the parameter to change and the new value in a valid JSOn format.</p>
 </section>
 <section id="module-nominalpy.sensitivity.configuration">
 <span id="nominalpy-sensitivity-configuration-module"></span><h2>nominalpy.sensitivity.configuration module<a class="headerlink" href="#module-nominalpy.sensitivity.configuration" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>[ NOMINAL SYSTEMS ]</p>
-</div></blockquote>
-<p>This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the ‘nominalpy’ module. Copyright Nominal Systems, 2023.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="nominalpy.sensitivity.configuration.SensitivityConfiguration">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.sensitivity.configuration.</span></span><span class="sig-name descname"><span class="pre">SensitivityConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nominalpy.connection.html#nominalpy.connection.credentials.Credentials" title="nominalpy.connection.credentials.Credentials"><span class="pre">Credentials</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.sensitivity.configuration.SensitivityConfiguration" title="Link to this definition"></a></dt>

@@ -1,9 +1,7 @@
-'''
-                    [ NOMINAL SYSTEMS ]
-This code is developed by Nominal Systems to aid with communication 
-to the public API. All code is under the the license provided along
-with the 'nominalpy' module. Copyright Nominal Systems, 2023.
-'''
+#                     [ NOMINAL SYSTEMS ]
+# This code is developed by Nominal Systems to aid with communication 
+# to the public API. All code is under the the license provided along
+# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 
 import requests, time
 from ..utils import printer
@@ -16,21 +14,20 @@ class Credentials:
     or a local server call.
     '''
 
-    # Defines the base URL for the API. If empty, it assumes that the URL is localhost.
     url: str = ""
+    '''Defines the base URL for the API. If empty, it assumes that the URL is localhost.'''
 
-    # Defines the port for the API. If left as None, no port will be used.
     port: int = None
+    '''Defines the port for the API. If left as None, no port will be used.'''
 
-    # Defines the access key if it exists for the API. This is required for cloud based API calls.
     access_key: str = ""
+    '''Defines the access key if it exists for the API. This is required for cloud based API calls.'''
 
-    # Defines whether the URL is a localhost one or not; used to ensure that a connection is valid.
     is_local: bool = False
+    '''Defines whether the URL is a localhost one or not; used to ensure that a connection is valid.'''
 
-    # This defines the session ID for the current working session, stored for public API keys.
     session_id: str = None
-
+    '''This defines the session ID for the current working session, stored for public API keys.'''
 
     def __init__ (self, url: str = "https://api.nominalsys.com", port: int = None, access: str = "") -> None:
         '''
