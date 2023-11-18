@@ -400,7 +400,7 @@ def vector_to_classical_elements(
 
 def ecef_to_lla(position: np.ndarray) -> np.ndarray:
     """
-    Converts the WGS parameters to Latitude, Longitude, and Altitude using NumPy.
+    Converts the Earth-Centred, Earth-Fixed parameters to Latitude, Longitude, and Altitude using NumPy.
 
     :param position: The current ECPF position as a NumPy array or list (X, Y, Z)
     :type position: np.ndarray
@@ -444,3 +444,16 @@ def ecef_to_lla(position: np.ndarray) -> np.ndarray:
         iterations += 1
 
     return np.array([latitude, longitude, altitude], dtype=np.float64)
+
+
+def ecef_to_lla_deg(position: np.ndarray) -> np.ndarray:
+    """
+    Converts the Earth-Centred, Earth-Fixed parameters to Latitude, Longitude, and Altitude using NumPy.
+
+    :param position: The current ECPF position as a NumPy array or list (X, Y, Z)
+    :type position: np.ndarray
+    :return: Tuple containing Latitude [deg], Longitude [deg], and Altitude [m]
+    :rtype: np.ndarray
+    """
+    lla = ecef_to_lla(position)
+    return np.array([np.degrees(lla[0]), np.degrees(lla[1]), lla[2]], dtype=np.float64)
