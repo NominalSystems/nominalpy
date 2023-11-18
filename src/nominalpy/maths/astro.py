@@ -396,3 +396,51 @@ def vector_to_classical_elements(
             utils.acos_quadrant_check(np.dot(NODE, ECC), node * eccentricity, ECC[2]),  # argument of periapsis
             utils.acos_quadrant_check(np.dot(ECC, r_bn_n), eccentricity * r_mag, r_mag_dot_v_mag)  # true anomaly
         )
+
+
+def ecef_to_lla(position: np.ndarray) -> np.ndarray:
+    """
+    Converts the WGS parameters to Latitude, Longitude, and Altitude using NumPy.
+
+    :param position: The current ECPF position as a NumPy array or list (X, Y, Z)
+    :type position: np.ndarray
+    :return: Tuple containing Latitude [rad], Longitude [rad], and Altitude [m]
+    :rtype: np.ndarray
+    """
+    # handle the edge case where the position is zero
+    if np.linalg.norm(position) == 0:
+        return np.array([0, 0, 0], dtype=np.float64)
+    # make sure that the position is of type float
+    position = position.astype(dtype=np.float64)
+    # WGS Parameters
+    a: float = constants.EARTH_REQ  # Equatorial radius of Earth
+    f: float = 1.0 / 298.257  # Flattening factor of Earth
+    e: float = np.sqrt(2 * f - f ** 2)
+
+    longitude: float = np.arctan2(position[1], position[0])
+    P: float = np.sqrt(position[0] ** 2 + position[1] ** 2)
+
+    # Initial calculations for latitude and altitude
+    altitude: float = 0
+    latitude: float = np.arctan2(position[2], P * (1 - e ** 2))
+    N: float = a / np.sqrt(1 - (e * np.sin(latitude)) ** 2)
+    delta_h: float = 1000000
+    prevH: float = 0
+    iterations: int = 0
+
+    # Iterative calculations for latitude and altitude
+    while delta_h > 0.01 and iterations < 10:
+        prevH = altitude
+        latitude = np.arctan2(position[2], P * (1 - e ** 2 * (N / (N + altitude))))
+        if np.isnan(latitude):
+            raise ValueError("Latitude is NaN")
+        N = a / np.sqrt(1 - (e * np.sin(latitude)) ** 2)
+        # handle the case when the cos(latitude) is zero (within floating point error) to avoid a divide by zero error
+        if np.cos(latitude) < 1e-10:
+            altitude = np.fabs(position[2]) - a * (1 - f)
+        else:
+            altitude = P / np.cos(latitude) - N
+        delta_h = np.abs(altitude - prevH)
+        iterations += 1
+
+    return np.array([latitude, longitude, altitude], dtype=np.float64)
