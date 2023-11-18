@@ -459,48 +459,46 @@ def ecef_to_lla_deg(position: np.ndarray) -> np.ndarray:
     return np.array([np.degrees(lla[0]), np.degrees(lla[1]), lla[2]], dtype=np.float64)
 
 
-def lla_to_pcpf(lla: np.ndarray, planet_radius: float = constants.EARTH_REQ):
+def lla_to_ecef(lla: np.ndarray) -> np.ndarray:
     """
-    Converts from Latitude/Longitude/Altitude (LLA) coordinates to Planet-Centered,
+    Converts from Latitude/Longitude/Altitude (LLA) coordinates to Earth-Centered,
     Planet-Fixed (PCPF) coordinates given a planet radius.
 
-    :param lla: A tuple or list containing Latitude (degrees), Longitude (degrees),
+    :param lla: A tuple or list containing Latitude (radians), Longitude (radians),
                         and Altitude (meters) coordinates.
-    :param planet_radius: A constant planetary radius in meters.
     :return: A tuple representing the final position in the PCPF frame in meters.
     """
 
     # Convert latitude and longitude from degrees to radians
-    lat = lla[0]  # Latitude in radians
-    lon = lla[1]  # Longitude in radians
-    alt = lla[2]  # Altitude in meters
-    f = 1 / 298.257  # Flattening factor
-    # f = 1 / 298.257223563  # Flattening factor
-    e_sq = f * (2 - f)  # Square of eccentricity
+    lat: float = lla[0]  # Latitude in radians
+    lon: float = lla[1]  # Longitude in radians
+    alt: float = lla[2]  # Altitude in meters
+    f: float = 1 / 298.257  # Flattening factor
+    e_sq: float = f * (2 - f)  # Square of eccentricity
+    planet_radius: float = constants.EARTH_REQ
 
     # Calculate the radius of curvature in the prime vertical
-    N = planet_radius / np.sqrt(1 - e_sq * np.sin(lat) ** 2)
+    N: float = planet_radius / np.sqrt(1 - e_sq * np.sin(lat) ** 2)
 
     # Calculate PCPF coordinates
-    X = (N + alt) * np.cos(lat) * np.cos(lon)
-    Y = (N + alt) * np.cos(lat) * np.sin(lon)
-    Z = ((1 - e_sq) * N + alt) * np.sin(lat)
+    X: float = (N + alt) * np.cos(lat) * np.cos(lon)
+    Y: float = (N + alt) * np.cos(lat) * np.sin(lon)
+    Z: float = ((1 - e_sq) * N + alt) * np.sin(lat)
 
     return np.array([X, Y, Z], dtype=np.float64)
 
 
-def lla_to_pcpf_deg(lla: np.ndarray, planet_radius: float = constants.EARTH_REQ):
+def lla_to_ecef_deg(lla: np.ndarray) -> np.ndarray:
     """
-    Converts from Latitude/Longitude/Altitude (LLA) coordinates to Planet-Centered,
+    Converts from Latitude/Longitude/Altitude (LLA) coordinates to Earth-Centered,
     Planet-Fixed (PCPF) coordinates given a planet radius.
 
     :param lla: A tuple or list containing Latitude (degrees), Longitude (degrees),
                         and Altitude (meters) coordinates.
-    :param planet_radius: A constant planetary radius in meters.
     :return: A tuple representing the final position in the PCPF frame in meters.
     """
 
     # Convert latitude and longitude from degrees to radians
-    lat = np.radians(lla[0])  # Latitude in radians
-    lon = np.radians(lla[1])  # Longitude in radians
-    return lla_to_pcpf(np.array([lat, lon, lla[2]]), planet_radius)
+    lat: float = np.radians(lla[0])  # Latitude in radians
+    lon: float = np.radians(lla[1])  # Longitude in radians
+    return lla_to_ecef(np.array([lat, lon, lla[2]]))
