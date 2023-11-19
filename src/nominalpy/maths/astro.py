@@ -502,3 +502,50 @@ def lla_to_ecef_deg(lla: np.ndarray) -> np.ndarray:
     lat: float = np.radians(lla[0])  # Latitude in radians
     lon: float = np.radians(lla[1])  # Longitude in radians
     return lla_to_ecef(np.array([lat, lon, lla[2]]))
+
+
+def calculate_orbital_velocity(r_bn_n_mag: float, sma: float, gm: float = constants.EARTH_MU) -> float:
+    """
+    Calculate the magnitude of the orbital velocity for a spacecraft in any orbit type.
+
+    This function uses the vis-viva equation to compute the orbital speed of a spacecraft at a given distance from the
+        Earth's center, considering its semi-major axis. It ensures that the provided parameters are within physically
+        meaningful ranges.
+
+    :param r_bn_n_mag: The distance from the Earth's center to the spacecraft - m.
+    :type r_bn_n_mag: float
+    :param sma: The semi-major axis of the spacecraft's orbit. It must be a non-negative value - m
+    :type sma: float
+    :param gm: The gravitational parameter, defaulting to Earth's gravitational parameter if not provided - m^3/s^2.
+    :type gm: float
+    :return: The magnitude of the spacecraft's orbital velocity - m/s.
+    :rtype: float
+    :raises TypeError: If `r` or `sma` is not a numeric type.
+    :raises ValueError: If `r` is less than zero, or `sma` is negative, or the radicand in the calculation is negative.
+
+    Example:
+        >>> calculate_orbital_velocity(7000, 10000)
+        7.546049108166282
+    """
+    if r_bn_n_mag <= 0:
+        raise ValueError(f"The input distance from Earth's center (r: {r_bn_n_mag} km) is not valid.")
+    if sma < 0:
+        raise ValueError(f"The input semi-major axis (sma: {sma} km) is not valid.")
+    # sanity check the input parameters
+    radicand = 2 * gm * (1 / r_bn_n_mag - 1 / (2 * sma))
+    if radicand < 0:
+        raise ValueError(f"The radicand ({radicand}) is not greater than zero, leading to a singularity.")
+    # calculate the orbital velocity
+    return np.sqrt(radicand)
+
+
+def calculate_circular_orbit_velocity(sma: float, gm=constants.EARTH_MU) -> float:
+    """
+    Calculate the magnitude of the orbital velocity for a spacecraft in a circular orbit.
+    :param sma: the semi-major axis of the spacecraft's orbit. It must be a non-negative value - m
+    :type sma: float
+    :param gm: the gravitational parameter, defaulting to Earth's gravitational parameter if not provided - m^3/s^2.
+    :type gm: float
+    :return: the magnitude of the spacecraft's orbital velocity resulting in a circular orbit - m/s.
+    """
+    return calculate_orbital_velocity(r_bn_n_mag=sma, sma=sma, gm=gm)
