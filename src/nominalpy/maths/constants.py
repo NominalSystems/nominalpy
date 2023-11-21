@@ -137,6 +137,9 @@ VENUS_ALBEDO_AVG: float = 0.75
 EARTH_REQ: float = 6378136.6
 '''[m] Equatorial radius of Earth'''
 
+EARTH_FLATTENING: float = 1.0 / 298.257223563
+'''[-] The flattening of the Earth'''
+
 EARTH_RP: float = 6356751.9
 '''[m] Polar radius of Earth'''
 
