@@ -104,7 +104,7 @@ def timespan (days: int = 0, hours: int = 0, mins: int = 0, secs: int = 0, milli
     value: dict = {'Days': days, 'Hours': hours, 'Minutes': mins, 'Seconds': secs, 'Milliseconds': millis}
     return value
 
-def get_array (data: list, param: str, field: str = None, index: int = None) -> list:
+def get_array (data: list, param: str, field: str = None, index: int = None) -> np.ndarray:
     '''
     Attempts to fetch a particular set of data from a returned
     set of data over time. This assumes the format is of the
@@ -128,25 +128,30 @@ def get_array (data: list, param: str, field: str = None, index: int = None) -> 
         if len(data) == 0:
             raise Exception("Data has a length of 0.")
         
+        array: list = []
+        
         # In the case the param is in the dictionary
         if param in data[0]:
             if field != None and field != "":
-                return [_[param][field] for _ in data]
+                array = [_[param][field] for _ in data]
             elif index != None:
-                return [_[param][index] for _ in data]
+                array = [_[param][index] for _ in data]
             else:
-                return [_[param] for _ in data]
+                array = [_[param] for _ in data]
             
         # In the case there is data
         else:
             if field != None and field != "":
-                return [_["data"][param][field] for _ in data]
+                array = [_["data"][param][field] for _ in data]
             elif index != None:
-                return [_["data"][param][index] for _ in data]
+                array = [_["data"][param][index] for _ in data]
             else:
-                return [_["data"][param] for _ in data]
+                array = [_["data"][param] for _ in data]
+        
+        # Return the array as a numpy array
+        return np.array(array)
         
     # Catch the exception
     except Exception as ex:
         printer.error("Failed to fetch array from fetched data. Error reason: %s" % str(ex))
-        return []
+        return np.array([[]])

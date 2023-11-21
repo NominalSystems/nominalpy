@@ -107,7 +107,19 @@ class Message (Object):
 
         # Create the response from the POST request and get the data
         response = http.post_request(self._credentials, "query/database/message", data=request_data)
-        return response
+
+        # Parse the data into a new list
+        data: list = []
+        for r in response:
+            entry: dict = {}
+            entry["time"] = r["time"]
+            entry_data = {}
+            for d in r["data"].keys():
+                entry_data[d] = helper.deserialize(r["data"][d])
+            entry["data"] = entry_data
+            data.append(entry)
+
+        return data
 
     def fetch (self, *values) -> list:
         '''
@@ -125,7 +137,7 @@ class Message (Object):
 
         return self.fetch_range(0.0, 0.0, *values)
 
-    def fetch_df(self, *values) -> pd.DataFrame:
+    def fetch_df (self, *values) -> pd.DataFrame:
         '''
         Fetch the data from the simulation and return the results 
         as a pandas DataFrame for easy handling and analysis.
@@ -214,7 +226,19 @@ class Message (Object):
 
         # Create the response from the POST request and get the data
         response = http.post_request(credentials, "query/database/message", data=request_data)
-        return response
+
+        # Parse the data into a new list
+        data: list = []
+        for r in response:
+            entry: dict = {}
+            entry["time"] = r["time"]
+            entry_data = {}
+            for d in r["data"].keys():
+                entry_data[d] = helper.deserialize(r["data"][d])
+            entry["data"] = entry_data
+            data.append(entry)
+
+        return data
     
     @classmethod
     def message_fetch (cls, credentials: Credentials, simulation: str, id: str, *values) -> list:

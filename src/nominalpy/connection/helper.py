@@ -5,11 +5,12 @@
 
 '''
 This modules assists with some helper functions for defining what values
-can be turned into JSON and whether GUID IDs are valid.
+can be turned into JSON and whether GUID IDs are valid. This also includes
+some methods for serializing and deserializing JSON data to standard formats,
+including numpy ndarrays and datetimes.
 '''
 
-import json
-from numpy import ndarray
+import json, numpy as np
 from datetime import datetime
 from ..maths import value
 from ..utils import printer
@@ -28,12 +29,12 @@ def jsonify (data: dict, array: bool = False) -> str:
     :returns:       The JSON data in a string form
     :rtype:         str
     '''
-    
+
     if array:
         return "[%s]" %  json.dumps(data)
     return json.dumps(data)
 
-def create_json (params: dict) -> dict:
+def serialize (params: dict) -> dict:
     '''
     Attempts to create a JSON dictionary based on a series of
     parameters that are parsed in from the user. This will
@@ -52,22 +53,88 @@ def create_json (params: dict) -> dict:
 
     # Loops through each keyword argument
     for key in params:
-        param = params[key]
-        if isinstance(param, ndarray):  # Mathematical arrays
-            shape = param.shape
-            if shape == (3,):       # Vector3
-                data[key] = value.vector3(param[0], param[1], param[2])
-            elif shape == (3,3):    # Matrix3x3
-                data[key] = value.matrix33(param[0], param[1], param[2])
-            else:
-                printer.error("Unsupported numpy array shape: %s." % str(shape))
-        elif isinstance(param, datetime):   # DateTimes
-            data[key] = value.datetime(param.year, param.month, param.day, param.hour, param.minute, param.second)
-        else:   # All other values
-            data[key] = param
+        data[key] = serialize_object(params[key])
 
     # Returns the final output
     return data
+
+def serialize_object (obj: object) -> dict:
+    '''
+    Attempts to create a JSON serialized object based on a
+    single object that is parsed into the system. This will
+    check based on standard python types including numpy
+    arrays and datetimes.
+
+    :param obj: An object to be serialized
+    :type obj:  object
+
+    :returns:   A full dictionary in a JSON format of the serialized data
+    :rtype:     dict
+    
+    '''
+
+    if isinstance(obj, np.ndarray):  # Mathematical arrays
+        shape = obj.shape
+        if shape == (3,):       # Vector3
+            return value.vector3(obj[0], obj[1], obj[2])
+        elif shape == (3,3):    # Matrix3x3
+           return value.matrix33(obj[0], obj[1], obj[2])
+        else:
+            printer.error("Unsupported numpy array shape: %s." % str(shape))
+            return {}
+    elif isinstance(obj, datetime):   # DateTimes
+        return value.datetime(obj.year, obj.month, obj.day, obj.hour, obj.minute, obj.second)
+    else:   # All other values
+        return obj
+
+def deserialize (param: object) -> object:
+    '''
+    Attempts to deserialize a particular object based on the data
+    within the dictionary and returns the data in a specific way
+    that is expected within Python. This means that numpy arrays
+    will be returned if they contain the correct data.
+
+    :params param:  The parameter that should be deserialized
+    :type param:    object
+
+    :returns:       The object from the deserialization
+    :rtype:         object
+    '''
+
+    # Handle dictionaries or skip
+    if isinstance(param, dict):
+        if contains(param, "X", "Y", "Z"):
+            return np.array([param["X"], param["Y"], param["Z"]])
+
+    # Handles arrays for matricies
+    if isinstance(param, list):
+        if len(param) == 9:
+            return np.array([param[0:3], param[3:6], param[6:9]])
+
+    # Return whatever the parameter was
+    return param
+
+def contains (data: dict, *args) -> bool:
+    '''
+    Determines if a particular set of parameter names exist within
+    a dictionary and returns whether all arguments exist.
+
+    :param data:    The raw dictionary data containing some arguments
+    :type data:     dict
+    :param args:    A list of argument names to check within the dictionary
+    :type args:     list
+
+    :returns:       A flag indicating that all the arguments exist within the dictionary
+    :rtype:         bool
+    '''
+
+    # Loop through all the arguments
+    for arg in args:
+        if not arg in data:
+            return False
+
+    # Returns a success
+    return True
 
 def is_valid_guid (guid: str) -> bool:
     '''

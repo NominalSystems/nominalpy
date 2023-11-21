@@ -132,7 +132,7 @@ class Simulation(Entity):
 
         # If there are keyword arguments
         if len(kwargs) > 0:
-            body["data"] = helper.create_json(kwargs)
+            body["data"] = helper.serialize(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body, True)
@@ -302,12 +302,16 @@ class Simulation(Entity):
 
         # Fetches the current epoch
         system: Object = self.get_system(types.UNIVERSE)
-        epoch: dict = system.get_value("Epoch")
+        epoch: dict = helper.serialize(system.get_value("Epoch"))
         zero_base: str = system.get_value("ZeroBase")
 
         # Fetches the spacecraft information
-        spacecraft_position: dict = spacecraft.get_value("Position")
-        spacecraft_attitude: dict = spacecraft.get_value("Attitude")
+        spacecraft_position: dict = helper.serialize_object(spacecraft.get_value("Position"))
+        spacecraft_attitude: dict = helper.serialize_object(spacecraft.get_value("Attitude"))
+
+        # Serialize the camera information
+        camera_position: dict = helper.serialize_object(camera_position)
+        camera_rotation: dict = helper.serialize_object(camera_rotation)
 
         # Create the visualiser if it doesn't exist
         if self.__visualiser == None:

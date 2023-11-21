@@ -166,4 +166,3 @@ class Visualiser:
 
         # Print a success
         printer.success("Successfully saved image from simulation to file '%s'." % self.file)
-        printer.success(self.topic_response)
