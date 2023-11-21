@@ -149,7 +149,7 @@ class Message (Object):
         :rtype:         pandas.DataFrame
         '''
 
-        data = self.fetch(values)
+        data = self.fetch(*values)
         # Define a variable containing the name of the time data returned from the API
         time_col_name = "time"
         # Add the data from the simulation, handling multi-dimensional and single-dimension data variables
