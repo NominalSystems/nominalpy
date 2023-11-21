@@ -236,7 +236,7 @@ def classical_to_vector_elements(
         p = semi_major_axis * (1 - eccentricity * eccentricity)
     else:
         raise ValueError("The input eccentricity is invalid")
-    v = semi_latus_rectum_to_vector_elements(
+    return semi_latus_rectum_to_vector_elements(
         semi_latus_rectum=p,
         eccentricity=eccentricity,
         inclination=inclination,
@@ -245,8 +245,6 @@ def classical_to_vector_elements(
         true_anomaly=true_anomaly,
         planet=planet,
     )
-    return (value.vector3(v[0][0], v[0][1], v[0][2]), value.vector3(v[1][0], v[1][1], v[1][2]))
-
 
 def classical_to_vector_elements_deg(
     semi_major_axis: float,

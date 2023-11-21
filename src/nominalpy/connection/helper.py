@@ -9,6 +9,10 @@ can be turned into JSON and whether GUID IDs are valid.
 '''
 
 import json
+from numpy import ndarray
+from datetime import datetime
+from ..maths import value
+from ..utils import printer
 
 def jsonify (data: dict, array: bool = False) -> str:
     '''
@@ -24,10 +28,46 @@ def jsonify (data: dict, array: bool = False) -> str:
     :returns:       The JSON data in a string form
     :rtype:         str
     '''
-
+    
     if array:
         return "[%s]" %  json.dumps(data)
     return json.dumps(data)
+
+def create_json (params: dict) -> dict:
+    '''
+    Attempts to create a JSON dictionary based on a series of
+    parameters that are parsed in from the user. This will
+    construct the data from numpy arrays and other data formats
+    that need to be serialized correctly.
+
+    :param params:  A list of arguments from the object that should be serialized
+    :type params:   dict
+
+    :returns:       A full dictionary in a JSON format of the serialized data
+    :rtype:         dict
+    '''
+
+    # Create the dictionary of data
+    data: dict = {}
+
+    # Loops through each keyword argument
+    for key in params:
+        param = params[key]
+        if isinstance(param, ndarray):  # Mathematical arrays
+            shape = param.shape
+            if shape == (3,):       # Vector3
+                data[key] = value.vector3(param[0], param[1], param[2])
+            elif shape == (3,3):    # Matrix3x3
+                data[key] = value.matrix33(param[0], param[1], param[2])
+            else:
+                printer.error("Unsupported numpy array shape: %s." % str(shape))
+        elif isinstance(param, datetime):   # DateTimes
+            data[key] = value.datetime(param.year, param.month, param.day, param.hour, param.minute, param.second)
+        else:   # All other values
+            data[key] = param
+
+    # Returns the final output
+    return data
 
 def is_valid_guid (guid: str) -> bool:
     '''

@@ -174,7 +174,7 @@ class Object(Entity):
             del kwargs['param_value']
         
         # Update the data in the body
-        body["data"] = kwargs
+        body["data"] = helper.create_json(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body)

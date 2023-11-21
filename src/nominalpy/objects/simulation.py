@@ -132,7 +132,7 @@ class Simulation(Entity):
 
         # If there are keyword arguments
         if len(kwargs) > 0:
-            body["data"] = kwargs
+            body["data"] = helper.create_json(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body, True)

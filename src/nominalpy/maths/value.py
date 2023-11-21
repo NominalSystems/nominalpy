@@ -31,7 +31,7 @@ def vector3 (x: float, y: float, z: float) -> dict:
     :rtype:     dict
     '''
 
-    value: dict = {"X": x, "Y": y, "Z": z}
+    value: dict = {"X": float(x), "Y": float(y), "Z": float(z)}
     return value
 
 def matrix33 (m1: tuple, m2: tuple, m3: tuple) -> list:
@@ -50,7 +50,9 @@ def matrix33 (m1: tuple, m2: tuple, m3: tuple) -> list:
     :rtype:     list
     '''
 
-    value: list = [[m1[0], m1[1], m1[2]], [m2[0], m2[1], m2[2]], [m3[0], m3[1], m3[2]]]
+    value: list = [[float(m1[0]), float(m1[1]), float(m1[2])], 
+        [float(m2[0]), float(m2[1]), float(m2[2])], 
+        [float(m3[0]), float(m3[1]), float(m3[2])]]
     return value
 
 def datetime (year: int, month: int, day: int, hour: int = 0, min: int = 0, sec: int = 0) -> dict:
