@@ -34,6 +34,9 @@ class Simulation(Entity):
     __cesium: dict = {}
     '''Defines the Cesium configuration for the image request that can be sent through the system'''
 
+    __messages: dict = {}
+    '''Defines a list of messages associated with a particular property for easy fetching'''
+
     def __init__ (self, credentials: Credentials, reset: bool = True) -> None:
         '''
         Default constructor for the simulation handler which takes 
@@ -197,6 +200,13 @@ class Simulation(Entity):
         :rtype:         Message
         '''
 
+        # Get the lower of the planet
+        planet = planet.lower()
+
+        # Check if the message exists
+        if planet in self.__messages:
+            return self.__messages[planet]
+
         # Create the data packet to be submitted to the api
         body = dict(planet=str(planet))
         body["data"] = {}
@@ -212,6 +222,7 @@ class Simulation(Entity):
         
         # Transform the data into a Message object
         msg: Message = Message(credentials=self._credentials, id=response["guid"])
+        self.__messages[planet] = msg
         return msg
 
     def tick (self, step: float = 1e-3, iterations: int = 1) -> None:
