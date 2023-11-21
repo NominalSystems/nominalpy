@@ -6,7 +6,7 @@ NominalPy is a Python library that enables easy access to the Nominal API. The A
 
 Example simulation scripts and usage of the NominalPy library can be found in the public repository [NominalPy Examples](https://github.com/NominalSystems/nominalpy_examples). This contains some sample scripts showcasing how to use the library and how to run spacecraft simulations with flight software and requesting data from the simulation API. This requires an API key to execute but can be used as a basis for development.
 
-Additional tutorials and functionality for the library can be found on the public documentation at [docs.nominalsys.com](docs.nominalsys.com) under the Tutorials page.
+Additional tutorials and functionality for the library can be found on the public documentation at [docs.nominalsys.com](https://docs.nominalsys.com) under the Tutorials page.
 
 <br>
 
