@@ -266,7 +266,6 @@ def classical_to_vector_elements(
         planet=planet,
     )
 
-
 def classical_to_vector_elements_deg(
     semi_major_axis: float,
     eccentricity: float = 0.0,

@@ -121,7 +121,9 @@ class Object(Entity):
         data: dict = {}
         for param in values:
             if param in self.__data:
-                data[param] = self.__data[param]
+                data[param] = helper.deserialize(self.__data[param])
+        
+        # Return the data
         return data
 
     def get_value (self, param: str) -> str:
@@ -174,7 +176,7 @@ class Object(Entity):
             del kwargs['param_value']
         
         # Update the data in the body
-        body["data"] = kwargs
+        body["data"] = helper.serialize(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body)

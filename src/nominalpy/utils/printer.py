@@ -28,6 +28,7 @@ __LOG     = __GREY
 __WARNING = __YELLOW
 __ERROR   = __RED
 __SUCCESS = __GREEN
+__DEBUG   = __PURPLE
 
 LOG_VERBOSITY: str      = "log"
 '''Defines the verbosity for all messages coming from the API and requests.'''
@@ -130,6 +131,18 @@ def error (data: str) -> None:
 
     if __verbose_level in [LOG_VERBOSITY, SUCCESS_VERBOSITY, WARNING_VERBOSITY, ERROR_VERBOSITY]:
         output(data, __ERROR)
+
+def debug (data: str) -> None:
+    '''
+    Prints debug messages for testing certain features to the console. This
+    will always print provided the printer is enabled, regardless of the
+    verbosity level.
+
+    :param data:    The raw data to print to the screen
+    :type data:     str
+    '''
+    
+    output(data, __DEBUG)
 
 def display_time (enable: bool) -> None:
     '''
