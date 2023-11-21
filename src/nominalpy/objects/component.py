@@ -29,6 +29,8 @@ class Component (Object):
         :type id:           str
         '''
 
+        self.__messages = {}
+
         super().__init__(credentials, id)
 
     def _require_update (self) -> None:

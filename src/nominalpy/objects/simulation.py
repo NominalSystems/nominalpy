@@ -389,5 +389,6 @@ class Simulation(Entity):
         
         http.delete_request(self.__credentials, "timeline")
         self.__components = []
+        self.__messages = {}
         self.__time = 0.0
         self.id = None
