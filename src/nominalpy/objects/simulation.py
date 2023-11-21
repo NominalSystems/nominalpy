@@ -225,6 +225,56 @@ class Simulation(Entity):
         self.__messages[planet] = msg
         return msg
 
+    def create_message (self, type: str, **kwargs) -> Message:
+        '''
+        Attempts to create a new empty message that does not belong to a
+        component but is owned by the simulation. This can also create
+        some parameters within the message and will return the message
+        object if created correctly.
+
+        :param type:    The namespace and type of the message to be created
+        :type type:     str
+        :param kwargs:  Additional parameters to initialise the message with
+        :type kwargs:   dict
+
+        :returns:       The message wrapper object if was created correctly
+        :rtype:         Message
+        '''
+
+        # Sanitise the type
+        if "NominalSystems.Messages" not in type:
+            type = "NominalSystems.Messages." + type
+
+        # Construct the JSON body
+        body: dict = {
+            "type": type
+        }
+
+        # If there are keyword arguments
+        if len(kwargs) > 0:
+            body["values"] = helper.serialize(kwargs)
+
+        # Create the data
+        request_data: str = helper.jsonify(body, True)
+
+        # Create the response from the PUT request and get the IDs
+        response = http.put_request(self._credentials, "messages", data=request_data)
+        printer.log("Attempted to create a new message of type '%s'." % type)
+
+        # Skip on empty list
+        if len(response) == 0: return None
+
+        # Check the GUID and return a new message with that ID or a None message
+        guid: str = response[0]
+        if helper.is_valid_guid(guid):
+            printer.success("Message of type '%s' created." % type)
+            msg: Message = Message(self._credentials, guid)
+            return msg
+        
+        # Throw an error if no message or valid ID
+        printer.error("Could not construct message of class '%s'" % type)
+        return None
+
     def tick (self, step: float = 1e-3, iterations: int = 1) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will
