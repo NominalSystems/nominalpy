@@ -260,6 +260,8 @@ class Simulation(Entity):
         # Update all objects so their data needs to be fetched
         for obj in self.__components:
             obj._require_update()
+        for msg in self.__messages.values():
+            msg._require_update()
         
     def get_time (self) -> float:
         '''
