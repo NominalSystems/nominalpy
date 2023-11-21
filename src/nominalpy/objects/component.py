@@ -15,8 +15,8 @@ class Component (Object):
     have messages that can store data.
     '''
 
-    messages: list = []
-    '''Defines a list of messages associated with this component. Any new requested message will be added here.'''
+    __messages: dict = {}
+    '''Defines a list of messages associated with a particular property for easy fetching'''
 
     def __init__ (self, credentials: Credentials, id: str) -> None:
         '''
@@ -39,7 +39,7 @@ class Component (Object):
         '''
 
         super()._require_update()
-        for msg in self.messages:
+        for msg in self.__messages.values():
             msg._require_update()
     
     def get_message (self, name: str) -> Message:
@@ -56,19 +56,14 @@ class Component (Object):
         :rtype:         Message
         '''
 
-        # Fetch the ID from the message
+        # Check if the message exists
+        if name.lower() in self.__messages:
+            return self.__messages[name.lower()]
+
+        # Fetch the ID from the message and create the message object
         id: str = self.get_value(name)
-        if id == None:
-            return None
-        
-        # Check if the ID already has a message
-        for msg in self.messages:
-            if msg.id == id:
-                return msg
-            
-        # Create a new message otherwise
         msg: Message = Message(self._credentials, id)
         
         # Add the message to the array for caching
-        self.messages.append(msg)
+        self.__messages[name.lower()] = msg
         return msg
