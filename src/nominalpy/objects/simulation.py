@@ -51,16 +51,16 @@ class Simulation(Entity):
 
         super().__init__(credentials=credentials, id=None)
 
-        self.__credentials = credentials
-        if self.__credentials == None:
+        self._credentials = credentials
+        if self._credentials == None:
             raise NominalException("Invalid Credentials: No credentials passed into the Simulation.")
         
         # Attempt a simple request
-        if not self.__credentials.is_local:
-            http.validate_credentials(self.__credentials)
+        if not self._credentials.is_local:
+            http.validate_credentials(self._credentials)
 
         # Resets the simulation if valid credentials
-        if reset and self.__credentials != None:
+        if reset and self._credentials != None:
             self.reset()
 
         # Fetch the current ID
@@ -77,7 +77,7 @@ class Simulation(Entity):
         :rtype:     dict
         '''
         
-        response = http.get_request(self.__credentials, "timeline")
+        response = http.get_request(self._credentials, "timeline")
         if response == {}:
             return None
         return response
@@ -94,7 +94,7 @@ class Simulation(Entity):
         '''
 
         # Create the get request
-        return http.get_request(self.__credentials, "object/types")
+        return http.get_request(self._credentials, "object/types")
 
     def add_component (self, type: str, owner: Component = None, **kwargs) -> Component:
         '''
@@ -141,7 +141,7 @@ class Simulation(Entity):
         request_data: str = helper.jsonify(body, True)
 
         # Create the response from the PUT request and get the IDs
-        response = http.put_request(self.__credentials, "objects", data=request_data)
+        response = http.put_request(self._credentials, "objects", data=request_data)
         printer.log("Attempted to create %d component(s) with IDs: \n\t%s" % (len(response), response))
 
         # Skip on empty list
@@ -151,7 +151,7 @@ class Simulation(Entity):
         guid: str = response[0]
         if helper.is_valid_guid(guid):
             printer.success("Component of type '%s' created." % type)
-            obj: Component = Component(self.__credentials, guid)
+            obj: Component = Component(self._credentials, guid)
             self.__components.append(obj)
             return obj
         
@@ -186,7 +186,7 @@ class Simulation(Entity):
         '''
 
         # Create the get request
-        return http.get_request(self.__credentials, "message/types")
+        return http.get_request(self._credentials, "message/types")
 
     def get_planet_message (self, planet: str) -> Message:
         '''
@@ -251,7 +251,7 @@ class Simulation(Entity):
         )
 
         # Create the response from the POST request on the timeline
-        http.post_request(self.__credentials, "timeline/tick", data=request_data)
+        http.post_request(self._credentials, "timeline/tick", data=request_data)
         printer.success('Ticked the simulation with a step of %.3fs %d time(s).' % (step, iterations))
 
         # Increase the time
@@ -389,7 +389,7 @@ class Simulation(Entity):
         will be deleted.
         '''
         
-        http.delete_request(self.__credentials, "timeline")
+        http.delete_request(self._credentials, "timeline")
         self.__components = []
         self.__messages = {}
         self.__time = 0.0
