@@ -215,7 +215,7 @@ def classical_to_vector_elements(
     argument_of_periapsis: float = 0.0,
     true_anomaly: float = 0.0,
     planet: str = "earth"
-) -> np.ndarray:
+) -> tuple:
     '''
     Transforms Keplerian orbital elements into position and velocity in Planet-Centered
     Inertial (PCI) coordinates.
@@ -266,6 +266,7 @@ def classical_to_vector_elements(
         planet=planet,
     )
 
+
 def classical_to_vector_elements_deg(
     semi_major_axis: float,
     eccentricity: float = 0.0,
@@ -275,7 +276,7 @@ def classical_to_vector_elements_deg(
     true_anomaly: float = 0.0,
     planet: str = "earth"
 ) -> tuple:
-    '''
+    """
     Transforms Keplerian orbital elements into position and velocity in Planet-Centered
     Inertial (PCI) coordinates.
 
@@ -303,7 +304,7 @@ def classical_to_vector_elements_deg(
 
     :returns:                       A tuple containing position and velocity vectors in PCI coordinates
     :rtype:                         tuple
-    '''
+    """
 
     return classical_to_vector_elements(
         semi_major_axis=semi_major_axis,
