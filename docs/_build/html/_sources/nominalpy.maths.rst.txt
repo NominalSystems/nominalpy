@@ -20,6 +20,14 @@ nominalpy.maths.constants module
    :undoc-members:
    :show-inheritance:
 
+nominalpy.maths.data module
+---------------------------
+
+.. automodule:: nominalpy.maths.data
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 nominalpy.maths.utils module
 ----------------------------
 

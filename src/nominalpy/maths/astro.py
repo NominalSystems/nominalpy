@@ -16,18 +16,19 @@ from . import utils
 from ..utils import NominalException
 
 
-def get_planet_property(planet: str, property: str) -> float:
-    """
-    Returns the planet's property. If the planet does not exist, then an exception will be thrown.
+def get_planet_property (planet: str, property: str) -> float:
+    '''
+    Returns the planet's property. If the planet does not exist,
+    then an exception will be thrown.
 
-    :param planet: The name of the planet to fetch the property from
-    :type planet: str
-    :param property: The name of the property to fetch
-    :type property: str
-    :return: The value of the property
-    :rtype: float
-    """
-    # Check if the value is valid
+    :param planet:      The name of the planet to fetch the property from
+    :type planet:       str
+    :param property:    The name of the property to fetch
+    :type property:     str
+
+    :return:            The value of the property
+    :rtype:             float
+    '''
     param = f"{planet.upper()}_{property.upper()}"
     if hasattr(constants, param):
         return float(getattr(constants, param))
@@ -36,8 +37,7 @@ def get_planet_property(planet: str, property: str) -> float:
     else:
         raise NominalException(f"No planet: {planet} with property {property}.")
 
-
-def get_planet_mu(planet: str) -> float:
+def get_planet_mu (planet: str) -> float:
     '''
     Returns the planet's gravitational mu parameter, equal to GM of the
     planet's body in units of [m^3/s^2]. If the planet does not exist,
@@ -50,7 +50,6 @@ def get_planet_mu(planet: str) -> float:
     :rtype:         float
     '''
     return get_planet_property(planet, "MU")
-
 
 def t_perifocal_to_vector_elements (
     right_ascension: float = 0,
@@ -92,7 +91,6 @@ def t_perifocal_to_vector_elements (
         [s_aop * s_inc, c_aop * s_inc, c_inc]
     ], dtype=np.float64)
     return TIP
-
 
 def perifocal_to_vector_elements(
     r_bp_p: np.ndarray,
@@ -139,7 +137,6 @@ def perifocal_to_vector_elements(
     r_bn_n = TIP @ r_bp_p
     v_bn_n = TIP @ v_bp_p
     return r_bn_n, v_bn_n
-
 
 def semi_latus_rectum_to_vector_elements(
     semi_latus_rectum: float,
@@ -206,7 +203,6 @@ def semi_latus_rectum_to_vector_elements(
         inclination=inclination
     )
 
-
 def classical_to_vector_elements(
     semi_major_axis: float,
     eccentricity: float = 0.0,
@@ -266,7 +262,6 @@ def classical_to_vector_elements(
         planet=planet,
     )
 
-
 def classical_to_vector_elements_deg(
     semi_major_axis: float,
     eccentricity: float = 0.0,
@@ -315,7 +310,6 @@ def classical_to_vector_elements_deg(
         true_anomaly=np.radians(true_anomaly),
         planet=planet
     )
-
 
 def vector_to_classical_elements(
     r_bn_n: np.ndarray,
@@ -420,18 +414,19 @@ def vector_to_classical_elements(
         )
 
 
-def pcpf_to_geodetic_lla(position: np.ndarray, planet="Earth") -> np.ndarray:
-    """
-    Converts the Planet-Centred, Planet-Fixed parameters to Latitude, Longitude, and Altitude using NumPy.
+def pcpf_to_geodetic_lla (position: np.ndarray, planet="Earth") -> np.ndarray:
+    '''
+    Converts the Planet-Centred, Planet-Fixed parameters to Latitude, 
+    Longitude, and Altitude using NumPy.
 
-    :param position: The current ECPF position as a NumPy array or list (X, Y, Z)
-    :type position: np.ndarray
-    :param planet: The planet to use for the conversion
-    :type planet: str
+    :param position:    The current ECPF position as a NumPy array or list (X, Y, Z)
+    :type position:     np.ndarray
+    :param planet:      The planet to use for the conversion
+    :type planet:       str
 
-    :return: Tuple containing Latitude [rad], Longitude [rad], and Altitude [m]
-    :rtype: np.ndarray
-    """
+    :return:            Tuple containing Latitude [rad], Longitude [rad], and Altitude [m]
+    :rtype:             np.ndarray
+    '''
     # ensure that the input array is of type float
     position = position.astype(np.float64)
     # handle the edge case where the position is zero
@@ -472,35 +467,36 @@ def pcpf_to_geodetic_lla(position: np.ndarray, planet="Earth") -> np.ndarray:
 
     return np.array([latitude, longitude, altitude], dtype=np.float64)
 
+def pcpf_to_geodetic_lla_deg (position: np.ndarray, planet="Earth") -> np.ndarray:
+    '''
+    Converts the Planet-Centred, Planet-Fixed parameters to Latitude, 
+    Longitude, and Altitude using NumPy.
 
-def pcpf_to_geodetic_lla_deg(position: np.ndarray, planet="Earth") -> np.ndarray:
-    """
-    Converts the Planet-Centred, Planet-Fixed parameters to Latitude, Longitude, and Altitude using NumPy.
+    :param position:    The current ECPF position as a NumPy array or list (X, Y, Z)
+    :type position:     np.ndarray
+    :param planet:      The planet to use for the conversion
+    :type planet:       str
 
-    :param position: The current ECPF position as a NumPy array or list (X, Y, Z)
-    :type position: np.ndarray
-    :param planet: The planet to use for the conversion
-    :type planet: str
-
-    :return: Tuple containing Latitude [deg], Longitude [deg], and Altitude [m]
-    :rtype: np.ndarray
-    """
+    :return:            Tuple containing Latitude [deg], Longitude [deg], and Altitude [m]
+    :rtype:             np.ndarray
+    '''
     lla = pcpf_to_geodetic_lla(position, planet=planet)
     return np.array([np.degrees(lla[0]), np.degrees(lla[1]), lla[2]], dtype=np.float64)
 
 
-def geodetic_lla_to_pcpf(lla: np.ndarray, planet="Earth") -> np.ndarray:
-    """
+def geodetic_lla_to_pcpf (lla: np.ndarray, planet="Earth") -> np.ndarray:
+    '''
     Converts from Latitude/Longitude/Altitude (LLA) coordinates to Planet-Centered,
     Planet-Fixed (PCPF) coordinates given a planet radius.
 
-    :param lla: A tuple or list containing Latitude (radians), Longitude (radians),
-                        and Altitude (meters) coordinates.
-    :type lla: np.ndarray
-    :param planet: The planet to use for the conversion
-    :type planet: str
-    :return: A tuple representing the final position in the PCPF frame in meters.
-    """
+    :param lla:     A tuple or list containing Latitude (radians), Longitude (radians), and Altitude (meters) coordinates.
+    :type lla:      np.ndarray
+    :param planet:  The planet to use for the conversion
+    :type planet:   str
+
+    :return:        A tuple representing the final position in the PCPF frame in meters.
+    :rtype:         np.ndarray
+    '''
     # ensure that the input array is of type float
     lla = lla.astype(np.float64)
     # Convert latitude and longitude from degrees to radians
@@ -521,50 +517,50 @@ def geodetic_lla_to_pcpf(lla: np.ndarray, planet="Earth") -> np.ndarray:
 
     return np.array([X, Y, Z], dtype=np.float64)
 
-
-def geodetic_lla_to_pcpf_deg(lla: np.ndarray, planet="Earth") -> np.ndarray:
-    """
+def geodetic_lla_to_pcpf_deg (lla: np.ndarray, planet="Earth") -> np.ndarray:
+    '''
     Converts from Latitude/Longitude/Altitude (LLA) coordinates to Planet-Centered,
     Planet-Fixed (PCPF) coordinates given a planet radius.
 
-    :param lla: A tuple or list containing Latitude (degrees), Longitude (degrees),
-                        and Altitude (meters) coordinates.
-    :type lla: np.ndarray
-    :param planet: The planet to use for the conversion
-    :type planet: str
-    :return: A tuple representing the final position in the PCPF frame in meters.
-    :rtype: np.ndarray
-    """
+    :param lla:     A tuple or list containing Latitude (degrees), Longitude (degrees), and Altitude (meters) coordinates.
+    :type lla: n    p.ndarray
+    :param planet:  The planet to use for the conversion
+    :type planet:   str
+
+    :return:        A tuple representing the final position in the PCPF frame in meters.
+    :rtype:         np.ndarray
+    '''
 
     # Convert latitude and longitude from degrees to radians
     lat: float = np.radians(lla[0])  # Latitude in radians
     lon: float = np.radians(lla[1])  # Longitude in radians
     return geodetic_lla_to_pcpf(np.array([lat, lon, lla[2]], dtype=np.float64), planet=planet)
 
-
 def calculate_orbital_velocity(r_bn_n_mag: float, sma: float, gm: float = constants.EARTH_MU) -> float:
-    """
+    '''
     Calculate the magnitude of the orbital velocity for a spacecraft in any orbit type.
 
     This function uses the vis-viva equation to compute the orbital speed of a spacecraft at a given distance from the
         Earth's center, considering its semi-major axis. It ensures that the provided parameters are within physically
         meaningful ranges.
 
-    :param r_bn_n_mag: The distance from the Earth's center to the spacecraft - m.
-    :type r_bn_n_mag: float
-    :param sma: The semi-major axis of the spacecraft's orbit. It must be a non-negative value - m
-    :type sma: float
-    :param gm: The gravitational parameter, defaulting to Earth's gravitational parameter if not provided - m^3/s^2.
-    :type gm: float
-    :return: The magnitude of the spacecraft's orbital velocity - m/s.
+    :param r_bn_n_mag:  The distance from the Earth's center to the spacecraft - m.
+    :type r_bn_n_mag:   float
+    :param sma:         The semi-major axis of the spacecraft's orbit. It must be a non-negative value - m
+    :type sma:          float
+    :param gm:          The gravitational parameter, defaulting to Earth's gravitational parameter if not provided - m^3/s^2.
+    :type gm:           float
+
+    :return:            The magnitude of the spacecraft's orbital velocity - m/s.
     :rtype: float
-    :raises TypeError: If `r` or `sma` is not a numeric type.
+
+    :raises TypeError:  If `r` or `sma` is not a numeric type.
     :raises ValueError: If `r` is less than zero, or `sma` is negative, or the radicand in the calculation is negative.
 
     Example:
         >>> calculate_orbital_velocity(7000, 10000)
         7.546049108166282
-    """
+    '''
     if r_bn_n_mag <= 0:
         raise ValueError(f"The input distance from Earth's center (r: {r_bn_n_mag} km) is not valid.")
     if sma < 0:
@@ -576,14 +572,17 @@ def calculate_orbital_velocity(r_bn_n_mag: float, sma: float, gm: float = consta
     # calculate the orbital velocity
     return np.sqrt(radicand)
 
-
 def calculate_circular_orbit_velocity(sma: float, gm=constants.EARTH_MU) -> float:
-    """
-    Calculate the magnitude of the orbital velocity for a spacecraft in a circular orbit.
-    :param sma: the semi-major axis of the spacecraft's orbit. It must be a non-negative value - m
-    :type sma: float
-    :param gm: the gravitational parameter, defaulting to Earth's gravitational parameter if not provided - m^3/s^2.
-    :type gm: float
-    :return: the magnitude of the spacecraft's orbital velocity resulting in a circular orbit - m/s.
-    """
+    '''
+    Calculates the magnitude of the orbital velocity for a spacecraft in 
+    a circular orbit.
+
+    :param sma: The semi-major axis of the spacecraft's orbit. It must be a non-negative value - m
+    :type sma:  float
+    :param gm:  The gravitational parameter, defaulting to Earth's gravitational parameter if not provided - m^3/s^2.
+    :type gm:   float
+    
+    :return:    The magnitude of the spacecraft's orbital velocity resulting in a circular orbit - m/s.
+    :rtype:     float
+    '''
     return calculate_orbital_velocity(r_bn_n_mag=sma, sma=sma, gm=gm)
