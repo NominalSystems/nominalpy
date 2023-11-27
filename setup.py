@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 # Setup the project
 setup(
     name='nominalpy',
-    version='0.7.0',
+    version='0.7.1',
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     install_requires=["requests", "urllib3", "paho-mqtt", "numpy", "pandas"],
