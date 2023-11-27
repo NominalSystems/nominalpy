@@ -96,7 +96,7 @@ class Simulation(Entity):
         # Create the get request
         return http.get_request(self._credentials, "object/types")
 
-    def add_component (self, type: str, owner: Component = None, **kwargs) -> Component:
+    def add_component(self, type: str, owner: Component = None, **kwargs) -> Component:
         '''
         Attempts to add a new component to the simulation. This component
         can be added to an owner, if the owning component is passed in,
@@ -156,10 +156,9 @@ class Simulation(Entity):
             return obj
         
         # Throw an error if no object or valid ID
-        printer.error("Could not construct object of class '%s'" % type)
-        return None
+        raise NominalException(f"Could not construct object of class {type}. Object name may be invalid.")
     
-    def get_system (self, type: str, **kwargs) -> Object:
+    def get_system(self, type: str, **kwargs) -> Object:
         '''
         Fetches a particular simulation system that is valid
         from the simulation and returns it as an object.
@@ -175,7 +174,7 @@ class Simulation(Entity):
 
         return self.add_component(type, **kwargs)
     
-    def get_message_types (self) -> list:
+    def get_message_types(self) -> list:
         '''
         This will return a list of all message types available in the simulation
         that can be created. This will include the full name of every message
@@ -188,7 +187,7 @@ class Simulation(Entity):
         # Create the get request
         return http.get_request(self._credentials, "message/types")
 
-    def get_planet_message (self, planet: str) -> Message:
+    def get_planet_message(self, planet: str) -> Message:
         '''
         Returns the current planet state from the simulation by fetching
         the data from the SPICE kernels via the Universe system.
@@ -216,16 +215,15 @@ class Simulation(Entity):
         response = http.post_request(self._credentials, "query/planet", data=request_data)
 
         # Check for a valid response and update the data
-        if response == None or response == {}:
-            printer.error("Failed to retrieve data from planet '%s'." % planet)
-            return
+        if response is None or response == {}:
+            raise NominalException(f"Failed to retrieve data from planet {planet}.")
         
         # Transform the data into a Message object
         msg: Message = Message(credentials=self._credentials, id=response["guid"])
         self.__messages[planet] = msg
         return msg
 
-    def create_message (self, type: str, **kwargs) -> Message:
+    def create_message(self, type: str, **kwargs) -> Message:
         '''
         Attempts to create a new empty message that does not belong to a
         component but is owned by the simulation. This can also create
@@ -272,10 +270,9 @@ class Simulation(Entity):
             return msg
         
         # Throw an error if no message or valid ID
-        printer.error("Could not construct message of class '%s'" % type)
-        return None
+        raise NominalException(f"Could not construct message of class {type}. Message name may be invalid.")
 
-    def tick (self, step: float = 1e-3, iterations: int = 1) -> None:
+    def tick(self, step: float = 1e-3, iterations: int = 1) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will
         tick the simulation with some step size, in the form of a time
@@ -313,7 +310,7 @@ class Simulation(Entity):
         for msg in self.__messages.values():
             msg._require_update()
         
-    def get_time (self) -> float:
+    def get_time(self) -> float:
         '''
         Returns the current simulation time based on the number of
         seconds that have been ticked.
@@ -324,7 +321,7 @@ class Simulation(Entity):
 
         return self.__time
 
-    def capture_image (self, file_name: str, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0,
+    def capture_image(self, file_name: str, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0,
         ray_tracing: bool = False, size: tuple = (500, 500), camera_position: dict = None, 
         camera_rotation: tuple = (0, 0, 0), cesium: bool = False, timeout: float = 3.0) -> bool:
         '''
@@ -377,7 +374,7 @@ class Simulation(Entity):
         camera_rotation: dict = helper.serialize_object(camera_rotation)
 
         # Create the visualiser if it doesn't exist
-        if self.__visualiser == None:
+        if self.__visualiser is None:
             self.__visualiser = Visualiser()
 
         # Fetch the cesium values
@@ -405,7 +402,7 @@ class Simulation(Entity):
                 printer.warning(
                     "The capture image from the visualiser was not returned within a %ss timeout. The image may still be received asynchronously but requests may be lost." % timeout)
 
-    def confiure_cesium (self, access_token: str, terrain_id: int = 1, imagery_id: int = 2) -> None:
+    def confiure_cesium(self, access_token: str, terrain_id: int = 1, imagery_id: int = 2) -> None:
         '''
         Configures Cesium within the imagery system to capture photos using
         a Cesium account. The access token must be valid or the imagery
@@ -432,7 +429,7 @@ class Simulation(Entity):
             "imagery_id": imagery_id
         }
 
-    def reset (self) -> None:
+    def reset(self) -> None:
         '''
         Deletes and resets the simulation. All components, data
         and messages associated with the timeline on the simulation
