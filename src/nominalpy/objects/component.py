@@ -135,3 +135,28 @@ class Component (Object):
         # Add the message to the array for caching
         self.__messages[name.lower()] = msg
         return msg
+
+    def invoke (self, method: str, *args: list) -> str:
+        '''
+        
+        '''
+        
+        # Construct the JSON body
+        body: dict = {
+            "guid": self.id,
+            "method": method,
+            "params": args
+        }
+        
+        # Create the data
+        request_data: str = helper.jsonify(body)
+
+        # Create the response from the PATCH request and get the IDs
+        response = http.post_request(self._credentials, "method", data=request_data)
+        if response == None:
+            printer.error("Failed to invoke method named '%s' on object." % method)
+            return None
+        
+        # Update the flag for needing to get values
+        self._require_update()
+        return str(response)
