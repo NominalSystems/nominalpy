@@ -165,12 +165,12 @@ class Component (Object):
         # Create the response from the PATCH request and get the IDs
         response = http.post_request(self._credentials, "method", data=request_data)
         if response == None or response == {}:
-            printer.error("Failed to invoke method named '%s' on object." % method)
+            printer.error("Invoke method named '%s' on object failed." % method)
             return None
         
         # Check if there was an error
         if response["success"] == False:
-            printer.error('Failed to invoke method. Reason: "%s"' % response["error"])
+            printer.error('Invoke method failed. Reason: "%s"' % response["message"])
             return None
         
         # Update the flag for needing to get values
