@@ -176,3 +176,20 @@ class Component (Object):
         # Update the flag for needing to get values
         self._require_update()
         return response["result"]
+
+    def _set_methods(self):
+        """
+        set the methods to the class instance upon construction
+        :return:
+        """
+        # get the list of methods associated with this component
+
+        # define the common form of the method
+        def meth_head(self, *args, **kwargs):
+            # get the method name
+            method_name = meth_head.__name__
+            return self.invoke(method_name, *args)
+
+        # set each method as an attribute of the class instance
+        for method in methods:
+            setattr(self, method, meth_head)
