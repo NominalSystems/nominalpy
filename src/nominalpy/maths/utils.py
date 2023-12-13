@@ -28,7 +28,6 @@ def acos_quadrant_check(adjacent: float, hypotenuse: float, test: float) -> floa
     :returns:           The calculated angle in radians.
     :rtype:             float
     """
-
     # Calculate the ratio of the adjacent side to the hypotenuse
     rat = adjacent / hypotenuse
 
@@ -74,13 +73,12 @@ def shortest_angular_difference(angle1: float, angle2: float) -> float:
     :returns:       The shortest angular difference between the two angles
     :rtype:         float
     """
-
     # Calculate the difference between the two angles
-    diff: float = angle1 - angle2
-
-    # Perform a quadrant check
-    # TODO: unit test this to make sure that it is accurate
-    return acos_quadrant_check(np.cos(diff), 1.0, diff)
+    d_angle: float = angle1 - angle2
+    # Get the alternative angle
+    alt_angle: float = -np.sign(d_angle) * (2 * np.pi - np.fabs(d_angle))
+    # Return the shortest angle
+    return alt_angle if np.fabs(alt_angle) < np.fabs(d_angle) else d_angle
 
 
 def normalize_array(array: np.ndarray) -> np.ndarray:
@@ -153,10 +151,10 @@ def angle_between_vectors(v1: np.ndarray, v2: np.ndarray) -> float:
     dot: float = np.dot(v1, v2)
 
     # Calculate the magnitude of each vector
-    mag1: float = np.linalg.norm(v1)
-    mag2: float = np.linalg.norm(v2)
-
+    denom: float = np.linalg.norm(v1) * np.linalg.norm(v2)
+    if denom == 0:
+        raise ZeroDivisionError
     # Calculate the angle between the two vectors
-    angle: float = acos_quadrant_check(dot, mag1*mag2, dot)
+    angle: float = acos_quadrant_check(dot, denom, dot)
 
     return angle
