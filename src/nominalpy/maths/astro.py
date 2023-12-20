@@ -379,8 +379,8 @@ def vector_to_classical_elements(
     semi_major_axis: float = -mu / (2 * energy)
     # calculate the inclination
     inclination: float = np.arccos(H[2] / np.linalg.norm(H))
-    if np.fabs(node) == 0:
-        if eccentricity == 0:
+    if np.fabs(node) <= 1e-10:
+        if np.fabs(eccentricity) <= 1e-10:
             # circular equatorial orbit
             return (
                 semi_major_axis,
@@ -400,7 +400,7 @@ def vector_to_classical_elements(
                 utils.acos_quadrant_check(ECC[0], eccentricity, ECC[1]),  # longitude of periapsis
                 utils.acos_quadrant_check(np.dot(ECC, r_bn_n), eccentricity * r_mag, r_mag_dot_v_mag)  # true anomaly
             )
-    elif eccentricity == 0:
+    elif np.fabs(eccentricity) <= 1e-10:
         # circular inclined orbit
         return (
             semi_major_axis,
@@ -697,6 +697,26 @@ def true_to_mean_anomaly(true_anomaly: float, eccentricity: float) -> float:
     return eccentric_to_mean_anomaly(true_to_eccentric_anomaly(true_anomaly, eccentricity), eccentricity)
 
 
+def mean_to_true_anomaly(mean_anomaly: float, eccentricity: float) -> float:
+    """
+    Calculate the true anomaly from the mean anomaly.
+
+    :param mean_anomaly:    [rad] The mean anomaly of the orbit
+    :type mean_anomaly:     float
+    :param eccentricity:    [-] The eccentricity of the orbit (0 <= e < 1)
+    :type eccentricity:     float
+    :return:                [rad] The true anomaly of the orbit
+    :rtype:                 float
+    """
+    return eccentric_to_true_anomaly(
+        mean_to_eccentric_anomaly(
+            mean_anomaly,
+            eccentricity
+        ),
+        eccentricity
+    )
+
+
 def mean_to_osculating_elements(
     req: float,
     j2: float,
@@ -832,9 +852,56 @@ def mean_to_osculating_elements(
     d_34 = 1 if d_34 > 1 else d_34
     i_p = 2 * np.arcsin(d_34)
     omega_p = m_pop_op - m_p - Omega_p
-    e_p = mean_to_eccentric_anomaly(m_p, e_p)
-    f_p = eccentric_to_true_anomaly(e_p, e_p)
+    E_p = mean_to_eccentric_anomaly(m_p, e_p)
+    f_p = eccentric_to_true_anomaly(E_p, e_p)
     return ap, e_p, i_p, Omega_p, omega_p, f_p
+
+
+def vector_to_classical_elements_mean(
+        r_bn_n: np.ndarray,
+        v_bn_n: np.ndarray,
+        planet: str = "earth"
+) -> Tuple[float, float, float, float, float, float]:
+    """
+    Converts the position and velocity vectors into mean classical orbital elements.
+
+    :param r_bn_n:      The position vector in the inertial frame [m]
+    :type r_bn_n:       np.ndarray
+    :param v_bn_n:      The velocity vector in the inertial frame [m/s]
+    :type v_bn_n:       np.ndarray
+    :param planet:      The planet to use for the conversion
+    :type planet:       str
+
+    :return:            A tuple containing the classical orbital elements
+                            (
+                                mean semi_major_axis,
+                                mean eccentricity,
+                                mean inclination,
+                                mean right_ascension,
+                                mean argument_of_periapsis,
+                                mean true_anomaly
+                            )
+    :rtype:             tuple
+    """
+    # calculate the osculating orbital elements
+    sma_osc, ecc_osc, inc_osc, raan_osc, aop_osc, ta_osc = vector_to_classical_elements(
+        r_bn_n=r_bn_n,
+        v_bn_n=v_bn_n,
+        planet=planet
+    )
+    # convert the osculating orbital elements to mean orbital elements
+    sma_mean, ecc_mean, inc_mean, raan_mean, aop_mean, ta_mean = mean_to_osculating_elements(
+        req=get_planet_property(planet=planet, property="REQ"),
+        j2=get_planet_property(planet=planet, property="J2"),
+        semi_major_axis=sma_osc,
+        eccentricity=ecc_osc,
+        inclination=inc_osc,
+        raan=raan_osc,
+        argument_of_periapsis=aop_osc,
+        true_anomaly=ta_osc,
+        mean_to_osculating=False
+    )
+    return sma_mean, ecc_mean, inc_mean, raan_mean, aop_mean, ta_mean
 
 
 def classical_to_non_singular_elements(
