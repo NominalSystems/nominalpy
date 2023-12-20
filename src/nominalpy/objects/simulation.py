@@ -145,7 +145,8 @@ class Simulation(Entity):
         printer.log("Attempted to create %d component(s) with IDs: \n\t%s" % (len(response), response))
 
         # Skip on empty list
-        if len(response) == 0: return None
+        if len(response) == 0:
+            return None
 
         # Check the GUID and return a new component with that ID or a None component
         guid: str = response[0]
@@ -309,7 +310,20 @@ class Simulation(Entity):
             obj._require_update()
         for msg in self.__messages.values():
             msg._require_update()
-        
+
+    def tick_duration(self, duration: float, step: float = 1e-3) -> None:
+        '''
+        Attempts to tick the simulation by a certain amount. This will
+        tick the simulation with some step size, in the form of a time
+        span, and the iterations. The iterations are ticked on the
+        simulation side and will tick with the same step size.
+
+        :param duration: the number of seconds forward in time to tick the simulation
+        :param step: the size of the step to tick the simulation in seconds
+        :return:
+        '''
+        return self.tick(step=step, iterations=int(duration / step))
+
     def get_time(self) -> float:
         '''
         Returns the current simulation time based on the number of
