@@ -132,10 +132,28 @@ components.</p>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nominalpy.objects.component.Component.messages">
-<span class="sig-name descname"><span class="pre">messages</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#nominalpy.objects.component.Component.messages" title="Link to this definition"></a></dt>
-<dd><p>Defines a list of messages associated with this component. Any new requested message will be added here.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.component.Component.get_model">
+<span class="sig-name descname"><span class="pre">get_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nominalpy.objects.object.Object" title="nominalpy.objects.object.Object"><span class="pre">Object</span></a></span></span><a class="headerlink" href="#nominalpy.objects.component.Component.get_model" title="Link to this definition"></a></dt>
+<dd><p>Attempts to add or return a component model from the current
+component based on the type of the object it should be. If the
+component model exists, the model will be attached to the object
+and tracked correctly. This can also take some optional arguments
+that will initialise the model with some starting parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – The full namespace and type of the model to add / get</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Additional parameters to intialise on the simulation model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A component model if it exists in the cache or added to the object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#nominalpy.objects.object.Object" title="nominalpy.objects.object.Object">Object</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -522,6 +540,29 @@ request will not work correctly.</p>
 <li><p><strong>terrain_id</strong> (<em>int</em>) – The asset ID of the terrain map chosen for the Cesium object</p></li>
 <li><p><strong>imagery_id</strong> (<em>int</em>) – The asset ID of the imagery asset chosen for the Ceisum object</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.create_message">
+<span class="sig-name descname"><span class="pre">create_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nominalpy.objects.message.Message" title="nominalpy.objects.message.Message"><span class="pre">Message</span></a></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.create_message" title="Link to this definition"></a></dt>
+<dd><p>Attempts to create a new empty message that does not belong to a
+component but is owned by the simulation. This can also create
+some parameters within the message and will return the message
+object if created correctly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – The namespace and type of the message to be created</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Additional parameters to initialise the message with</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The message wrapper object if was created correctly</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#nominalpy.objects.message.Message" title="nominalpy.objects.message.Message">Message</a></p>
 </dd>
 </dl>
 </dd></dl>

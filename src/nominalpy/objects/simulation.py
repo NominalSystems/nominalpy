@@ -51,16 +51,16 @@ class Simulation(Entity):
 
         super().__init__(credentials=credentials, id=None)
 
-        self.__credentials = credentials
-        if self.__credentials == None:
+        self._credentials = credentials
+        if self._credentials == None:
             raise NominalException("Invalid Credentials: No credentials passed into the Simulation.")
         
         # Attempt a simple request
-        if not self.__credentials.is_local:
-            http.validate_credentials(self.__credentials)
+        if not self._credentials.is_local:
+            http.validate_credentials(self._credentials)
 
         # Resets the simulation if valid credentials
-        if reset and self.__credentials != None:
+        if reset and self._credentials != None:
             self.reset()
 
         # Fetch the current ID
@@ -77,7 +77,7 @@ class Simulation(Entity):
         :rtype:     dict
         '''
         
-        response = http.get_request(self.__credentials, "timeline")
+        response = http.get_request(self._credentials, "timeline")
         if response == {}:
             return None
         return response
@@ -94,9 +94,9 @@ class Simulation(Entity):
         '''
 
         # Create the get request
-        return http.get_request(self.__credentials, "object/types")
+        return http.get_request(self._credentials, "object/types")
 
-    def add_component (self, type: str, owner: Component = None, **kwargs) -> Component:
+    def add_component(self, type: str, owner: Component = None, **kwargs) -> Component:
         '''
         Attempts to add a new component to the simulation. This component
         can be added to an owner, if the owning component is passed in,
@@ -141,25 +141,25 @@ class Simulation(Entity):
         request_data: str = helper.jsonify(body, True)
 
         # Create the response from the PUT request and get the IDs
-        response = http.put_request(self.__credentials, "objects", data=request_data)
+        response = http.put_request(self._credentials, "objects", data=request_data)
         printer.log("Attempted to create %d component(s) with IDs: \n\t%s" % (len(response), response))
 
         # Skip on empty list
-        if len(response) == 0: return None
+        if len(response) == 0:
+            return None
 
         # Check the GUID and return a new component with that ID or a None component
         guid: str = response[0]
         if helper.is_valid_guid(guid):
             printer.success("Component of type '%s' created." % type)
-            obj: Component = Component(self.__credentials, guid)
+            obj: Component = Component(self._credentials, guid)
             self.__components.append(obj)
             return obj
         
         # Throw an error if no object or valid ID
-        printer.error("Could not construct object of class '%s'" % type)
-        return None
+        raise NominalException(f"Could not construct object of class {type}. Object name may be invalid.")
     
-    def get_system (self, type: str, **kwargs) -> Object:
+    def get_system(self, type: str, **kwargs) -> Object:
         '''
         Fetches a particular simulation system that is valid
         from the simulation and returns it as an object.
@@ -175,7 +175,7 @@ class Simulation(Entity):
 
         return self.add_component(type, **kwargs)
     
-    def get_message_types (self) -> list:
+    def get_message_types(self) -> list:
         '''
         This will return a list of all message types available in the simulation
         that can be created. This will include the full name of every message
@@ -186,9 +186,9 @@ class Simulation(Entity):
         '''
 
         # Create the get request
-        return http.get_request(self.__credentials, "message/types")
+        return http.get_request(self._credentials, "message/types")
 
-    def get_planet_message (self, planet: str) -> Message:
+    def get_planet_message(self, planet: str) -> Message:
         '''
         Returns the current planet state from the simulation by fetching
         the data from the SPICE kernels via the Universe system.
@@ -216,16 +216,64 @@ class Simulation(Entity):
         response = http.post_request(self._credentials, "query/planet", data=request_data)
 
         # Check for a valid response and update the data
-        if response == None or response == {}:
-            printer.error("Failed to retrieve data from planet '%s'." % planet)
-            return
+        if response is None or response == {}:
+            raise NominalException(f"Failed to retrieve data from planet {planet}.")
         
         # Transform the data into a Message object
         msg: Message = Message(credentials=self._credentials, id=response["guid"])
         self.__messages[planet] = msg
         return msg
 
-    def tick (self, step: float = 1e-3, iterations: int = 1) -> None:
+    def create_message(self, type: str, **kwargs) -> Message:
+        '''
+        Attempts to create a new empty message that does not belong to a
+        component but is owned by the simulation. This can also create
+        some parameters within the message and will return the message
+        object if created correctly.
+
+        :param type:    The namespace and type of the message to be created
+        :type type:     str
+        :param kwargs:  Additional parameters to initialise the message with
+        :type kwargs:   dict
+
+        :returns:       The message wrapper object if was created correctly
+        :rtype:         Message
+        '''
+
+        # Sanitise the type
+        if "NominalSystems.Messages" not in type:
+            type = "NominalSystems.Messages." + type
+
+        # Construct the JSON body
+        body: dict = {
+            "type": type
+        }
+
+        # If there are keyword arguments
+        if len(kwargs) > 0:
+            body["values"] = helper.serialize(kwargs)
+
+        # Create the data
+        request_data: str = helper.jsonify(body, True)
+
+        # Create the response from the PUT request and get the IDs
+        response = http.put_request(self._credentials, "messages", data=request_data)
+        printer.log("Attempted to create a new message of type '%s'." % type)
+
+        # Skip on empty list
+        if len(response) == 0: return None
+
+        # Check the GUID and return a new message with that ID or a None message
+        guid: str = response[0]
+        if helper.is_valid_guid(guid):
+            printer.success("Message of type '%s' created." % type)
+            msg: Message = Message(self._credentials, guid)
+            return msg
+        
+        # Throw an error if no message or valid ID
+        raise NominalException(f"Could not construct message of class {type}. Message name may be invalid.")
+
+    def tick(self, step: float = 1e-3, iterations: int = 1) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will
         tick the simulation with some step size, in the form of a time
@@ -251,7 +299,7 @@ class Simulation(Entity):
         )
 
         # Create the response from the POST request on the timeline
-        http.post_request(self.__credentials, "timeline/tick", data=request_data)
+        http.post_request(self._credentials, "timeline/tick", data=request_data)
         printer.success('Ticked the simulation with a step of %.3fs %d time(s).' % (step, iterations))
 
         # Increase the time
@@ -262,8 +310,21 @@ class Simulation(Entity):
             obj._require_update()
         for msg in self.__messages.values():
             msg._require_update()
-        
-    def get_time (self) -> float:
+
+    def tick_duration(self, duration: float, step: float = 1e-3) -> None:
+        '''
+        Attempts to tick the simulation by a certain amount. This will
+        tick the simulation with some step size, in the form of a time
+        span, and the iterations. The iterations are ticked on the
+        simulation side and will tick with the same step size.
+
+        :param duration: the number of seconds forward in time to tick the simulation
+        :param step: the size of the step to tick the simulation in seconds
+        :return:
+        '''
+        return self.tick(step=step, iterations=int(duration / step))
+
+    def get_time(self) -> float:
         '''
         Returns the current simulation time based on the number of
         seconds that have been ticked.
@@ -274,7 +335,7 @@ class Simulation(Entity):
 
         return self.__time
 
-    def capture_image (self, file_name: str, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0,
+    def capture_image(self, file_name: str, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0,
         ray_tracing: bool = False, size: tuple = (500, 500), camera_position: dict = None, 
         camera_rotation: tuple = (0, 0, 0), cesium: bool = False, timeout: float = 3.0) -> bool:
         '''
@@ -327,7 +388,7 @@ class Simulation(Entity):
         camera_rotation: dict = helper.serialize_object(camera_rotation)
 
         # Create the visualiser if it doesn't exist
-        if self.__visualiser == None:
+        if self.__visualiser is None:
             self.__visualiser = Visualiser()
 
         # Fetch the cesium values
@@ -355,7 +416,7 @@ class Simulation(Entity):
                 printer.warning(
                     "The capture image from the visualiser was not returned within a %ss timeout. The image may still be received asynchronously but requests may be lost." % timeout)
 
-    def confiure_cesium (self, access_token: str, terrain_id: int = 1, imagery_id: int = 2) -> None:
+    def confiure_cesium(self, access_token: str, terrain_id: int = 1, imagery_id: int = 2) -> None:
         '''
         Configures Cesium within the imagery system to capture photos using
         a Cesium account. The access token must be valid or the imagery
@@ -382,14 +443,14 @@ class Simulation(Entity):
             "imagery_id": imagery_id
         }
 
-    def reset (self) -> None:
+    def reset(self) -> None:
         '''
         Deletes and resets the simulation. All components, data
         and messages associated with the timeline on the simulation
         will be deleted.
         '''
         
-        http.delete_request(self.__credentials, "timeline")
+        http.delete_request(self._credentials, "timeline")
         self.__components = []
         self.__messages = {}
         self.__time = 0.0

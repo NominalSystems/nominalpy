@@ -2,7 +2,7 @@
 # This code is developed by Nominal Systems to aid with communication 
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2023.
-
+import numpy as np
 import pandas as pd
 from copy import deepcopy
 from ..connection import Credentials, http, helper
@@ -159,8 +159,18 @@ class Message (Object):
             # Create a copy of the packet that can be manipulated without losing the original data
             packet_new = deepcopy(packet)
             for key, value in packet.items():
+                # if the data item is an array, it indicates tha the variable is multi-dimensional
+                if isinstance(value, np.ndarray):
+                    # Add each component of a multi-dimensional variable to their own column
+                    for i, value2 in enumerate(value):
+                        # Create a new key for the element of the multi-dimensional variable
+                        key_new = f"{key}_{i}"
+                        # Add the element to the new packet
+                        packet_new[key_new] = value2
+                    # Remove the original data from the new data packet to avoid data duplication
+                    packet_new.pop(key, None)
                 # If the data item is a dictionary, it indicates that the variable is multi-dimensional
-                if isinstance(value, dict):
+                elif isinstance(value, dict):
                     # Add each component of a multi-dimensional variable to their own column
                     for key2, value2 in value.items():
                         # Create a new key for the element of the multi-dimensional variable
