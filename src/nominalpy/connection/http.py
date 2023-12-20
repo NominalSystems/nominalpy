@@ -67,13 +67,18 @@ def handle_request_data (response: requests.Response) -> dict:
     
     # Check if the request was valid and return the json data
     if response.status_code == 200:
-        if response.text == "":
-            return {}
-        data = json.loads(response.text)
-        return data
+        
+        # Attempt to get the data
+        data: dict = json.loads(response.text)
+        
+        # Check if there is an error
+        if "error" in data.keys():
+            raise NominalException(f"Error: {data['error']}")
+        
+        # Otherwise, return the data in the response
+        return data["result"]
     
     # Throw an error if not
-    printer.error("Invalid request with status code %d." % response.status_code)
     raise create_web_exception(response.status_code)
 
 def get_request (credentials: Credentials, url: str, params: dict = {}) -> dict:

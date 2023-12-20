@@ -24,9 +24,9 @@ class NominalException (Exception):
         :type message:      str
         '''
 
+        printer.error(message)
         super().__init__(message)
         self.message = message
-        printer.error(self.message)
 
     def __str__ (self) -> str:
         '''

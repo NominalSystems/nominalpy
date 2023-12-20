@@ -138,7 +138,18 @@ class Component (Object):
 
     def invoke (self, method: str, *args: list) -> str:
         '''
-        
+        Attempts to invoke a public method that exists on the object.
+        This passes in some parameters of some types and is able to
+        invoke a particular method. If the method does not exist or
+        the parameters do not match, then an error will be thrown.
+
+        :param method:  The name of the method to invoke on the object
+        :type method:   str
+        :param args:    A list of arguments that are in a JSON format
+        :type args:     list
+
+        :returns:       The JSON value from the result of the message
+        :rtype:         str
         '''
         
         # Construct the JSON body
@@ -153,10 +164,7 @@ class Component (Object):
 
         # Create the response from the PATCH request and get the IDs
         response = http.post_request(self._credentials, "method", data=request_data)
-        if response == None:
-            printer.error("Failed to invoke method named '%s' on object." % method)
-            return None
         
         # Update the flag for needing to get values
         self._require_update()
-        return str(response)
+        return response
