@@ -4,7 +4,7 @@
 # with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 
 from ..connection import Credentials, http, helper
-from ..utils import printer
+from ..utils import printer, NominalException
 from .entity import Entity
 
 
@@ -25,6 +25,9 @@ class Object(Entity):
 
     __type: str = None
     '''Defines the full Nominal class name of the object that has been fetched. This is updated when values are fetched.'''
+
+    __type_metadata: dict = None
+    '''Defines the full set of variable and method information about the object that has been fetched. This is updated once as it is fixed per class.'''
 
     _api_type = "object"
     '''The API type defines the root object type of the class. This is either 'object' or 'message'.'''
@@ -208,6 +211,62 @@ class Object(Entity):
         '''
 
         return self.set_values(param_name=param, param_value=value)
+        
+    def get_variables (self) -> dict:
+        '''
+        This method will attempt to get the information about all publically
+        available variables that exists on the object's class. This provides 
+        information about the expected type and whether the variable can be 
+        written to.
+
+        :returns:       A dictionary of variable names with the data about the variable
+        :rtype:         dict
+        '''
+
+        # Check if the type metadata has not been loaded
+        if self.__type_metadata == None:
+
+            # Ensure that some data has been fetched from the type
+            self._get_object()
+
+            # Construct the JSON body
+            request_data: str = helper.jsonify({
+                "name": self.__type
+            })
+
+            # Create the request and check for valid
+            response = http.post_request(self._credentials, "query/object/type", data=request_data)
+            if response == {} or response == "":
+                return {}
+            
+            # Set the value
+            self.__type_metadata = response
+        
+        # Return the list of variable names
+        return self.__type_metadata["Variables"]
+    
+    def get_variable (self, name: str) -> dict:
+        '''
+        This method will attempt to get the information about a particular
+        variable that exists on the object's class. This provides information
+        about the expected type and whether the variable can be written to.
+
+        :param name:    The name of the variable to look for
+        :type name:     str
+
+        :returns:       A dictionary with the data about the variable
+        :rtype:         dict
+        '''
+        
+        # Fetch all the data
+        variables: dict = self.get_variables()
+
+        # Attempt to find the variable
+        if not name in variables.keys():
+            raise NominalException(f"The variable '{name}' does not exist on a class of type '{self.__type}'.")
+        
+        # Return the dictionary data
+        return variables[name]
 
     def delete (self) -> bool:
         '''
