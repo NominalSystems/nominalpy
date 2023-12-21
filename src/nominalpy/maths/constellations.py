@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
+from collections.abc import Container
+from typing import Dict, Optional, Union, List
 
 import numpy as np
 
-from ..maths.astro import classical_to_vector_elements
+from ..maths.astro import classical_to_vector_elements, mean_to_osculating_elements, get_planet_property, \
+    argument_of_latitude
 
 
 def state_vectors(method):
@@ -13,25 +16,73 @@ def state_vectors(method):
     """
     def wrapper(self, *args, **kwargs):
         orbital_elements = method(self, *args, **kwargs)
+        result = dict()
         # use dictionary comprehension to efficiently convert the state vectors to classical orbital elements
-        return {
-            i: classical_to_vector_elements(
-                semi_major_axis=elements[0],
-                eccentricity=elements[1],
-                inclination=elements[2],
-                right_ascension=elements[3],
-                argument_of_periapsis=elements[4],
-                true_anomaly=elements[5],
+        for i, elements in orbital_elements.items():
+            vectors = classical_to_vector_elements(
+                semi_major_axis=elements["semi_major_axis"],
+                eccentricity=elements["eccentricity"],
+                inclination=elements["inclination"],
+                right_ascension=elements["right_ascension"],
+                argument_of_periapsis=elements["argument_of_periapsis"],
+                true_anomaly=elements["true_anomaly"],
                 *args,
                 **kwargs
-            ) for i, elements in orbital_elements.items()
-        }
+            )
+            result[i] = {
+                "r_bn_n": np.array(vectors[0]),
+                "v_bn_n": np.array(vectors[1]),
+            }
+        return result
     return wrapper
+
+
+def classical_elements_mean(mean_to_osculating=False):
+    """
+    Decorator to calculate the mean classical orbital elements from osculating elements
+    :param method: the method to be decorated
+    :return: the decorated method
+    """
+    def decorator(method):
+        def wrapper(self, *args, **kwargs):
+            orbital_elements = method(self, *args, **kwargs)
+            planet = kwargs.get("planet", "earth")
+            req = get_planet_property(planet, "REQ")
+            j2 = get_planet_property(planet, "J2")
+            # define the keys that will be used to access the orbital elements
+            keys = (
+                "semi_major_axis",
+                "eccentricity",
+                "inclination",
+                "right_ascension",
+                "argument_of_periapsis",
+                "true_anomaly",
+            )
+            # use dictionary comprehension to efficiently convert between mean and osculating orbital elements or
+            #   vice versa
+            return {
+                # use dictionary comprehension to map the keys to their respective orbital elements
+                i: {keys[j]: el for j, el in enumerate(
+                    mean_to_osculating_elements(
+                        req=req,
+                        j2=j2,
+                        semi_major_axis=elements["semi_major_axis"],
+                        eccentricity=elements["eccentricity"],
+                        inclination=elements["inclination"],
+                        right_ascension=elements["right_ascension"],
+                        argument_of_periapsis=elements["argument_of_periapsis"],
+                        true_anomaly=elements["true_anomaly"],
+                        mean_to_osculating=mean_to_osculating,
+                    )
+                )} for i, elements in orbital_elements.items()
+            }
+        return wrapper
+    return decorator
 
 
 class Constellation(ABC):
 
-    _spacecraft: dict = None
+    _spacecraft: Dict[int, Dict] = None
 
     # the number of satellites in the constellation. There must be at least one spacecraft in the constellation
     _num_satellites: int = None
@@ -244,7 +295,29 @@ class Constellation(ABC):
             raise TypeError
         self._spacecraft = spacecraft
 
-    def __init__(self, **kwargs):
+    def __init__(self, init_classical_elements=False, **kwargs):
+        """
+        initialize the constellation
+
+        :param init_classical_elements: whether to initialize the orbital elements for every spacecraft in the
+            constellation
+        :type init_classical_elements: bool
+        :param num_satellites: the number of satellites in the constellation
+        :type num_satellites: int
+        :param semi_major_axis: the semi-major axis of every spacecraft in the constellation
+        :type semi_major_axis: float
+        :param eccentricity: the eccentricity of every spacecraft in the constellation
+        :type eccentricity: float
+        :param inclination: the inclination of every spacecraft in the constellation
+        :type inclination: float
+        :param right_ascension: the right ascension of every spacecraft in the constellation
+        :type right_ascension: float
+        :param argument_of_periapsis: the argument of periapsis of every spacecraft in the constellation
+        :type argument_of_periapsis: float
+        :param true_anomaly_offset: the true anomaly offset of every spacecraft in the constellation
+        :type true_anomaly_offset: float
+        :param kwargs:
+        """
         super().__init__()
         self.num_satellites = kwargs.get("num_satellites", 1)
         if "semi_major_axis" in kwargs:
@@ -259,15 +332,105 @@ class Constellation(ABC):
             self.argument_of_periapsis = kwargs.get("argument_of_periapsis")
         if "true_anomaly_offset" in kwargs:
             self.true_anomaly_offset = kwargs.get("true_anomaly_offset")
-        self.spacecraft = kwargs.get("spacecraft", {})
+        # initialize the spacecraft dictionary
+        self.spacecraft = {}
+        for i in range(self.num_satellites):
+            self.spacecraft[i] = dict()
+        # initialize the orbital elements for every spacecraft in the constellation
+        if init_classical_elements:
+            self.init_classical_elements(**kwargs)
+
+    def set_mean_elements(
+            self,
+            semi_major_axis_mean: float = None,
+            eccentricity_mean: float = None,
+            inclination_mean: float = None,
+            right_ascension_mean: float = None,
+            argument_of_periapsis_mean: float = None,
+            true_anomaly_mean: float = None,
+            **kwargs
+    ):
+        """
+        set the mean orbital elements for every spacecraft in the constellation
+
+        :param semi_major_axis_mean: the mean semi-major axis of every spacecraft in the constellation
+        :type semi_major_axis_mean: float
+        :param eccentricity_mean: the mean eccentricity of every spacecraft in the constellation
+        :type eccentricity_mean: float
+        :param inclination_mean: the mean inclination of every spacecraft in the constellation
+        :type inclination_mean: float
+        :param right_ascension_mean: the mean offset in right ascension
+        :type right_ascension_mean: float
+        :param argument_of_periapsis_mean: the mean offset in argument of periapsis
+        :type argument_of_periapsis_mean: float
+        :param true_anomaly_mean: the mean offset in true anomaly
+        :type true_anomaly_mean: float
+        :return:
+        """
+        if semi_major_axis_mean is None:
+            raise ValueError("Cannot set the mean orbital elements if the semi_major_axis is None")
+        if eccentricity_mean is None:
+            raise ValueError("Cannot set the mean orbital elements if the eccentricity is None")
+        if inclination_mean is None:
+            raise ValueError("Cannot set the mean orbital elements if the inclination is None")
+        if right_ascension_mean is None:
+            raise ValueError("Cannot set the mean orbital elements if the right_ascension is None")
+        if argument_of_periapsis_mean is None:
+            raise ValueError("Cannot set the mean orbital elements if the argument_of_periapsis is None")
+        if true_anomaly_mean is None:
+            raise ValueError("Cannot set the mean orbital elements if the true_anomaly is None")
+        planet = kwargs.get("planet", "earth")
+        req = get_planet_property(planet, "REQ")
+        j2 = get_planet_property(planet, "J2")
+        # convert the mean to their equivalent osculating orbital elements so they can be stored
+        elements_osculating = mean_to_osculating_elements(
+            req=req,
+            j2=j2,
+            semi_major_axis=semi_major_axis_mean,
+            eccentricity=eccentricity_mean,
+            inclination=inclination_mean,
+            right_ascension=right_ascension_mean,
+            argument_of_periapsis=argument_of_periapsis_mean,
+            true_anomaly=true_anomaly_mean,
+            mean_to_osculating=True,
+        )
+        self.semi_major_axis = elements_osculating[0]
+        self.eccentricity = elements_osculating[1]
+        self.inclination = elements_osculating[2]
+        self.right_ascension = elements_osculating[3]
+        self.argument_of_periapsis = elements_osculating[4]
+        self.true_anomaly_offset = elements_osculating[5]
 
     @abstractmethod
-    def init_orbital_elements(self, *args, **kwargs):
+    def init_classical_elements(self, *args, **kwargs):
         """
-        initialize the orbital elements for every spacecraft in the constellation
+        initialize the orbital elements for every spacecraft in the constellation, if the orbital element
+            properties of this class are osculating then the initial orbital elements will be osculating, otherwise
+            they will be mean
         :return:
         """
         raise NotImplementedError
+
+    @classical_elements_mean(mean_to_osculating=True)
+    def init_classical_elements_osculating(self, *args, **kwargs):
+        """
+        initialize the osculating classical orbital elements for every spacecraft in the constellation assuming that the
+            orbital element properties of this object are mean
+        :param mean_to_osculating: whether to convert the mean orbital elements to their equivalent osculating orbital
+            elements
+        :type mean_to_osculating: bool
+        :return:
+        """
+        return self.init_classical_elements(*args, **kwargs)
+
+    @classical_elements_mean(mean_to_osculating=False)
+    def init_classical_elements_mean(self, *args, **kwargs):
+        """
+        initialize the mean classical orbital elements for every spacecraft in the constellation assuming that the
+            orbital element properties of this object are osculating
+        :return:
+        """
+        return self.init_classical_elements(*args, **kwargs)
 
     @state_vectors
     def init_state_vectors(self, *args, **kwargs):
@@ -275,7 +438,23 @@ class Constellation(ABC):
         initialize the inertial state vectors for every spacecraft in the constellation
         :return:
         """
-        return self.init_orbital_elements()
+        return self.init_classical_elements()
+
+    @state_vectors
+    def init_state_vectors_mean(self, *args, **kwargs):
+        """
+        initialize the mean inertial state vectors for every spacecraft in the constellation
+        :return:
+        """
+        return self.init_classical_elements_mean(*args, **kwargs)
+
+    @state_vectors
+    def init_state_vectors_osculating(self, *args, **kwargs):
+        """
+        initialize the osculating inertial state vectors for every spacecraft in the constellation
+        :return:
+        """
+        return self.init_classical_elements_osculating(*args, **kwargs)
 
     def __iter__(self):
         """
@@ -366,13 +545,85 @@ class Constellation(ABC):
         """
         return bool(self._spacecraft)
 
+    def __enter__(self):
+        """
+        enter the context of the constellation
+        :return: the constellation
+        """
+        self.init_classical_elements()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """
+        exit the context of the constellation
+        :param exc_type: the exception type
+        :param exc_val: the exception value
+        :param exc_tb: the exception traceback
+        """
+        pass
+
+    def iter_state_vectors(self, *args, **kwargs):
+        """
+        iterate over the state vectors of the spacecraft in the constellation
+        :return: an iterator over the state vectors of the spacecraft in the constellation
+        """
+        return iter(self.init_state_vectors(*args, **kwargs).items())
+
+    def true_argument_of_latitude(self, spacecraft_id: int):
+        """
+        get the true argument of latitude of the spacecraft in the constellation
+        :return: the true argument of latitude of the spacecraft in the constellation
+        """
+        return argument_of_latitude(
+            argument_of_periapsis=self[spacecraft_id][4],
+            anomaly=self[spacecraft_id][5],
+        )
+
+    def is_valid_spacecraft_id(self, spacecraft_id: int) -> bool:
+        """
+        check if the spacecraft id is valid
+        :param spacecraft_id: the spacecraft id
+        :return: true if the spacecraft id is valid, false otherwise
+        """
+        return spacecraft_id in self.spacecraft.keys()
+
+    def set_variable(self, spacecraft_ids: Optional[Union[int, List[int]]] = None, **kwargs):
+        """
+        set variables for spacecraft in the constellation where the variables are input into the method as keyword
+            arguments
+        :param spacecraft_ids: the spacecraft ids to set the variable for. If None, then the variable will be set for
+            every spacecraft in the constellation
+        :type spacecraft_ids: Optional[Union[int, List[int]]]
+        :param kwargs: the variables to set for the spacecraft in the constellation
+        """
+        # if the spacecraft ids are None, then set the variable for every spacecraft in the constellation
+        if spacecraft_ids is None:
+            spacecraft_ids = range(len(self))
+        # if the spacecraft ids are an integer, then convert it to a list
+        if isinstance(spacecraft_ids, int):
+            spacecraft_ids = [spacecraft_ids]
+        # set the variable for every spacecraft in the constellation
+        for spacecraft_id in spacecraft_ids:
+            for variable, value in kwargs.items():
+                if not self.is_valid_spacecraft_id(spacecraft_id):
+                    raise KeyError(f"The spacecraft id {spacecraft_id} does not exist")
+
+                # if the value is a container, then set the variable for every spacecraft in the constellation
+                if isinstance(value, Container) and not isinstance(value, str):
+                    if len(value) != len(spacecraft_ids):
+                        raise ValueError(f"The length of the value {variable} does not match the number of " +
+                                         f"spacecraft in the constellation {len(self)}")
+                    self[spacecraft_id][variable] = value[spacecraft_id]
+                else:
+                    self[spacecraft_id][variable] = value
+
 
 class Coplanar(Constellation):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def init_orbital_elements(self, *args, **kwargs):
+    def init_classical_elements(self, *args, **kwargs):
         """
         initialize the orbital elements for every spacecraft in the constellation
         :return:
@@ -380,16 +631,13 @@ class Coplanar(Constellation):
         relative_phase: float = 2 * np.pi / self.num_satellites
         # use dictionary comprehension to efficiently initialize the orbital elements for every spacecraft in the
         #   constellation
-        self._spacecraft = {
-            i: (
-                self.semi_major_axis,
-                self.eccentricity,
-                self.inclination,
-                self.right_ascension,
-                self.argument_of_periapsis,
-                self.true_anomaly_offset + i * relative_phase
-            ) for i in range(self.num_satellites)
-        }
+        for i in range(self.num_satellites):
+            self.spacecraft[i]["semi_major_axis"] = self.semi_major_axis
+            self.spacecraft[i]["eccentricity"] = self.eccentricity
+            self.spacecraft[i]["inclination"] = self.inclination
+            self.spacecraft[i]["right_ascension"] = self.right_ascension
+            self.spacecraft[i]["argument_of_periapsis"] = self.argument_of_periapsis
+            self.spacecraft[i]["true_anomaly"] = self.true_anomaly_offset + i * relative_phase
         return self._spacecraft
 
 
@@ -483,7 +731,7 @@ class WalkerDelta(Walker):
         super().__init__(**kwargs)
         self.relative_spacing = kwargs.get("relative_spacing", 1.0)
 
-    def init_orbital_elements(self, *args, **kwargs):
+    def init_classical_elements(self, *args, **kwargs):
         """
         initialize the orbital elements for every spacecraft in the constellation
         :param args:
@@ -512,13 +760,11 @@ class WalkerDelta(Walker):
                 true_anom = relative_phase * i + relative_anom * j + self.true_anomaly_offset
                 raan = full_rotation / self.num_planes * i + self.right_ascension
                 index = i * num_satellites_plane + j
-                self._spacecraft[index] = (
-                    self.semi_major_axis,
-                    self.eccentricity,
-                    self.inclination,
-                    raan,
-                    self.argument_of_periapsis,
-                    true_anom
-                )
+                self.spacecraft[index]["semi_major_axis"] = self.semi_major_axis
+                self.spacecraft[index]["eccentricity"] = self.eccentricity
+                self.spacecraft[index]["inclination"] = self.inclination
+                self.spacecraft[index]["right_ascension"] = raan
+                self.spacecraft[index]["argument_of_periapsis"] = self.argument_of_periapsis
+                self.spacecraft[index]["true_anomaly"] = true_anom
         # return the orbital elements
         return self._spacecraft
