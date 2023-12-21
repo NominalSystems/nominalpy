@@ -723,7 +723,7 @@ def mean_to_osculating_elements(
     semi_major_axis: float,
     eccentricity: float,
     inclination: float,
-    raan: float,
+    right_ascension: float,
     argument_of_periapsis: float,
     true_anomaly: float,
     mean_to_osculating: bool
@@ -743,8 +743,8 @@ def mean_to_osculating_elements(
     :type eccentricity:         float
     :param inclination:         [rad] Inclination of the orbit
     :type inclination:          float
-    :param raan:                [rad] Right ascension of the ascending node of the orbit
-    :type raan:                 float
+    :param right_ascension:     [rad] Right ascension of the ascending node of the orbit
+    :type right_ascension:      float
     :param argument_of_periapsis:   [rad] Argument of periapsis of the orbit
     :type argument_of_periapsis:    float
     :param true_anomaly:        [rad] True anomaly of the orbit
@@ -770,7 +770,7 @@ def mean_to_osculating_elements(
     a = semi_major_axis
     e = eccentricity
     i = inclination
-    Omega = raan
+    Omega = right_ascension
     omega = argument_of_periapsis
     f = true_anomaly
     # calculate the mean anomaly
@@ -896,7 +896,7 @@ def vector_to_classical_elements_mean(
         semi_major_axis=sma_osc,
         eccentricity=ecc_osc,
         inclination=inc_osc,
-        raan=raan_osc,
+        right_ascension=raan_osc,
         argument_of_periapsis=aop_osc,
         true_anomaly=ta_osc,
         mean_to_osculating=False
@@ -1240,7 +1240,7 @@ def classical_to_relative_elements_mean(
         semi_major_axis=semi_major_axis_leader,
         eccentricity=eccentricity_leader,
         inclination=inclination_leader,
-        raan=right_ascension_leader,
+        right_ascension=right_ascension_leader,
         argument_of_periapsis=argument_of_periapsis_leader,
         true_anomaly=true_anomaly_leader,
         req=req,
@@ -1251,7 +1251,7 @@ def classical_to_relative_elements_mean(
         semi_major_axis=semi_major_axis_follower,
         eccentricity=eccentricity_follower,
         inclination=inclination_follower,
-        raan=right_ascension_follower,
+        right_ascension=right_ascension_follower,
         argument_of_periapsis=argument_of_periapsis_follower,
         true_anomaly=true_anomaly_follower,
         req=req,
@@ -1323,3 +1323,26 @@ def vector_to_relative_elements_mean(
             planet=planet,
         )
     )
+
+
+def argument_of_latitude(argument_of_periapsis: float, anomaly: float, angle_max=2*np.pi) -> float:
+    """
+    Calculate the argument of latitude from the argument of periapsis and the true/mean anomaly.
+
+    If the input anomaly is the true anomaly, then the corresponding argument of latitude will be the true argument of
+        latitude. Conversely, if the input anomaly is the mean anomaly, then the corresponding argument of latitude will
+        be the mean argument of latitude.
+
+    :param argument_of_periapsis:   [rad] Argument of periapsis
+    :type argument_of_periapsis:    float
+    :param anomaly:                 [rad] True anomaly
+    :type anomaly:                  float
+    :param angle_max:               [rad] Maximum angle to normalize the argument of latitude to. If the argument of
+                                            periapsis and anomaly are expressed in radians, then angle_max should be
+                                            2*np.pi. If the argument of periapsis and anomaly are expressed in degrees,
+                                            then angle_max should be 360.
+    :type angle_max:                float
+    :return:                        [rad] Argument of latitude
+    :rtype:                         float
+    """
+    return utils.normalize_angle(argument_of_periapsis + anomaly, angle_max=angle_max)
