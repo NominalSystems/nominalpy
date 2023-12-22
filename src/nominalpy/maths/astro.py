@@ -944,8 +944,8 @@ def classical_to_non_singular_elements(
     """
     return (
         semi_major_axis,
-        eccentricity * np.cos(argument_of_periapsis),
-        eccentricity * np.sin(argument_of_periapsis),
+        eccentricity * np.cos(argument_of_periapsis),  # x component of eccentricity
+        eccentricity * np.sin(argument_of_periapsis),  # y component of eccentricity
         inclination,
         right_ascension,
         utils.normalize_angle(
@@ -1346,3 +1346,43 @@ def argument_of_latitude(argument_of_periapsis: float, anomaly: float, angle_max
     :rtype:                         float
     """
     return utils.normalize_angle(argument_of_periapsis + anomaly, angle_max=angle_max)
+
+
+def period(semi_major_axis: float, planet="earth") -> float:
+    """
+    Calculate the orbital period of an orbit with a given semi-major axis and gravitational parameter.
+
+    :param semi_major_axis:     [m] Semi-major axis of the orbit
+    :type semi_major_axis:      float
+    :param planet:              Name of the planet to use for the calculation
+    :type planet:               str
+    :return:                    [s] Orbital period
+    :rtype:                     float
+    """
+    # ensure that the semi-major axis is positive
+    if semi_major_axis < 0:
+        raise ValueError("Semi-major axis must be positive")
+    # calculate the gravitational parameter of the central body
+    mu = get_planet_mu(planet)
+    # calculate the orbital period
+    return 2 * np.pi * np.sqrt(semi_major_axis ** 3 / mu)
+
+
+def mean_motion(semi_major_axis: float, planet="earth") -> float:
+    """
+    Calculate the mean motion of an orbit with a given semi-major axis and gravitational parameter.
+
+    :param semi_major_axis:     [m] Semi-major axis of the orbit
+    :type semi_major_axis:      float
+    :param planet:              Name of the planet to use for the calculation
+    :type planet:               str
+    :return:                    [rad/s] Mean motion
+    :rtype:                     float
+    """
+    # ensure that the semi-major axis is positive
+    if semi_major_axis < 0:
+        raise ValueError("Semi-major axis must be positive")
+    # calculate the gravitational parameter of the central body
+    mu = get_planet_mu(planet)
+    # calculate the mean motion
+    return np.sqrt(mu / semi_major_axis ** 3)
