@@ -72,7 +72,7 @@ class Object(Entity):
         
         # Perform the request on the data
         request_data: str = helper.jsonify({
-            "guid": self.id
+            "ID": self.id
         })
         response = http.post_request(self._credentials, "query/" + self._api_type, data=request_data)
         
@@ -81,8 +81,8 @@ class Object(Entity):
             printer.error("Failed to retrieve data from %s '%s'." % (self._api_type, self.id))
         else:
             self.__update_required = False
-            self.__type = response["type"]
-            self.__data = response["data"]
+            self.__type = response["Type"]
+            self.__data = response["Data"]
     
     def get_type (self) -> str:
         '''
@@ -164,7 +164,7 @@ class Object(Entity):
 
         # Construct the JSON body
         body: dict = {
-            "guid": self.id
+            "ID": self.id
         }
 
         # Check if no values exists and set the data
@@ -179,7 +179,7 @@ class Object(Entity):
             del kwargs['param_value']
         
         # Update the data in the body
-        body["data"] = helper.serialize(kwargs)
+        body["Data"] = helper.serialize(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body)
@@ -231,7 +231,7 @@ class Object(Entity):
 
             # Construct the JSON body
             request_data: str = helper.jsonify({
-                "name": self.__type
+                "Type": self.__type
             })
 
             # Create the request and check for valid
@@ -280,7 +280,7 @@ class Object(Entity):
         # Construct the JSON body
         request_data: str = helper.jsonify(
             {
-                "guid": self.id
+                "ID": self.id
             }
         )
 

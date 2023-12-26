@@ -72,11 +72,11 @@ def handle_request_data (response: requests.Response) -> dict:
         data: dict = json.loads(response.text)
         
         # Check if there is an error
-        if "error" in data.keys():
-            raise NominalException(f"Error: {data['error']}")
+        if "Error" in data.keys():
+            raise NominalException(f"Error: {data['Error']}")
         
         # Otherwise, return the data in the response
-        return data["result"]
+        return data["Result"]
     
     # Throw an error if not
     raise create_web_exception(response.status_code)

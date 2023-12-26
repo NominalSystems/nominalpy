@@ -4,6 +4,7 @@
 # with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 
 import time
+from datetime import datetime
 from .component import Component
 from .entity import Entity
 from .message import Message
@@ -126,16 +127,16 @@ class Simulation(Entity):
        
         # Construct the JSON body
         body: dict = {
-            "type": type
+            "Type": type
         }
         
         # Add in owner to the body
         if owner != None and isinstance(owner, Component):
-            body["owner"] = owner.id
+            body["Owner"] = owner.id
 
         # If there are keyword arguments
         if len(kwargs) > 0:
-            body["data"] = helper.serialize(kwargs)
+            body["Data"] = helper.serialize(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body, True)
@@ -204,12 +205,12 @@ class Simulation(Entity):
         planet = planet.lower()
 
         # Check if the message exists
-        if planet in self.__messages:
+        if planet in self.__messages.keys():
             return self.__messages[planet]
 
         # Create the data packet to be submitted to the api
-        body = dict(planet=str(planet))
-        body["data"] = {}
+        body = dict(Planet=str(planet))
+        body["Params"] = {}
         request_data: str = helper.jsonify(body)
 
         # Make the request to get the data
@@ -220,7 +221,7 @@ class Simulation(Entity):
             raise NominalException(f"Failed to retrieve data from planet {planet}.")
         
         # Transform the data into a Message object
-        msg: Message = Message(credentials=self._credentials, id=response["guid"])
+        msg: Message = Message(credentials=self._credentials, id=response["ID"])
         self.__messages[planet] = msg
         return msg
 
@@ -246,12 +247,12 @@ class Simulation(Entity):
 
         # Construct the JSON body
         body: dict = {
-            "type": type
+            "Type": type
         }
 
         # If there are keyword arguments
         if len(kwargs) > 0:
-            body["values"] = helper.serialize(kwargs)
+            body["Data"] = helper.serialize(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body, True)
@@ -293,8 +294,8 @@ class Simulation(Entity):
         # Construct the JSON body
         request_data: str = helper.jsonify(
             {
-                "timestep": timespan,
-                "iterations": iterations
+                "Timestep": timespan,
+                "Iterations": iterations
             }
         )
 
@@ -334,6 +335,20 @@ class Simulation(Entity):
         '''
 
         return self.__time
+    
+    def get_datetime (self) -> datetime:
+        '''
+        Returns the current datetime of the simulation at the current
+        point in the simulation. This will be returned from the simulation
+        and is the sum of the initial Epoch and the time elapsed.
+
+        :returns:   The current datetime of the simulation
+        :rtype:     datetime
+        '''
+
+        # Fetches the datetime data and returns the structure
+        dt: dict = self.__get_timeline()["SimulationDate"]
+        return datetime(dt["Year"], dt["Month"], dt["Day"], dt["Hour"], dt["Minute"], dt["Second"], dt["Millisecond"] * 1000)
 
     def capture_image(self, file_name: str, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0,
         ray_tracing: bool = False, size: tuple = (500, 500), camera_position: dict = None, 

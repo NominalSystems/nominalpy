@@ -79,14 +79,14 @@ class Component (Object):
        
         # Construct the JSON body
         body: dict = {
-            "type": type,
-            "owner": self.id
+            "Type": type,
+            "Owner": self.id
         }
 
         # If there are keyword arguments
         if len(kwargs) == 0:
             kwargs["IsEnabled"] = True
-        body["data"] = helper.serialize(kwargs)
+        body["Data"] = helper.serialize(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body, True)
@@ -154,9 +154,9 @@ class Component (Object):
         
         # Construct the JSON body
         body: dict = {
-            "guid": self.id,
-            "method": method,
-            "params": args
+            "ID": self.id,
+            "Method": method,
+            "Params": args
         }
         
         # Create the data

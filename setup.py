@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 # Setup the project
 setup(
     name='nominalpy',
-    version='0.7.1',
+    version='0.8.0',
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     install_requires=["requests", "urllib3", "paho-mqtt", "numpy", "pandas"],
@@ -18,6 +18,6 @@ setup(
     long_description="This is the Python interface library for the Nominal API. \
         It enables accessing the REST API simulation functions in an easy format.\
         Examples of how to construct Nominal simulations are provided on the\
-        Nominal Systems documentation found at https://www.docs.nominalsys.com.",
-    url='https://api.nominalsys.com',
+        Nominal Systems documentation found at https://docs.nominalsys.com.",
+    url='https://www.nominalsys.com',
 )

@@ -51,8 +51,8 @@ class Message (Object):
 
         # Construct the JSON body
         body: dict = {
-            "guid": self.id,
-            "interval": interval
+            "ID": self.id,
+            "Interval": interval
         }
 
         # Create the data
@@ -93,14 +93,14 @@ class Message (Object):
 
         # Construct the JSON body parameters
         body: dict = {
-            "guid": self.id,
-            "min_time": min_time,
-            "max_time": max_time
+            "ID": self.id,
+            "MinTime": min_time,
+            "MaxTime": max_time
         }
         if len(values) > 0:
-            body["data"] = []
+            body["Params"] = []
             for param in values:
-                body["data"].append(param)
+                body["Params"].append(param)
 
         # Create the data
         request_data: str = helper.jsonify(body)
@@ -112,10 +112,10 @@ class Message (Object):
         data: list = []
         for r in response:
             entry: dict = {}
-            entry["time"] = r["time"]
+            entry["time"] = r["Time"]
             entry_data = {}
-            for d in r["data"].keys():
-                entry_data[d] = helper.deserialize(r["data"][d])
+            for d in r["Data"].keys():
+                entry_data[d] = helper.deserialize(r["Data"][d])
             entry["data"] = entry_data
             data.append(entry)
 
@@ -221,15 +221,15 @@ class Message (Object):
 
         # Construct the JSON body parameters
         body: dict = {
-            "guid": id,
-            "simulation": simulation,
-            "min_time": min_time,
-            "max_time": max_time
+            "ID": id,
+            "Simulation": simulation,
+            "MinTime": min_time,
+            "MaxTime": max_time
         }
         if len(values) > 0:
-            body["data"] = []
+            body["Params"] = []
             for param in values:
-                body["data"].append(param)
+                body["Params"].append(param)
 
         # Create the data
         request_data: str = helper.jsonify(body)
@@ -241,10 +241,10 @@ class Message (Object):
         data: list = []
         for r in response:
             entry: dict = {}
-            entry["time"] = r["time"]
+            entry["time"] = r["Time"]
             entry_data = {}
-            for d in r["data"].keys():
-                entry_data[d] = helper.deserialize(r["data"][d])
+            for d in r["Data"].keys():
+                entry_data[d] = helper.deserialize(r["Data"][d])
             entry["data"] = entry_data
             data.append(entry)
 

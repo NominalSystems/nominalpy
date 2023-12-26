@@ -15,5 +15,8 @@ UNIVERSE        = "NominalSystems.Universe.UniverseSystem"
 GROUND_STATION  = "NominalSystems.Universe.GroundStation"
 '''This is a ground station that can be placed on a location on the planet.'''
 
+PHYSICAL_COMPONENT = "NominalSystems.Universe.PhysicalComponent"
+'''This is a physical component that can be attached to other objects in a spacecraft or entity.'''
+
 SPACECRAFT      = "NominalSystems.Universe.Spacecraft"
 '''This is a spacecraft class that can be initialised at some location in space.'''
