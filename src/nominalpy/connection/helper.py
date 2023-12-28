@@ -31,7 +31,7 @@ def jsonify (data: dict, array: bool = False) -> str:
     '''
 
     if array:
-        return "[%s]" %  json.dumps(data)
+        return "[%s]" % json.dumps(data)
     return json.dumps(data)
 
 def serialize (params: dict) -> dict:

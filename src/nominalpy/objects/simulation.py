@@ -26,6 +26,9 @@ class Simulation(Entity):
     __components: list = []
     '''Defines a list of components added to the simulation. This will be populated by adding components to the simulation.'''
 
+    __systems: dict = {}
+    '''Defines a dictionary of systems that have been added to the simulation, based on the type and the object.'''
+
     __time: float = 0.0
     '''Defines the current simulation since starting the simulation. This is calculated based on the number of ticks that have occurred.'''
 
@@ -55,6 +58,8 @@ class Simulation(Entity):
         self._credentials = credentials
         if self._credentials == None:
             raise NominalException("Invalid Credentials: No credentials passed into the Simulation.")
+        if not self._credentials.is_valid():
+            raise NominalException("Invalid Credentials: The credentials are missing information.")
         
         # Attempt a simple request
         if not self._credentials.is_local:
@@ -97,7 +102,7 @@ class Simulation(Entity):
         # Create the get request
         return http.get_request(self._credentials, "object/types")
 
-    def add_component(self, type: str, owner: Component = None, **kwargs) -> Component:
+    def add_component (self, type: str, owner: Component = None, **kwargs) -> Component:
         '''
         Attempts to add a new component to the simulation. This component
         can be added to an owner, if the owning component is passed in,
@@ -160,7 +165,7 @@ class Simulation(Entity):
         # Throw an error if no object or valid ID
         raise NominalException(f"Could not construct object of class {type}. Object name may be invalid.")
     
-    def get_system(self, type: str, **kwargs) -> Object:
+    def get_system (self, type: str, **kwargs) -> Object:
         '''
         Fetches a particular simulation system that is valid
         from the simulation and returns it as an object.
@@ -174,9 +179,38 @@ class Simulation(Entity):
         :rtype:         Object
         '''
 
-        return self.add_component(type, **kwargs)
+        # Checks if the type exists, update the values and return
+        if type in self.__systems:
+            system: Component = self.__systems[type]
+            system.set_values(**kwargs)
+            return system
+        
+        # Otherwise, add a new component and return
+        system: Component = self.add_component(type, **kwargs)
+        self.__systems[type] = system
+        return system
     
-    def get_message_types(self) -> list:
+    def get_components_added (self) -> list:
+        '''
+        Returns the list of components that have been added to this
+        simulation.
+
+        :returns:   A list of component objects as a copied list
+        :rtype:     list
+        '''
+        return self.__components
+    
+    def get_systems_added (self) -> list:
+        '''
+        Returns the list of all systems that have been added to the simulation.
+        This will return the system as a list as a cache.
+
+        :returns:   A list of system objects as a copied list
+        :rtype:     list
+        '''
+        return self.__systems.values()
+    
+    def get_message_types (self) -> list:
         '''
         This will return a list of all message types available in the simulation
         that can be created. This will include the full name of every message
@@ -189,7 +223,7 @@ class Simulation(Entity):
         # Create the get request
         return http.get_request(self._credentials, "message/types")
 
-    def get_planet_message(self, planet: str) -> Message:
+    def get_planet_message (self, planet: str) -> Message:
         '''
         Returns the current planet state from the simulation by fetching
         the data from the SPICE kernels via the Universe system.
@@ -200,6 +234,10 @@ class Simulation(Entity):
         :returns:       The Message object containing the SPICE planet state message
         :rtype:         Message
         '''
+
+        # Skip if missing planet
+        if planet == None or planet == "":
+            raise NominalException("Invalid planet name passed into 'get_planet_message' function.")
 
         # Get the lower of the planet
         planet = planet.lower()
@@ -225,7 +263,7 @@ class Simulation(Entity):
         self.__messages[planet] = msg
         return msg
 
-    def create_message(self, type: str, **kwargs) -> Message:
+    def create_message (self, type: str, **kwargs) -> Message:
         '''
         Attempts to create a new empty message that does not belong to a
         component but is owned by the simulation. This can also create
@@ -274,33 +312,53 @@ class Simulation(Entity):
         # Throw an error if no message or valid ID
         raise NominalException(f"Could not construct message of class {type}. Message name may be invalid.")
 
-    def tick(self, step: float = 1e-3, iterations: int = 1) -> None:
+    def tick (self, step: float = 1e-3, iterations: int = 1, batch: bool = True) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will
         tick the simulation with some step size, in the form of a time
         span, and the iterations. The iterations are ticked on the
-        simulation side and will tick with the same step size.
+        simulation side and will tick with the same step size. By calling
+        the 'batch' as True, then the simulation will run the iterations
+        on the simulation side. However, for running one API request per
+        iteration, set the 'batch' parameter to False.
 
         :param step:        The step-size to tick the simulation in seconds
         :type step:         float
         :param iterations:  The number of iterations to run the simulation at
         :type iterations:   int
+        :param batch:       This defines whether the simulation should run the simulation at batch
+        :type batch:        bool
         '''
 
-        # Get the timespan and number of seconds and milliseconds to tick
+        # Sanitise the inputs
         step = float(step)
+        if step <= 1e-9:
+            raise NominalException("Invalid step. Unable to tick a simulation with a timestep under 1e-9 seconds.")
+        if iterations < 1:
+            raise NominalException("Invalid iterations. Unable to tick a simulation with iterations < 1.")
+
+        # Get the timespan and number of seconds and milliseconds to tick
         timespan: str = value.timespan(0, 0, 0, int(step), int(step * 1000) - int(step) * 1000)
-        
-        # Construct the JSON body
+
+        # Create the generic body for the request data
         request_data: str = helper.jsonify(
             {
                 "Timestep": timespan,
-                "Iterations": iterations
+                "Iterations": iterations if batch else 1
             }
         )
 
-        # Create the response from the POST request on the timeline
-        http.post_request(self._credentials, "timeline/tick", data=request_data)
+        # If running the batch command, create the body and the response
+        if batch:
+            http.post_request(self._credentials, "timeline/tick", data=request_data)
+        
+        # If running one at a time, perform the loop and print the update
+        else:
+            for i in range (int(iterations)):
+                http.post_request(self._credentials, "timeline/tick", data=request_data)
+                printer.log('Ticked the simulation with a step of %.3fs. \t[%d / %d].' % (step, i + 1, int(iterations) + 1))
+
+        # Output the success message
         printer.success('Ticked the simulation with a step of %.3fs %d time(s).' % (step, iterations))
 
         # Increase the time
@@ -312,20 +370,31 @@ class Simulation(Entity):
         for msg in self.__messages.values():
             msg._require_update()
 
-    def tick_duration(self, duration: float, step: float = 1e-3) -> None:
+    def tick_duration (self, duration: float, step: float = 1e-3, batch: bool = True) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will
         tick the simulation with some step size, in the form of a time
         span, and the iterations. The iterations are ticked on the
         simulation side and will tick with the same step size.
 
-        :param duration: the number of seconds forward in time to tick the simulation
-        :param step: the size of the step to tick the simulation in seconds
-        :return:
+        :param duration:    The number of seconds forward in time to tick the simulation
+        :type duration:     float
+        :param step:        The size of the step to tick the simulation in seconds
+        :type step:         float
+        :param batch:       This defines whether the simulation should run the simulation at batch
+        :type batch:        bool
         '''
-        return self.tick(step=step, iterations=int(duration / step))
 
-    def get_time(self) -> float:
+        # Sanitise the inputs
+        if step <= 1e-9:
+            raise NominalException("Invalid step. Unable to tick a simulation with a timestep under 1e-9 seconds.")
+        if duration <= 0.0:
+            raise NominalException("Invalid duration. Unable to tick a simulation for a duration that is less than or equal to 0 seconds.")
+
+        # Call the tick with some time
+        return self.tick(step=step, iterations=int(duration / step), batch=batch)
+
+    def get_time (self) -> float:
         '''
         Returns the current simulation time based on the number of
         seconds that have been ticked.
@@ -350,7 +419,7 @@ class Simulation(Entity):
         dt: dict = self.__get_timeline()["SimulationDate"]
         return datetime(dt["Year"], dt["Month"], dt["Day"], dt["Hour"], dt["Minute"], dt["Second"], dt["Millisecond"] * 1000)
 
-    def capture_image(self, file_name: str, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0,
+    def capture_image (self, file_name: str, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0,
         ray_tracing: bool = False, size: tuple = (500, 500), camera_position: dict = None, 
         camera_rotation: tuple = (0, 0, 0), cesium: bool = False, timeout: float = 3.0) -> bool:
         '''
@@ -431,7 +500,7 @@ class Simulation(Entity):
                 printer.warning(
                     "The capture image from the visualiser was not returned within a %ss timeout. The image may still be received asynchronously but requests may be lost." % timeout)
 
-    def confiure_cesium(self, access_token: str, terrain_id: int = 1, imagery_id: int = 2) -> None:
+    def confiure_cesium (self, access_token: str, terrain_id: int = 1, imagery_id: int = 2) -> None:
         '''
         Configures Cesium within the imagery system to capture photos using
         a Cesium account. The access token must be valid or the imagery
@@ -446,9 +515,9 @@ class Simulation(Entity):
         '''
 
         if access_token == "" or access_token == None:
-            printer.error("Invalid Cesium Ion Access Token.")
+            raise NominalException("Invalid Cesium Ion Access Token.")
         if terrain_id == 0 or imagery_id == 0:
-            printer.error("Invalid Terrain or Imagery asset IDs entered.")
+            raise NominalException("Invalid Terrain or Imagery asset IDs entered.")
 
         # Configure the Cesium data
         self.__cesium = {
@@ -458,7 +527,7 @@ class Simulation(Entity):
             "imagery_id": imagery_id
         }
 
-    def reset(self) -> None:
+    def reset (self) -> None:
         '''
         Deletes and resets the simulation. All components, data
         and messages associated with the timeline on the simulation
@@ -467,6 +536,7 @@ class Simulation(Entity):
         
         http.delete_request(self._credentials, "timeline")
         self.__components = []
+        self.__systems = {}
         self.__messages = {}
         self.__time = 0.0
         self.id = None

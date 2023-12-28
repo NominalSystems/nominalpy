@@ -65,7 +65,6 @@ class Credentials:
         if "nominalsys" in self.url:
             self.__connect()
     
-
     def __connect (self) -> None:
         '''
         Connects to a session or retrieves the current session and updates the
@@ -106,7 +105,6 @@ class Credentials:
             time.sleep(delta)
             counter += delta
 
-
     def __create_session (self) -> None:
         '''
         Attempts to create or fetch a new session from the AWS batch system. This
@@ -128,7 +126,6 @@ class Credentials:
             printer.log("A session has been created successfully.")
         else:
             printer.error("Failed to create an API user session or retrieve previous session.")
-
 
     def __is_healthy (self) -> bool:
         '''
@@ -156,3 +153,19 @@ class Credentials:
         # Catch any exception
         except:
             return False
+    
+    def is_valid (self) -> bool:
+        '''
+        Returns whether the credentials are valid. This does not check if the
+        credentials are valid to a connection, more that the information has
+        been added correctly.
+
+        :returns:   A valid credential flag
+        :rtype:     bool
+        '''
+
+        if self.url == None: return False
+        if self.url == "": return False
+        if len(self.url) < 8: return False
+        if "http" not in self.url: return False
+        return True
