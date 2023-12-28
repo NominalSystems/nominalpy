@@ -182,7 +182,8 @@ class Simulation(Entity):
         # Checks if the type exists, update the values and return
         if type in self.__systems:
             system: Component = self.__systems[type]
-            system.set_values(**kwargs)
+            if len(kwargs) > 0:
+                system.set_values(**kwargs)
             return system
         
         # Otherwise, add a new component and return
