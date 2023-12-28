@@ -13,7 +13,7 @@ including numpy ndarrays and datetimes.
 import json, numpy as np
 from datetime import datetime
 from ..maths import value
-from ..utils import printer
+from ..utils import NominalException
 
 def jsonify (data: dict, array: bool = False) -> str:
     '''
@@ -70,21 +70,33 @@ def serialize_object (obj: object) -> dict:
 
     :returns:   A full dictionary in a JSON format of the serialized data
     :rtype:     dict
-    
     '''
+    
+    # Check for lists and loop through each of the objects
+    if isinstance(obj, list):
+        serialized: list = []
+        for o in obj:
+            serialized.append(serialize_object(o))
+        return serialized
 
-    if isinstance(obj, np.ndarray):  # Mathematical arrays
+    # Mathematical arrays
+    elif isinstance(obj, np.ndarray):  # Mathematical arrays
         shape = obj.shape
         if shape == (3,):       # Vector3
             return value.vector3(obj[0], obj[1], obj[2])
+        elif shape == (4,):       # Vector4
+            return value.vector4(obj[0], obj[1], obj[2], obj[3])
         elif shape == (3,3):    # Matrix3x3
            return value.matrix33(obj[0], obj[1], obj[2])
         else:
-            printer.error("Unsupported numpy array shape: %s." % str(shape))
-            return {}
+            raise NominalException("Unsupported numpy array shape: %s." % str(shape))
+    
+    # Datetimes
     elif isinstance(obj, datetime):   # DateTimes
         return value.datetime(obj.year, obj.month, obj.day, obj.hour, obj.minute, obj.second)
-    else:   # All other values
+    
+    # Any other value
+    else:
         return obj
 
 def deserialize (param: object) -> object:
