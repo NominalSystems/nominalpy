@@ -4,7 +4,7 @@
 # with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 
 from ..connection import Credentials, helper, http
-from ..utils import printer
+from ..utils import printer, NominalException
 from .message import Message
 from .object import Object
 
@@ -74,7 +74,7 @@ class Component (Object):
             type = "NominalSystems.Classes." + type
         
         # Attempts to find the model if it exists
-        if type.lower() in self.__models:
+        if type.lower() in self.__models.keys():
             return self.__models[type.lower()]
        
         # Construct the JSON body
@@ -107,8 +107,7 @@ class Component (Object):
             return obj
         
         # Throw an error if no object or valid ID
-        printer.error("Could not add component model of type '%s'." % type)
-        return None
+        raise NominalException("Could not add component model of type '%s'." % type)
     
     def get_message (self, name: str) -> Message:
         '''
@@ -125,7 +124,7 @@ class Component (Object):
         '''
 
         # Check if the message exists
-        if name.lower() in self.__messages:
+        if name.lower() in self.__messages.keys():
             return self.__messages[name.lower()]
 
         # Fetch the ID from the message and create the message object
