@@ -115,7 +115,9 @@ def deserialize (param: object) -> object:
 
     # Handle dictionaries or skip
     if isinstance(param, dict):
-        if contains(param, "X", "Y", "Z"):
+        if contains(param, "X", "Y", "Z", "W"):
+            return np.array([param["X"], param["Y"], param["Z"], param["W"]])
+        elif contains(param, "X", "Y", "Z"):
             return np.array([param["X"], param["Y"], param["Z"]])
 
     # Handles arrays for matricies

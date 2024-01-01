@@ -2,12 +2,13 @@
 # This code is developed by Nominal Systems to aid with communication 
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+
 import numpy as np
 import pandas as pd
 from copy import deepcopy
 from ..connection import Credentials, http, helper
 from .object import Object
-from ..utils import printer
+from ..utils import printer, NominalException
 
 
 class Message (Object):
@@ -49,6 +50,10 @@ class Message (Object):
         :rtype:             bool
         '''
 
+        # If already subscribed, return true
+        if self.__subscribed:
+            return True
+
         # Construct the JSON body
         body: dict = {
             "ID": self.id,
@@ -61,8 +66,7 @@ class Message (Object):
         # Create the response from the PATCH request and get the IDs
         response = http.put_request(self._credentials, "database/message", data=request_data)
         if response == False:
-            printer.error("Failed to subscribe message to the database system.")
-            return False
+            raise NominalException("Failed to subscribe message to the database system.")
         self.__subscribed = True
         return True
 
