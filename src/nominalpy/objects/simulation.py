@@ -160,8 +160,13 @@ class Simulation(Entity):
             printer.success("Component of type '%s' created." % type)
             obj: Component = Component(self._credentials, guid)
             self.__components.append(obj)
+
+            # Add the child to the owner
+            if owner != None:
+                owner._Component__children.append(obj)
+
             return obj
-        
+
         # Throw an error if no object or valid ID
         raise NominalException(f"Could not construct object of class {type}. Object name may be invalid.")
     

@@ -22,6 +22,9 @@ class Component (Object):
     __models: dict = {}
     '''Defines a list of component models associated with a particular name for easy fetching'''
 
+    __children: list = []
+    '''Defines a list of all child components that have been added to this particular object'''
+
     def __init__ (self, credentials: Credentials, id: str) -> None:
         '''
         Initialises the component with a set of credentials and a
@@ -35,6 +38,7 @@ class Component (Object):
 
         self.__messages = {}
         self.__models = {}
+        self.__children = []
 
         super().__init__(credentials, id)
 
@@ -167,3 +171,53 @@ class Component (Object):
         # Update the flag for needing to get values
         self._require_update()
         return response
+
+    def get_child (self, index: int) -> Object:
+        '''
+        Attempts to fetch a child that has been added to this
+        class based on the index of the child that was added.
+        If the index is out of range, then a None object will
+        be returned.
+
+        :param index:   The integer index of the child that is stored
+        :type index:    int
+
+        :returns:       The component reference if it exists
+        :rtype:         Component
+        '''
+
+        # Check if the index is out of range
+        if index >= len(self.__children):
+            raise NominalException(f"Invalid index '{index}' when getting a child from component.")
+        
+        # Return the child
+        return self.__children[index]
+    
+    def get_children (self, type: str) -> list:
+        '''
+        Attempts to fetch the list of children that have
+        been added to this component that match the specific
+        type specified. If there are no children that match,
+        then an empty array will be returned.
+
+        :param type:    The Nominal type of the object to search for
+        :type type:     str
+
+        :returns:       A list of all children objects that match the type
+        :rtype:         list
+        '''
+
+        # Construct the list
+        children: list = []
+
+        # Filter the type
+        type = type.split(".")[-1]
+
+        # Check for matching type
+        for child in self.__children:
+            c_type: str = child.get_type().split(".")[-1]
+            if c_type == type:
+                children.append(child)
+
+        # Return the list
+        return children
