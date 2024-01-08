@@ -41,16 +41,18 @@ class Simulation(Entity):
     __messages: dict = {}
     '''Defines a list of messages associated with a particular property for easy fetching'''
 
-    def __init__ (self, credentials: Credentials, reset: bool = True) -> None:
+    def __init__ (self, credentials: Credentials, reset: bool = True, delete_database: bool = True) -> None:
         '''
         Default constructor for the simulation handler which takes 
         in the credentials to access the API. The reset flag will attempt
         to reset the simulation when initialised by default.
 
-        :param credentials: The Credentials object that is used for the API
-        :type credentials:  Credentials
-        :param reset:       A flag whether to reset the previous simulation loaded in the session if existed
-        :type reset:        bool
+        :param credentials:     The Credentials object that is used for the API
+        :type credentials:      Credentials
+        :param reset:           A flag whether to reset the previous simulation loaded in the session if existed
+        :type reset:            bool
+        :param delete_database: A flag whether to delete the database that exists too
+        :type delete_database:  bool
         '''
 
         super().__init__(credentials=credentials, id=None)
@@ -67,7 +69,7 @@ class Simulation(Entity):
 
         # Resets the simulation if valid credentials
         if reset and self._credentials != None:
-            self.reset()
+            self.reset(delete_database)
 
         # Fetch the current ID
         timeline: dict = self.__get_timeline()
@@ -533,14 +535,25 @@ class Simulation(Entity):
             "imagery_id": imagery_id
         }
 
-    def reset (self) -> None:
+    def reset (self, delete_database: bool = True) -> None:
         '''
         Deletes and resets the simulation. All components, data
         and messages associated with the timeline on the simulation
         will be deleted.
+
+        :param delete_database: A flag whether to delete the database that exists too
+        :type delete_database:  bool
         '''
+
+        # Create the generic body for the request data
+        request_data: str = helper.jsonify(
+            {
+                "Database": delete_database
+            }
+        )
         
-        http.delete_request(self._credentials, "timeline")
+        # Delete the timeline and the database if required
+        http.delete_request(self._credentials, "timeline", data=request_data)
         self.__components = []
         self.__systems = {}
         self.__messages = {}
