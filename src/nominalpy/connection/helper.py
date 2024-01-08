@@ -88,8 +88,11 @@ def serialize_object (obj: object) -> dict:
             return value.vector4(obj[0], obj[1], obj[2], obj[3])
         elif shape == (3,3):    # Matrix3x3
            return value.matrix33(obj[0], obj[1], obj[2])
+        elif len(shape) == 2:   # Generic 2 dimensional matrix
+            return value.matrix(shape[0], shape[1], *obj.tolist())
         else:
             raise NominalException("Unsupported numpy array shape: %s." % str(shape))
+
     
     # Datetimes
     elif isinstance(obj, datetime):   # DateTimes

@@ -77,6 +77,31 @@ def matrix33 (m1: tuple, m2: tuple, m3: tuple) -> list:
         [float(m3[0]), float(m3[1]), float(m3[2])]]
     return value
 
+def matrix (r: int, c: int, *rows) -> list:
+    '''
+    Constructs a matrix from a particular set of rows. This is a 
+    generic r x c matrix, where r is the number of rows and c is
+    the number of columns.
+
+    :param r:       The number of rows in the matrix
+    :type r:        int
+    :param c:       The number of columns in the matrix
+    :type c:        int
+    :param rows:    A list of tuples containing the values
+    :type rows:     list
+
+    :returns:       A matrix list of data in the correct format
+    :rtype:         list
+    '''
+    
+    value: list = []
+    for _ in range(r):
+        value.append([0.0] * c)
+    for i in range(r):
+        for j in range(c):
+            value[i][j] = rows[i][j]
+    return value
+
 def datetime (year: int, month: int, day: int, hour: int = 0, min: int = 0, sec: int = 0) -> dict:
     '''
     Defines a way of specifying a particular value based on
