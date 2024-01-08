@@ -159,7 +159,7 @@ class Component (Object):
         body: dict = {
             "ID": self.id,
             "Method": method,
-            "Params": args
+            "Params": [helper.serialize_object(arg) for arg in args]
         }
         
         # Create the data

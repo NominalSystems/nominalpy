@@ -80,7 +80,7 @@ def serialize_object (obj: object) -> dict:
         return serialized
 
     # Mathematical arrays
-    elif isinstance(obj, np.ndarray):  # Mathematical arrays
+    elif isinstance(obj, np.ndarray):
         shape = obj.shape
         if shape == (3,):       # Vector3
             return value.vector3(obj[0], obj[1], obj[2])
@@ -94,6 +94,10 @@ def serialize_object (obj: object) -> dict:
     # Datetimes
     elif isinstance(obj, datetime):   # DateTimes
         return value.datetime(obj.year, obj.month, obj.day, obj.hour, obj.minute, obj.second)
+    
+    # Generic objects
+    elif hasattr(obj, "id"):
+        return getattr(obj, "id")
     
     # Any other value
     else:
