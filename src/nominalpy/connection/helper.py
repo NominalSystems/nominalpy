@@ -93,7 +93,6 @@ def serialize_object (obj: object) -> dict:
         else:
             raise NominalException("Unsupported numpy array shape: %s." % str(shape))
 
-    
     # Datetimes
     elif isinstance(obj, datetime):   # DateTimes
         return value.datetime(obj.year, obj.month, obj.day, obj.hour, obj.minute, obj.second)
