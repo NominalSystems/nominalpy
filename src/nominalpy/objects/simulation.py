@@ -208,6 +208,97 @@ class Simulation(Entity):
         '''
         return self.__components
     
+    def find_component (self, id: str) -> Component:
+        '''
+        Attempts to find a component with a particular ID in the
+        simulation and is able to create it as a python object if
+        it does not yet exist. This searches the simulation API
+        for an ID and if it doesn't exist in the Python simulation
+        object, then it will be created and added. Otherwise, if
+        it does exist, the reference to the object will be returned.
+
+        :param id:  The GUID of the object being searched for
+        :type id:   str
+
+        :returns:   A reference to the component that was found
+        :rtype:     Component
+        '''
+
+        # If empty ID, throw exception
+        if not helper.is_valid_guid(id):
+            raise NominalException(f"Invalid ID '{id}' passed.")
+
+        # Check if the ID matches within the list and return the object
+        obj: Component = next((obj for obj in self.__components if obj.id == id), None)
+        if obj != None:
+            return obj
+
+        # Fetch the components from the API of the type
+        request_data = helper.jsonify({
+            "ID": id,
+            "Params": ["Owner"]
+        })
+
+        # Fetch the object if it exists
+        response: list = http.post_request(self._credentials, "query/object", data=request_data)
+        
+        # If no response, throw an exception
+        if response == None:
+            raise NominalException(f"Failed to find component with ID '{id}'.")
+        
+        # Create the new object
+        printer.success("Component of type '%s' found and added to the simulation." % response["Type"])
+        id = response["ID"]
+        obj: Component = Component(self._credentials, id)
+        self.__components.append(obj)
+
+        # Return the new object
+        return obj
+    
+    def find_components_of_type (self, type: str) -> list:
+        '''
+        Attempts to find components of a particular type and
+        returns a list of components of a particular type that
+        exist within the simulation. This will also check off
+        any components that may already exist in this simulation
+        object.
+
+        :param type:    The full Nominal type of the object to filter by
+        :type type:     str
+
+        :returns:       A list of components that match the type
+        :rtype:         list
+        '''
+
+        # Sanitise the type
+        if "NominalSystems" not in type:
+            if "." not in type:
+                type = "NominalSystems.Classes." + type
+            else:
+                type = "NominalSystems." + type
+
+        # Fetch the components from the API of the type
+        request_data = helper.jsonify({
+            "Type": type,
+            "Params": ["Owner"] # This is to force no other data to come through
+        })
+
+        # Make the request to get the data
+        response: list = http.post_request(self._credentials, "query/objects", data=request_data)
+
+        # Create the components list
+        components: list = []
+
+        # Loop through each component
+        for component in response:
+            id: str = component["ID"]
+
+            # Fetch the component and add it
+            components.append(self.find_component(id))
+
+        # Return the list
+        return components
+    
     def get_systems_added (self) -> list:
         '''
         Returns the list of all systems that have been added to the simulation.
