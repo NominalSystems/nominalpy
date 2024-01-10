@@ -646,11 +646,71 @@ class Simulation(Entity):
     
     def save_state (self, path: str = None) -> None:
         '''
-        
+        Saves the state of the simulation to a file relative to
+        the current working directory. This will save the entire
+        simulation as JSON into a text file.
+
+        :param path:    The relative (or full) path to the file to save to
+        :type path:     str
         '''
 
         # Fetch the current state
         state: dict = self.get_state()
+
+        # Fetch the path
+        path = self.__get_state_file_name(path)
+        
+        # Check if the directory needs to be created
+        directory: str = "".join(path.replace("\\", "/").split("/")[:-1])
+        os.makedirs(directory, exist_ok=True)
+
+        # Save the file in the directory
+        with open(path, "+w") as file:
+            json.dump(state, file, indent=4)
+    
+    def load_state (self, path: str = None, data: dict = None) -> None:
+        '''
+        Attempts to load the state of the simulation to a valid JSON
+        object. This data can be found in either a file, with a valid
+        path, or from a JSON data object. Once the simulation is reloaded,
+        all components are deleted and the objects are recreated based
+        on the simulation state that was saved.
+
+        :param path:    The full or relative path to the file with the json data
+        :type path:     str
+        :param data:    Alternatively, the json data can be passed through here
+        :type data:     dict
+        '''
+
+        # If there is a path, load it as the json
+        if path != None:
+            path = self.__get_state_file_name(path)
+
+            # Check if the file exists
+            if not os.path.exists(path):
+                raise NominalException(f"Unable to find file with path: '{path}'.")
+
+            # Open the file and load it as a JSON into the json data
+            with open(path, "r") as file:
+                data = json.load(file)
+        
+        # If there is no data, then throw an error
+        if data is None:
+            raise NominalException("Invalid or missing data passed into the load state for the simulation.")
+
+        # Attempt to load the simulation with the data
+        id: str = http.put_request(self._credentials, "simulation", data=helper.jsonify(data))
+
+        # Reset the simulation and update the id
+        self.__reset()
+        self.id = id
+
+    def __get_state_file_name (self, path: str) -> str:
+        '''
+        Cleans up the simulation file name and makes sure
+        it is of the correct format. It must end with a
+        .json and must be a file.
+        '''
 
         # Check if the path is empty
         if path == None:
@@ -666,14 +726,9 @@ class Simulation(Entity):
         # Check if the path does not have the correct ending
         if not path.endswith(".json"):
             path += ".json"
-        
-        # Check if the directory needs to be created
-        directory: str = "".join(path.replace("\\", "/").split("/")[:-1])
-        os.makedirs(directory, exist_ok=True)
 
-        # Save the file in the directory
-        with open(path, "+w") as file:
-            json.dump(state, file, indent=4)
+        # Return the path
+        return path
 
     def reset (self, delete_database: bool = True) -> None:
         '''
@@ -694,6 +749,16 @@ class Simulation(Entity):
         
         # Delete the timeline and the database if required
         http.delete_request(self._credentials, "timeline", data=request_data)
+        self.__reset()
+    
+    def __reset (self) -> None:
+        '''
+        Performs a soft reset, only adjusting the data within the
+        simulation on the python end without making a HTTP REST
+        endpoint call.
+        '''
+
+        # Reset any data
         self.__components = []
         self.__systems = {}
         self.__messages = {}
