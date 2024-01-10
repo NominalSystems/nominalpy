@@ -3,7 +3,7 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2023.
 
-import time
+import time, os, json
 from datetime import datetime
 from .component import Component
 from .entity import Entity
@@ -625,6 +625,55 @@ class Simulation(Entity):
             "terrain_id": terrain_id,
             "imagery_id": imagery_id
         }
+    
+    def get_state (self) -> dict:
+        '''
+        Attempts to fetch the current simulation state in the form of a
+        JSON object and returns the state of the simulation as a dictionary.
+        If there is an error in the simulation, this will be caught and
+        displayed as an error thrown. The simulation state includes all
+        component, message and system parameters.
+
+        :returns:   A dictionary with the simulation state stored
+        :rtype:     dict
+        '''
+
+        # Fetch the data
+        response = http.post_request(self._credentials, "simulation")
+
+        # Return the response as a dictionary
+        return response
+    
+    def save_state (self, path: str = None) -> None:
+        '''
+        
+        '''
+
+        # Fetch the current state
+        state: dict = self.get_state()
+
+        # Check if the path is empty
+        if path == None:
+            path = ""
+
+        # Clean the path name
+        path = path.rstrip().lstrip()
+
+        # Check if there is no ending to the path
+        if path == "" or path.endswith("/"):
+            path += "simulation"
+        
+        # Check if the path does not have the correct ending
+        if not path.endswith(".json"):
+            path += ".json"
+        
+        # Check if the directory needs to be created
+        directory: str = "".join(path.replace("\\", "/").split("/")[:-1])
+        os.makedirs(directory, exist_ok=True)
+
+        # Save the file in the directory
+        with open(path, "+w") as file:
+            json.dump(state, file, indent=4)
 
     def reset (self, delete_database: bool = True) -> None:
         '''
