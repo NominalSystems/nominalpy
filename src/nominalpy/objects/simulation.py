@@ -411,7 +411,7 @@ class Simulation(Entity):
         # Throw an error if no message or valid ID
         raise NominalException(f"Could not construct message of class {type}. Message name may be invalid.")
 
-    def tick (self, step: float = 1e-3, iterations: int = 1, batch: bool = True) -> None:
+    def tick (self, step: float = 1e-3, iterations: int = 1, batch: bool = True, callback = None) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will
         tick the simulation with some step size, in the form of a time
@@ -427,6 +427,8 @@ class Simulation(Entity):
         :type iterations:   int
         :param batch:       This defines whether the simulation should run the simulation at batch
         :type batch:        bool
+        :param callaback:   An optional function callback that is executed after each tick. This must have a time parameter.
+        :type callback:     function
         '''
 
         # Sanitise the inputs
@@ -450,12 +452,16 @@ class Simulation(Entity):
         # If running the batch command, create the body and the response
         if batch:
             http.post_request(self._credentials, "simulation/tick", data=request_data)
+            if callback is not None: 
+                callback(self.__time + step * float(iterations))
         
         # If running one at a time, perform the loop and print the update
         else:
             for i in range (int(iterations)):
                 http.post_request(self._credentials, "simulation/tick", data=request_data)
                 printer.log('Ticked the simulation with a step of %.3fs. \t[%d / %d].' % (step, i + 1, int(iterations) + 1))
+                if callback is not None: 
+                    callback(self.__time + step * float(i))
 
         # Output the success message
         printer.success('Ticked the simulation with a step of %.3fs %d time(s).' % (step, iterations))
@@ -469,7 +475,7 @@ class Simulation(Entity):
         for msg in self.__messages.values():
             msg._require_update()
 
-    def tick_duration (self, duration: float, step: float = 1e-3, batch: bool = True) -> None:
+    def tick_duration (self, duration: float, step: float = 1e-3, batch: bool = True, callback = None) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will
         tick the simulation with some step size, in the form of a time
@@ -482,6 +488,8 @@ class Simulation(Entity):
         :type step:         float
         :param batch:       This defines whether the simulation should run the simulation at batch
         :type batch:        bool
+        :param callaback:   An optional function callback that is executed after each tick. This must have a time parameter.
+        :type callback:     function
         '''
 
         # Sanitise the inputs
@@ -491,7 +499,7 @@ class Simulation(Entity):
             raise NominalException("Invalid duration. Unable to tick a simulation for a duration that is less than or equal to 0 seconds.")
 
         # Call the tick with some time
-        return self.tick(step=step, iterations=int(duration / step), batch=batch)
+        return self.tick(step=step, iterations=int(duration / step), batch=batch, callback=callback)
 
     def get_time (self) -> float:
         '''
