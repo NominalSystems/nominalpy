@@ -72,20 +72,20 @@ class Simulation(Entity):
             self.reset(delete_database)
 
         # Fetch the current ID
-        timeline: dict = self.__get_timeline()
-        if timeline != None:
-            self.id = timeline["ID"]
+        simulation: dict = self.__get_simulation()
+        if simulation != None:
+            self.id = simulation["ID"]
     
-    def __get_timeline (self) -> dict:
+    def __get_simulation (self) -> dict:
         '''
         Attempts to fetch the current timeline information from the simulation, 
         including the initial epoch, ID and current time.
 
-        :returns:   The timeline information in the form of a JSON object
+        :returns:   The simulation timeline information in the form of a JSON object
         :rtype:     dict
         '''
         
-        response = http.get_request(self._credentials, "timeline")
+        response = http.get_request(self._credentials, "simulation")
         if response == {}:
             return None
         return response
@@ -449,12 +449,12 @@ class Simulation(Entity):
 
         # If running the batch command, create the body and the response
         if batch:
-            http.post_request(self._credentials, "timeline/tick", data=request_data)
+            http.post_request(self._credentials, "simulation/tick", data=request_data)
         
         # If running one at a time, perform the loop and print the update
         else:
             for i in range (int(iterations)):
-                http.post_request(self._credentials, "timeline/tick", data=request_data)
+                http.post_request(self._credentials, "simulation/tick", data=request_data)
                 printer.log('Ticked the simulation with a step of %.3fs. \t[%d / %d].' % (step, i + 1, int(iterations) + 1))
 
         # Output the success message
@@ -515,7 +515,7 @@ class Simulation(Entity):
         '''
 
         # Fetches the datetime data and returns the structure
-        dt: dict = self.__get_timeline()["SimulationDate"]
+        dt: dict = self.__get_simulation()["SimulationDate"]
         return datetime(dt["Year"], dt["Month"], dt["Day"], dt["Hour"], dt["Minute"], dt["Second"], dt["Millisecond"] * 1000)
 
     def capture_image (self, file_name: str, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0,
@@ -747,8 +747,8 @@ class Simulation(Entity):
             }
         )
         
-        # Delete the timeline and the database if required
-        http.delete_request(self._credentials, "timeline", data=request_data)
+        # Delete the simulation and the database if required
+        http.delete_request(self._credentials, "simulation", data=request_data)
         self.__reset()
     
     def __reset (self) -> None:
