@@ -1,6 +1,6 @@
 # nominalpy
 
-[![PyPI Version](https://img.shields.io/pypi/v/your-package-name.svg)](https://pypi.org/project/nominalpy/)
+[![PyPI Version](https://img.shields.io/pypi/v/nominalpy.svg)](https://pypi.org/project/nominalpy/)
 
 NominalPy is a Python library that enables easy access to the Nominal API. The API is a REST interface to the Nominal simulation library, enabling simulations of spacecraft, ground stations, maritime objects and more. The API requires an access key that can be purchased by contacting Nominal Systems at `support@nominalsys.com`.
 

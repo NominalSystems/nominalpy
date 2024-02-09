@@ -53,6 +53,7 @@
 <li class="toctree-l5"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.astro">nominalpy.maths.astro module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.constants">nominalpy.maths.constants module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.constellations">nominalpy.maths.constellations module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.data">nominalpy.maths.data module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.utils">nominalpy.maths.utils module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.value">nominalpy.maths.value module</a></li>
@@ -109,14 +110,43 @@
 astrophysical parameters. These include fetching planetary gravity
 or return the position and velocity from an orbit.</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.argument_of_latitude">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">argument_of_latitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6.283185307179586</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.argument_of_latitude" title="Link to this definition"></a></dt>
+<dd><p>Calculate the argument of latitude from the argument of periapsis and the true/mean anomaly.</p>
+<dl class="simple">
+<dt>If the input anomaly is the true anomaly, then the corresponding argument of latitude will be the true argument of</dt><dd><p>latitude. Conversely, if the input anomaly is the mean anomaly, then the corresponding argument of latitude will
+be the mean argument of latitude.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – [rad] Argument of periapsis</p></li>
+<li><p><strong>anomaly</strong> (<em>float</em>) – [rad] True anomaly</p></li>
+<li><p><strong>angle_max</strong> (<em>float</em>) – [rad] Maximum angle to normalize the argument of latitude to. If the argument of
+periapsis and anomaly are expressed in radians, then angle_max should be
+2*np.pi. If the argument of periapsis and anomaly are expressed in degrees,
+then angle_max should be 360.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[rad] Argument of latitude</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.calculate_circular_orbit_velocity">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">calculate_circular_orbit_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">398600441400000.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.calculate_circular_orbit_velocity" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">calculate_circular_orbit_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">398600441400000.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.calculate_circular_orbit_velocity" title="Link to this definition"></a></dt>
 <dd><p>Calculates the magnitude of the orbital velocity for a spacecraft in 
 a circular orbit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sma</strong> (<em>float</em>) – The semi-major axis of the spacecraft’s orbit. It must be a non-negative value - m</p></li>
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – The semi-major axis of the spacecraft’s orbit. It must be a non-negative value - m</p></li>
 <li><p><strong>gm</strong> (<em>float</em>) – The gravitational parameter, defaulting to Earth’s gravitational parameter if not provided - m^3/s^2.</p></li>
 </ul>
 </dd>
@@ -131,7 +161,7 @@ a circular orbit.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.calculate_orbital_velocity">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">calculate_orbital_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bn_n_mag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">398600441400000.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.calculate_orbital_velocity" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">calculate_orbital_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bn_n_mag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">398600441400000.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.calculate_orbital_velocity" title="Link to this definition"></a></dt>
 <dd><p>Calculate the magnitude of the orbital velocity for a spacecraft in any orbit type.</p>
 <dl class="simple">
 <dt>This function uses the vis-viva equation to compute the orbital speed of a spacecraft at a given distance from the</dt><dd><p>Earth’s center, considering its semi-major axis. It ensures that the provided parameters are within physically
@@ -142,7 +172,7 @@ meaningful ranges.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r_bn_n_mag</strong> (<em>float</em>) – The distance from the Earth’s center to the spacecraft - m.</p></li>
-<li><p><strong>sma</strong> (<em>float</em>) – The semi-major axis of the spacecraft’s orbit. It must be a non-negative value - m</p></li>
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – The semi-major axis of the spacecraft’s orbit. It must be a non-negative value - m</p></li>
 <li><p><strong>gm</strong> (<em>float</em>) – The gravitational parameter, defaulting to Earth’s gravitational parameter if not provided - m^3/s^2.</p></li>
 </ul>
 </dd>
@@ -154,8 +184,8 @@ meaningful ranges.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>TypeError</strong> – If <cite>r</cite> or <cite>sma</cite> is not a numeric type.</p></li>
-<li><p><strong>ValueError</strong> – If <cite>r</cite> is less than zero, or <cite>sma</cite> is negative, or the radicand in the calculation is negative.</p></li>
+<li><p><strong>TypeError</strong> – If <cite>r</cite> or <cite>semi_major_axis</cite> is not a numeric type.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>r</cite> is less than zero, or <cite>semi_major_axis</cite> is negative, or the radicand in the calculation is negative.</p></li>
 </ul>
 </dd>
 </dl>
@@ -164,6 +194,132 @@ meaningful ranges.</p>
 <span class="go">7.546049108166282</span>
 </pre></div>
 </div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.classical_to_non_singular_elements">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">classical_to_non_singular_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#nominalpy.maths.astro.classical_to_non_singular_elements" title="Link to this definition"></a></dt>
+<dd><p>convert classical orbital elements to non-singular orbital elements as defined in the PhD Thesis:
+D’Amico, S. (2010). Autonomous Formation Flying in Low Earth Orbit [Delft University of Technology].
+<a class="reference external" href="http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70">http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70</a>, Page 21</p>
+<p>This set of non-singular orbital elements are often used to parameterize the relative motion between two spacecraft</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – Semi-major axis of the orbit in meters</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – Eccentricity of the orbit</p></li>
+<li><p><strong>inclination</strong> (<em>float</em>) – Inclination of the orbit in radians</p></li>
+<li><p><strong>right_ascension</strong> (<em>float</em>) – Right ascension of the ascending node in radians</p></li>
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – Argument of periapsis in radians</p></li>
+<li><p><strong>true_anomaly</strong> (<em>float</em>) – True anomaly at the epoch in radians</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing the non-singular orbital elements
+(</p>
+<blockquote>
+<div><p>semi_major_axis,
+e_x: x component of eccentricity,
+e_y: y component of eccentricity
+inclination,
+right_ascension,
+mean argument of latitude</p>
+</div></blockquote>
+<p>)</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.classical_to_relative_elements">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">classical_to_relative_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semi_major_axis_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#nominalpy.maths.astro.classical_to_relative_elements" title="Link to this definition"></a></dt>
+<dd><p>Convert classical orbital elements to relative orbital elements as defined in the PhD Thesis:
+D’Amico, S. (2010). Autonomous Formation Flying in Low Earth Orbit [Delft University of Technology].
+<a class="reference external" href="http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70">http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70</a>, Page 21</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_major_axis_leader</strong> (<em>float</em>) – Semi-major axis of the leader’s orbit in meters</p></li>
+<li><p><strong>eccentricity_leader</strong> (<em>float</em>) – Eccentricity of the leader’s orbit</p></li>
+<li><p><strong>inclination_leader</strong> (<em>float</em>) – Inclination of the leader’s orbit in radians</p></li>
+<li><p><strong>right_ascension_leader</strong> (<em>float</em>) – Right ascension of the ascending node of the leader’s orbit in radians</p></li>
+<li><p><strong>argument_of_periapsis_leader</strong> (<em>float</em>) – Argument of periapsis of the leader’s orbit in radians</p></li>
+<li><p><strong>true_anomaly_leader</strong> (<em>float</em>) – True anomaly of the leader’s orbit in radians</p></li>
+<li><p><strong>semi_major_axis_follower</strong> (<em>float</em>) – Semi-major axis of the follower’s orbit in meters</p></li>
+<li><p><strong>eccentricity_follower</strong> (<em>float</em>) – Eccentricity of the follower’s orbit</p></li>
+<li><p><strong>inclination_follower</strong> (<em>float</em>) – Inclination of the follower’s orbit in radians</p></li>
+<li><p><strong>right_ascension_follower</strong> (<em>float</em>) – Right ascension of the ascending node of the follower’s orbit in radians</p></li>
+<li><p><strong>argument_of_periapsis_follower</strong> (<em>float</em>) – Argument of periapsis of the follower’s orbit in radians</p></li>
+<li><p><strong>true_anomaly_follower</strong> (<em>float</em>) – True anomaly of the follower’s orbit in radians</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing the relative orbital elements
+(</p>
+<blockquote>
+<div><p>da: the relative semi-major axis [m]
+dex: relative e_x [m]
+dix: relative x component of inclination [m]
+diy: relative y component of inclination [m]
+dey: relative e_y [m]
+daoml: change in mean argument of latitude [m]</p>
+</div></blockquote>
+<p>)</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.classical_to_relative_elements_mean">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">classical_to_relative_elements_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semi_major_axis_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#nominalpy.maths.astro.classical_to_relative_elements_mean" title="Link to this definition"></a></dt>
+<dd><p>Convert classical orbital elements to relative orbital elements as defined in the PhD Thesis:
+D’Amico, S. (2010). Autonomous Formation Flying in Low Earth Orbit [Delft University of Technology].
+<a class="reference external" href="http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70">http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70</a>, Page 21</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_major_axis_leader</strong> (<em>float</em>) – Semi-major axis of the leader’s orbit in meters</p></li>
+<li><p><strong>eccentricity_leader</strong> (<em>float</em>) – Eccentricity of the leader’s orbit</p></li>
+<li><p><strong>inclination_leader</strong> (<em>float</em>) – Inclination of the leader’s orbit in radians</p></li>
+<li><p><strong>right_ascension_leader</strong> (<em>float</em>) – Right ascension of the ascending node of the leader’s orbit in radians</p></li>
+<li><p><strong>argument_of_periapsis_leader</strong> (<em>float</em>) – Argument of periapsis of the leader’s orbit in radians</p></li>
+<li><p><strong>true_anomaly_leader</strong> (<em>float</em>) – True anomaly of the leader’s orbit in radians</p></li>
+<li><p><strong>semi_major_axis_follower</strong> (<em>float</em>) – Semi-major axis of the follower’s orbit in meters</p></li>
+<li><p><strong>eccentricity_follower</strong> (<em>float</em>) – Eccentricity of the follower’s orbit</p></li>
+<li><p><strong>inclination_follower</strong> (<em>float</em>) – Inclination of the follower’s orbit in radians</p></li>
+<li><p><strong>right_ascension_follower</strong> (<em>float</em>) – Right ascension of the ascending node of the follower’s orbit in radians</p></li>
+<li><p><strong>argument_of_periapsis_follower</strong> (<em>float</em>) – Argument of periapsis of the follower’s orbit in radians</p></li>
+<li><p><strong>true_anomaly_follower</strong> (<em>float</em>) – True anomaly of the follower’s orbit in radians</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – The name of the planet used to search for the Gravitational parameter of the central body in
+meters cubed per second squared</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing the relative orbital elements
+(</p>
+<blockquote>
+<div><p>da: the relative semi-major axis [m]
+dex: relative e_x [m]
+dix: relative x component of inclination [m]
+diy: relative y component of inclination [m]
+dey: relative e_y [m]
+daoml: change in mean argument of latitude [m]</p>
+</div></blockquote>
+<p>)</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -228,6 +384,46 @@ These are then transformed into PCI coordinates.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.eccentric_to_mean_anomaly">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">eccentric_to_mean_anomaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eccentric_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.eccentric_to_mean_anomaly" title="Link to this definition"></a></dt>
+<dd><p>Maps the eccentric anomaly angle into the corresponding mean elliptic anomaly angle. Both 2D and 1D elliptic</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>eccentric_anomaly</strong> (<em>float</em>) – [rad] Eccentric anomaly</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – [-] Eccentricity (0 &lt;= e &lt; 1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[rad] Mean elliptic anomaly</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.eccentric_to_true_anomaly">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">eccentric_to_true_anomaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eccentric_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.eccentric_to_true_anomaly" title="Link to this definition"></a></dt>
+<dd><p>Converts the Eccentric Anomaly to the True Anomaly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>eccentric_anomaly</strong> (<em>float</em>) – [rad] The Eccentric Anomaly</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – [-] The eccentricity of the orbit (0 &lt;= e &lt; 1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[rad] The True Anomaly</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -315,6 +511,149 @@ then an exception will be thrown.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.mean_motion">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">mean_motion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.mean_motion" title="Link to this definition"></a></dt>
+<dd><p>Calculate the mean motion of an orbit with a given semi-major axis and gravitational parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – [m] Semi-major axis of the orbit</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – Name of the planet to use for the calculation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[rad/s] Mean motion</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.mean_to_eccentric_anomaly">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">mean_to_eccentric_anomaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.mean_to_eccentric_anomaly" title="Link to this definition"></a></dt>
+<dd><p>Converts the Mean Anomaly to the Eccentric Anomaly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_anomaly</strong> (<em>float</em>) – [rad] The Mean Anomaly</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – [-] The eccentricity of the orbit (0 &lt;= e &lt; 1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[rad] The Eccentric Anomaly</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.mean_to_osculating_elements">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">mean_to_osculating_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">req</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_to_osculating</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#nominalpy.maths.astro.mean_to_osculating_elements" title="Link to this definition"></a></dt>
+<dd><p>First-order J2 Mapping Between Mean and Osculating Orbital Elements
+Analytical Mechanics of Space Systems, Hanspeter Schaub, John L. Junkins, 4th edition.
+[m] or [km] should be the same both for req and elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>req</strong> (<em>float</em>) – [m] Equatorial radius or the orbital body</p></li>
+<li><p><strong>j2</strong> (<em>float</em>) – [-] J2 parameter for the orbital body of interest</p></li>
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – [m] Semi-major axis of the orbit</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – [-] Eccentricity of the orbit</p></li>
+<li><p><strong>inclination</strong> (<em>float</em>) – [rad] Inclination of the orbit</p></li>
+<li><p><strong>right_ascension</strong> (<em>float</em>) – [rad] Right ascension of the ascending node of the orbit</p></li>
+<li><p><strong>argument_of_periapsis</strong> (<em>float</em>) – [rad] Argument of periapsis of the orbit</p></li>
+<li><p><strong>true_anomaly</strong> (<em>float</em>) – [rad] True anomaly of the orbit</p></li>
+<li><p><strong>mean_to_osculating</strong> (<em>bool</em>) – [-] Sgn=True:mean to osc, Sgn=False:osc to mean</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>[-] A classical element struct
+(</p>
+<blockquote>
+<div><p>semi_major_axis,
+eccentricity,
+inclination,
+raan,
+argument_of_periapsis,
+true_anomaly</p>
+</div></blockquote>
+<p>)</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.mean_to_true_anomaly">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">mean_to_true_anomaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.mean_to_true_anomaly" title="Link to this definition"></a></dt>
+<dd><p>Calculate the true anomaly from the mean anomaly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_anomaly</strong> (<em>float</em>) – [rad] The mean anomaly of the orbit</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – [-] The eccentricity of the orbit (0 &lt;= e &lt; 1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[rad] The true anomaly of the orbit</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.non_singular_to_relative_elements">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">non_singular_to_relative_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e_x_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e_y_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_argument_of_latitude_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semi_major_axis_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e_x_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e_y_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_argument_of_latitude_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#nominalpy.maths.astro.non_singular_to_relative_elements" title="Link to this definition"></a></dt>
+<dd><p>Convert non-singular orbital elements to relative orbital elements as defined in the PhD Thesis:
+D’Amico, S. (2010). Autonomous Formation Flying in Low Earth Orbit [Delft University of Technology].
+<a class="reference external" href="http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70">http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70</a>, Page 21</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_major_axis_leader</strong> (<em>float</em>) – Semi-major axis of the leader’s orbit in meters</p></li>
+<li><p><strong>e_x_leader</strong> (<em>float</em>) – x component of the leader’s eccentricity</p></li>
+<li><p><strong>e_y_leader</strong> (<em>float</em>) – y component of the leader’s eccentricity</p></li>
+<li><p><strong>inclination_leader</strong> (<em>float</em>) – Inclination of the leader’s orbit in radians</p></li>
+<li><p><strong>right_ascension_leader</strong> (<em>float</em>) – Right ascension of the ascending node of the leader’s orbit in radians</p></li>
+<li><p><strong>mean_argument_of_latitude_leader</strong> (<em>float</em>) – Mean argument of latitude of the leader’s orbit in radians</p></li>
+<li><p><strong>semi_major_axis_follower</strong> (<em>float</em>) – Semi-major axis of the follower’s orbit in meters</p></li>
+<li><p><strong>e_x_follower</strong> (<em>float</em>) – x component of the follower’s eccentricity</p></li>
+<li><p><strong>e_y_follower</strong> (<em>float</em>) – y component of the follower’s eccentricity</p></li>
+<li><p><strong>inclination_follower</strong> (<em>float</em>) – Inclination of the follower’s orbit in radians</p></li>
+<li><p><strong>right_ascension_follower</strong> (<em>float</em>) – Right ascension of the ascending node of the follower’s orbit in radians</p></li>
+<li><p><strong>mean_argument_of_latitude_follower</strong> (<em>float</em>) – Mean argument of latitude of the follower’s orbit in radians</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing the relative orbital elements
+(</p>
+<blockquote>
+<div><p>da: the relative semi-major axis [m]
+dex: relative e_x [m]
+dix: relative x component of inclination [m]
+diy: relative y component of inclination [m]
+dey: relative e_y [m]
+daoml: change in mean argument of latitude [m]</p>
+</div></blockquote>
+<p>)</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.pcpf_to_geodetic_lla">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">pcpf_to_geodetic_lla</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.pcpf_to_geodetic_lla" title="Link to this definition"></a></dt>
 <dd><p>Converts the Planet-Centred, Planet-Fixed parameters to Latitude, 
@@ -387,6 +726,26 @@ transformation matrix based on the provided orbital elements.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.period">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">period</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.period" title="Link to this definition"></a></dt>
+<dd><p>Calculate the orbital period of an orbit with a given semi-major axis and gravitational parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – [m] Semi-major axis of the orbit</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – Name of the planet to use for the calculation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[s] Orbital period</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.semi_latus_rectum_to_vector_elements">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">semi_latus_rectum_to_vector_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_latus_rectum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.semi_latus_rectum_to_vector_elements" title="Link to this definition"></a></dt>
 <dd><p>Transforms Keplerian orbital elements into position and velocity in Planet-Centered
@@ -449,6 +808,38 @@ PCI coordinate system.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.true_to_eccentric_anomaly">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">true_to_eccentric_anomaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.true_to_eccentric_anomaly" title="Link to this definition"></a></dt>
+<dd><p>Maps true anomaly angles into eccentric anomaly angles.
+:param true_anomaly:   [rad] True anomaly angle
+:type true_anomaly:    float
+:param eccentricity:  [-] Eccentricity (0 &lt;= e &lt; 1)
+:type eccentricity:   float
+:return:             [rad] Eccentric anomaly
+:rtype:              float</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.true_to_mean_anomaly">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">true_to_mean_anomaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.true_to_mean_anomaly" title="Link to this definition"></a></dt>
+<dd><p>Calculate the mean anomaly from the true anomaly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>true_anomaly</strong> (<em>float</em>) – [rad] The true anomaly of the orbit</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – [-] The eccentricity of the orbit (0 &lt;= e &lt; 1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[rad] Mean elliptic anomaly</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.vector_to_classical_elements">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">vector_to_classical_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bn_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.vector_to_classical_elements" title="Link to this definition"></a></dt>
 <dd><p>Convert state vectors to classical orbital elements. This function
@@ -476,6 +867,112 @@ classical elliptical inclined.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ArithmeticError</strong> – If the orbit is parabolic, which is not supported by this function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.vector_to_classical_elements_mean">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">vector_to_classical_elements_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bn_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#nominalpy.maths.astro.vector_to_classical_elements_mean" title="Link to this definition"></a></dt>
+<dd><p>Converts the position and velocity vectors into mean classical orbital elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_bn_n</strong> (<em>np.ndarray</em>) – The position vector in the inertial frame [m]</p></li>
+<li><p><strong>v_bn_n</strong> (<em>np.ndarray</em>) – The velocity vector in the inertial frame [m/s]</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – The planet to use for the conversion</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing the classical orbital elements
+(</p>
+<blockquote>
+<div><p>mean semi_major_axis,
+mean eccentricity,
+mean inclination,
+mean right_ascension,
+mean argument_of_periapsis,
+mean true_anomaly</p>
+</div></blockquote>
+<p>)</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.vector_to_relative_elements">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">vector_to_relative_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bn_n_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_bn_n_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#nominalpy.maths.astro.vector_to_relative_elements" title="Link to this definition"></a></dt>
+<dd><p>Convert the relative position and velocity vectors to relative orbital elements as defined in the PhD Thesis:
+D’Amico, S. (2010). Autonomous Formation Flying in Low Earth Orbit [Delft University of Technology].
+<a class="reference external" href="http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70">http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70</a>, Page 21</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_bn_n_leader</strong> (<em>np.ndarray</em>) – Position vector of the leader in the inertial frame in meters</p></li>
+<li><p><strong>v_bn_n_leader</strong> (<em>np.ndarray</em>) – Velocity vector of the leader in the inertial frame in meters per second</p></li>
+<li><p><strong>r_bn_n_follower</strong> (<em>np.ndarray</em>) – Position vector of the follower in the inertial frame in meters</p></li>
+<li><p><strong>v_bn_n_follower</strong> (<em>np.ndarray</em>) – Velocity vector of the follower in the inertial frame in meters per second</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – The name of the planet used to search for the Gravitational parameter of the central body in
+meters cubed per second squared</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing the relative orbital elements
+(</p>
+<blockquote>
+<div><p>da: the relative semi-major axis [m]
+dex: relative e_x [m]
+dix: relative x component of inclination [m]
+diy: relative y component of inclination [m]
+dey: relative e_y [m]
+daoml: change in mean argument of latitude [m]</p>
+</div></blockquote>
+<p>)</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.vector_to_relative_elements_mean">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">vector_to_relative_elements_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bn_n_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n_leader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_bn_n_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n_follower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#nominalpy.maths.astro.vector_to_relative_elements_mean" title="Link to this definition"></a></dt>
+<dd><p>Convert the relative position and velocity vectors to relative orbital elements as defined in the PhD Thesis:
+D’Amico, S. (2010). Autonomous Formation Flying in Low Earth Orbit [Delft University of Technology].
+<a class="reference external" href="http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70">http://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid:a10e2d63-399d-48e5-884b-402e9a105c70</a>, Page 21</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_bn_n_leader</strong> (<em>np.ndarray</em>) – Position vector of the leader in the inertial frame in meters</p></li>
+<li><p><strong>v_bn_n_leader</strong> (<em>np.ndarray</em>) – Velocity vector of the leader in the inertial frame in meters per second</p></li>
+<li><p><strong>r_bn_n_follower</strong> (<em>np.ndarray</em>) – Position vector of the follower in the inertial frame in meters</p></li>
+<li><p><strong>v_bn_n_follower</strong> (<em>np.ndarray</em>) – Velocity vector of the follower in the inertial frame in meters per second</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – The name of the planet used to search for the Gravitational parameter of the central body in
+meters cubed per second squared</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing the relative orbital elements
+(</p>
+<blockquote>
+<div><p>da: the relative mean semi-major axis [m]
+dex: relative mean e_x [m]
+dix: relative mean x component of inclination [m]
+diy: relative mean y component of inclination [m]
+dey: relative mean e_y [m]
+daoml: change in mean, mean argument of latitude [m]</p>
+</div></blockquote>
+<p>)</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1303,6 +1800,262 @@ and useful values that can be used for conversions.</p>
 </dd></dl>
 
 </section>
+<section id="module-nominalpy.maths.constellations">
+<span id="nominalpy-maths-constellations-module"></span><h2>nominalpy.maths.constellations module<a class="headerlink" href="#module-nominalpy.maths.constellations" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constellations.</span></span><span class="sig-name descname"><span class="pre">Constellation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_classical_elements</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.argument_of_periapsis">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">argument_of_periapsis</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.argument_of_periapsis" title="Link to this definition"></a></dt>
+<dd><p>get the argument of periapsis of every spacecraft in the constellation
+:return: the argument of periapsis of every spacecraft in the constellation [rad]
+:rtype: float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.eccentricity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eccentricity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.eccentricity" title="Link to this definition"></a></dt>
+<dd><p>get the eccentricity of every spacecraft in the constellation
+:return: the eccentricity of every spacecraft in the constellation
+:rtype: float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.inclination">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inclination</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.inclination" title="Link to this definition"></a></dt>
+<dd><p>get the inclination of every spacecraft in the constellation
+:return: the inclination of every spacecraft in the constellation [rad]
+:rtype: float</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.init_classical_elements">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_classical_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.init_classical_elements" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>initialize the orbital elements for every spacecraft in the constellation, if the orbital element</dt><dd><p>properties of this class are osculating then the initial orbital elements will be osculating, otherwise
+they will be mean</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.init_classical_elements_mean">
+<span class="sig-name descname"><span class="pre">init_classical_elements_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.init_classical_elements_mean" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.init_classical_elements_osculating">
+<span class="sig-name descname"><span class="pre">init_classical_elements_osculating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.init_classical_elements_osculating" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.init_state_vectors">
+<span class="sig-name descname"><span class="pre">init_state_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.init_state_vectors" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.init_state_vectors_mean">
+<span class="sig-name descname"><span class="pre">init_state_vectors_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.init_state_vectors_mean" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.init_state_vectors_osculating">
+<span class="sig-name descname"><span class="pre">init_state_vectors_osculating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.init_state_vectors_osculating" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.is_valid_spacecraft_id">
+<span class="sig-name descname"><span class="pre">is_valid_spacecraft_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spacecraft_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.is_valid_spacecraft_id" title="Link to this definition"></a></dt>
+<dd><p>check if the spacecraft id is valid
+:param spacecraft_id: the spacecraft id
+:return: true if the spacecraft id is valid, false otherwise</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.iter_state_vectors">
+<span class="sig-name descname"><span class="pre">iter_state_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.iter_state_vectors" title="Link to this definition"></a></dt>
+<dd><p>iterate over the state vectors of the spacecraft in the constellation
+:return: an iterator over the state vectors of the spacecraft in the constellation</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.num_satellites">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_satellites</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.num_satellites" title="Link to this definition"></a></dt>
+<dd><p>get the number of satellites in the constellation
+:return: the number of satellites in the constellation
+:rtype: int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.right_ascension">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">right_ascension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.right_ascension" title="Link to this definition"></a></dt>
+<dd><p>get the right ascension of every spacecraft in the constellation
+:return: the right ascension of every spacecraft in the constellation [rad]
+:rtype: float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.semi_major_axis">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">semi_major_axis</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.semi_major_axis" title="Link to this definition"></a></dt>
+<dd><p>get the semi-major axis of every spacecraft in the constellation
+:return: the semi-major axis of every spacecraft in the constellation
+:rtype: float</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.set_mean_elements">
+<span class="sig-name descname"><span class="pre">set_mean_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.set_mean_elements" title="Link to this definition"></a></dt>
+<dd><p>set the mean orbital elements for every spacecraft in the constellation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_major_axis_mean</strong> (<em>float</em>) – the mean semi-major axis of every spacecraft in the constellation</p></li>
+<li><p><strong>eccentricity_mean</strong> (<em>float</em>) – the mean eccentricity of every spacecraft in the constellation</p></li>
+<li><p><strong>inclination_mean</strong> (<em>float</em>) – the mean inclination of every spacecraft in the constellation</p></li>
+<li><p><strong>right_ascension_mean</strong> (<em>float</em>) – the mean offset in right ascension</p></li>
+<li><p><strong>argument_of_periapsis_mean</strong> (<em>float</em>) – the mean offset in argument of periapsis</p></li>
+<li><p><strong>true_anomaly_mean</strong> (<em>float</em>) – the mean offset in true anomaly</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.set_variable">
+<span class="sig-name descname"><span class="pre">set_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spacecraft_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.set_variable" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>set variables for spacecraft in the constellation where the variables are input into the method as keyword</dt><dd><p>arguments</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spacecraft_ids</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>int</em><em>, </em><em>List</em><em>[</em><em>int</em><em>]</em><em>]</em><em>]</em>) – the spacecraft ids to set the variable for. If None, then the variable will be set for
+every spacecraft in the constellation</p></li>
+<li><p><strong>kwargs</strong> – the variables to set for the spacecraft in the constellation</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.spacecraft">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spacecraft</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.spacecraft" title="Link to this definition"></a></dt>
+<dd><p>get the spacecraft in the constellation
+:return: the spacecraft in the constellation
+:rtype: dict</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.true_anomaly_offset">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">true_anomaly_offset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.true_anomaly_offset" title="Link to this definition"></a></dt>
+<dd><p>get the true anomaly offset of every spacecraft in the constellation
+:return: the true anomaly offset of every spacecraft in the constellation [rad]
+:rtype: float</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Constellation.true_argument_of_latitude">
+<span class="sig-name descname"><span class="pre">true_argument_of_latitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spacecraft_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Constellation.true_argument_of_latitude" title="Link to this definition"></a></dt>
+<dd><p>get the true argument of latitude of the spacecraft in the constellation
+:return: the true argument of latitude of the spacecraft in the constellation</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Coplanar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constellations.</span></span><span class="sig-name descname"><span class="pre">Coplanar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Coplanar" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#nominalpy.maths.constellations.Constellation" title="nominalpy.maths.constellations.Constellation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Constellation</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Coplanar.init_classical_elements">
+<span class="sig-name descname"><span class="pre">init_classical_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Coplanar.init_classical_elements" title="Link to this definition"></a></dt>
+<dd><p>initialize the orbital elements for every spacecraft in the constellation
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.CoplanarCircular">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constellations.</span></span><span class="sig-name descname"><span class="pre">CoplanarCircular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.CoplanarCircular" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#nominalpy.maths.constellations.Coplanar" title="nominalpy.maths.constellations.Coplanar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Coplanar</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.CoplanarCircular.eccentricity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eccentricity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nominalpy.maths.constellations.CoplanarCircular.eccentricity" title="Link to this definition"></a></dt>
+<dd><p>get the eccentricity of every spacecraft in the constellation
+:return: the eccentricity of every spacecraft in the constellation
+:rtype: float</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Walker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constellations.</span></span><span class="sig-name descname"><span class="pre">Walker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.Walker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#nominalpy.maths.constellations.Constellation" title="nominalpy.maths.constellations.Constellation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Constellation</span></code></a></p>
+<p>A Walker constellation is a constellation of satellites that are evenly spaced in a Walker pattern.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.Walker.num_planes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_planes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#nominalpy.maths.constellations.Walker.num_planes" title="Link to this definition"></a></dt>
+<dd><p>get the number of planes in the constellation
+:return: the number of planes in the constellation
+:rtype: int</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.WalkerDelta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constellations.</span></span><span class="sig-name descname"><span class="pre">WalkerDelta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.WalkerDelta" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#nominalpy.maths.constellations.Walker" title="nominalpy.maths.constellations.Walker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Walker</span></code></a></p>
+<p>A Walker Delta constellation is a constellation of satellites that are evenly spaced in a Walker Delta pattern.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.WalkerDelta.init_classical_elements">
+<span class="sig-name descname"><span class="pre">init_classical_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.WalkerDelta.init_classical_elements" title="Link to this definition"></a></dt>
+<dd><p>initialize the orbital elements for every spacecraft in the constellation
+:param args:
+:param kwargs:
+:return:</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.WalkerDelta.relative_spacing">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">relative_spacing</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nominalpy.maths.constellations.WalkerDelta.relative_spacing" title="Link to this definition"></a></dt>
+<dd><p>get the relative spacing of the constellation
+:return: the relative spacing of the constellation
+:rtype: float</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.classical_elements_mean">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constellations.</span></span><span class="sig-name descname"><span class="pre">classical_elements_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_to_osculating</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.classical_elements_mean" title="Link to this definition"></a></dt>
+<dd><p>Decorator to calculate the mean classical orbital elements from osculating elements
+:param method: the method to be decorated
+:return: the decorated method</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.constellations.state_vectors">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.constellations.</span></span><span class="sig-name descname"><span class="pre">state_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.constellations.state_vectors" title="Link to this definition"></a></dt>
+<dd><p>Decorator to convert a collection of orbital elements into their equivalent inertial state vectors
+:param method: the method to be decorated
+:return: the decorated method</p>
+</dd></dl>
+
+</section>
 <section id="module-nominalpy.maths.data">
 <span id="nominalpy-maths-data-module"></span><h2>nominalpy.maths.data module<a class="headerlink" href="#module-nominalpy.maths.data" title="Link to this heading"></a></h2>
 <p>This module contains public methods that can calculate various
@@ -1444,7 +2197,7 @@ that 1 megabyte equals 1024 kilobytes</p>
 calculations and astrophysical dimensions.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.utils.acos_quadrant_check">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.utils.</span></span><span class="sig-name descname"><span class="pre">acos_quadrant_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adjacent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypotenuse</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.utils.acos_quadrant_check" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.utils.</span></span><span class="sig-name descname"><span class="pre">acos_quadrant_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adjacent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypotenuse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.utils.acos_quadrant_check" title="Link to this definition"></a></dt>
 <dd><p>Calculate an angle using the arccosine function and perform a 
 quadrant check. The function calculates the angle using the arccosine 
 of the ratio of the adjacent side to the hypotenuse. It adjusts the 
@@ -1459,6 +2212,131 @@ angle based on the quadrant determined by the ‘test’ parameter.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The calculated angle in radians.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.utils.angle_between_vectors">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.utils.</span></span><span class="sig-name descname"><span class="pre">angle_between_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.utils.angle_between_vectors" title="Link to this definition"></a></dt>
+<dd><p>Calculate the angle between two vectors. This function calculates the
+angle between two vectors using the dot product and the magnitude of
+each vector. The angle is calculated using the arccosine function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v1</strong> (<em>np.ndarray</em>) – The first vector</p></li>
+<li><p><strong>v2</strong> (<em>np.ndarray</em>) – The second vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The angle between the two vectors in radians.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.utils.normalize_angle">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.utils.</span></span><span class="sig-name descname"><span class="pre">normalize_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6.283185307179586</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.utils.normalize_angle" title="Link to this definition"></a></dt>
+<dd><p>normalize an angle between 0 &lt;= theta &lt; max, where max is an arbitrary angle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>angle</strong> (<em>float</em>) – The angle to be normalized</p></li>
+<li><p><strong>angle_max</strong> (<em>float</em>) – The maximum value for the angle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The normalized angle</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.utils.normalize_array">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.utils.</span></span><span class="sig-name descname"><span class="pre">normalize_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.utils.normalize_array" title="Link to this definition"></a></dt>
+<dd><p>Normalize a numpy array. This function normalizes a numpy array by
+dividing each element by the magnitude of the array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>np.ndarray</em>) – The array to be normalized</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The normalized array</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.utils.parallel_vector">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.utils.</span></span><span class="sig-name descname"><span class="pre">parallel_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.utils.parallel_vector" title="Link to this definition"></a></dt>
+<dd><p>Calculate the component of v1 that is parallel with v_ref.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v1</strong> (<em>np.ndarray</em>) – The first vector</p></li>
+<li><p><strong>v_ref</strong> (<em>np.ndarray</em>) – The second vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The parallel vector of the two vectors</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.utils.perpendicular_vector">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.utils.</span></span><span class="sig-name descname"><span class="pre">perpendicular_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.utils.perpendicular_vector" title="Link to this definition"></a></dt>
+<dd><p>Calculate the perpendicular vector of two vectors. This function calculates
+the perpendicular vector of two vectors using the dot product and the magnitude
+of each vector. The perpendicular vector is calculated using the dot product
+and the magnitude of the first vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v1</strong> (<em>np.ndarray</em>) – The first vector</p></li>
+<li><p><strong>v_ref</strong> (<em>np.ndarray</em>) – The second vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The perpendicular vector of the two vectors</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.utils.shortest_angular_difference">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.utils.</span></span><span class="sig-name descname"><span class="pre">shortest_angular_difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.utils.shortest_angular_difference" title="Link to this definition"></a></dt>
+<dd><p>Calculate the shortest angular difference between two angles. This function
+calculates the shortest angular difference between two angles using the
+arccosine function and the quadrant check function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>angle1</strong> (<em>float</em>) – The first angle</p></li>
+<li><p><strong>angle2</strong> (<em>float</em>) – The second angle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The shortest angular difference between the two angles</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -1524,6 +2402,29 @@ sub-parameter within the data.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.value.matrix">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.maths.value.matrix" title="Link to this definition"></a></dt>
+<dd><p>Constructs a matrix from a particular set of rows. This is a 
+generic r x c matrix, where r is the number of rows and c is
+the number of columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>int</em>) – The number of rows in the matrix</p></li>
+<li><p><strong>c</strong> (<em>int</em>) – The number of columns in the matrix</p></li>
+<li><p><strong>rows</strong> (<em>list</em>) – A list of tuples containing the values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A matrix list of data in the correct format</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.value.matrix33">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">matrix33</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.maths.value.matrix33" title="Link to this definition"></a></dt>
 <dd><p>Defines a way for specifying a particular value based
@@ -1580,6 +2481,29 @@ on a Vector3 structure.</p>
 <li><p><strong>x</strong> (<em>float</em>) – The X value of the vector</p></li>
 <li><p><strong>y</strong> (<em>float</em>) – The Y value of the vector</p></li>
 <li><p><strong>z</strong> (<em>float</em>) – The Z value of the vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The JSON dictionary of the vector</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.value.vector4">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">vector4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.vector4" title="Link to this definition"></a></dt>
+<dd><p>Defines a way for specifying a particular value based
+on a Vector4 structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em>) – The X value of the vector</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – The Y value of the vector</p></li>
+<li><p><strong>z</strong> (<em>float</em>) – The Z value of the vector</p></li>
+<li><p><strong>w</strong> (<em>float</em>) – The W value of the vector</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

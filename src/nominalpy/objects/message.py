@@ -1,13 +1,14 @@
 #                     [ NOMINAL SYSTEMS ]
 # This code is developed by Nominal Systems to aid with communication 
 # to the public API. All code is under the the license provided along
-# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+# with the 'nominalpy' module. Copyright Nominal Systems, 2024.
+
 import numpy as np
 import pandas as pd
 from copy import deepcopy
 from ..connection import Credentials, http, helper
 from .object import Object
-from ..utils import printer
+from ..utils import printer, NominalException
 
 
 class Message (Object):
@@ -49,10 +50,14 @@ class Message (Object):
         :rtype:             bool
         '''
 
+        # If already subscribed, return true
+        if self.__subscribed:
+            return True
+
         # Construct the JSON body
         body: dict = {
-            "guid": self.id,
-            "interval": interval
+            "ID": self.id,
+            "Interval": interval
         }
 
         # Create the data
@@ -61,8 +66,7 @@ class Message (Object):
         # Create the response from the PATCH request and get the IDs
         response = http.put_request(self._credentials, "database/message", data=request_data)
         if response == False:
-            printer.error("Failed to subscribe message to the database system.")
-            return False
+            raise NominalException("Failed to subscribe message to the database system.")
         self.__subscribed = True
         return True
 
@@ -93,14 +97,14 @@ class Message (Object):
 
         # Construct the JSON body parameters
         body: dict = {
-            "guid": self.id,
-            "min_time": min_time,
-            "max_time": max_time
+            "ID": self.id,
+            "MinTime": min_time,
+            "MaxTime": max_time
         }
         if len(values) > 0:
-            body["data"] = []
+            body["Params"] = []
             for param in values:
-                body["data"].append(param)
+                body["Params"].append(param)
 
         # Create the data
         request_data: str = helper.jsonify(body)
@@ -112,10 +116,10 @@ class Message (Object):
         data: list = []
         for r in response:
             entry: dict = {}
-            entry["time"] = r["time"]
+            entry["time"] = r["Time"]
             entry_data = {}
-            for d in r["data"].keys():
-                entry_data[d] = helper.deserialize(r["data"][d])
+            for d in r["Data"].keys():
+                entry_data[d] = helper.deserialize(r["Data"][d])
             entry["data"] = entry_data
             data.append(entry)
 
@@ -221,15 +225,15 @@ class Message (Object):
 
         # Construct the JSON body parameters
         body: dict = {
-            "guid": id,
-            "simulation": simulation,
-            "min_time": min_time,
-            "max_time": max_time
+            "ID": id,
+            "Simulation": simulation,
+            "MinTime": min_time,
+            "MaxTime": max_time
         }
         if len(values) > 0:
-            body["data"] = []
+            body["Params"] = []
             for param in values:
-                body["data"].append(param)
+                body["Params"].append(param)
 
         # Create the data
         request_data: str = helper.jsonify(body)
@@ -241,10 +245,10 @@ class Message (Object):
         data: list = []
         for r in response:
             entry: dict = {}
-            entry["time"] = r["time"]
+            entry["time"] = r["Time"]
             entry_data = {}
-            for d in r["data"].keys():
-                entry_data[d] = helper.deserialize(r["data"][d])
+            for d in r["Data"].keys():
+                entry_data[d] = helper.deserialize(r["Data"][d])
             entry["data"] = entry_data
             data.append(entry)
 

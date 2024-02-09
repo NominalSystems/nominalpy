@@ -1,7 +1,7 @@
 #                     [ NOMINAL SYSTEMS ]
 # This code is developed by Nominal Systems to aid with communication 
 # to the public API. All code is under the the license provided along
-# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+# with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 from ..connection import Credentials, http, helper
 from ..utils import printer, NominalException
@@ -47,7 +47,13 @@ class Object(Entity):
         :type api_type:     str
         '''
 
-        super().__init__(credentials=credentials, id=id)
+        # Check for an invalid type
+        api_type = api_type.lower()
+        if api_type not in ["object", "message"]:
+            raise NominalException(f"Invalid Object type '{api_type}' created with object.")
+
+        # Continue with the creation
+        super().__init__(credentials=credentials, id=id)  
         self._api_type = api_type
 
     def _require_update (self) -> None:
@@ -72,17 +78,17 @@ class Object(Entity):
         
         # Perform the request on the data
         request_data: str = helper.jsonify({
-            "guid": self.id
+            "ID": self.id
         })
         response = http.post_request(self._credentials, "query/" + self._api_type, data=request_data)
         
         # Check for a valid response and update the data
         if response == None or response == {}:
-            printer.error("Failed to retrieve data from %s '%s'." % (self._api_type, self.id))
+            raise NominalException("Failed to retrieve data from %s '%s'." % (self._api_type, self.id))
         else:
             self.__update_required = False
-            self.__type = response["type"]
-            self.__data = response["data"]
+            self.__type = response["Type"]
+            self.__data = response["Data"]
     
     def get_type (self) -> str:
         '''
@@ -113,11 +119,10 @@ class Object(Entity):
         # Attempt to get the current object data or throw an error.
         self._get_object()
         if self.__data == None:
-            printer.error("No data available on the component.")
-            return {}
+            raise NominalException("No data available on the component.")
         
         # If no values, return all of the data
-        if len(values) == 0:
+        if values == None or len(values) == 0:
             return self.__data
         
         # Parse the data to only fetch the data requested by the user
@@ -129,7 +134,7 @@ class Object(Entity):
         # Return the data
         return data
 
-    def get_value (self, param: str) -> str:
+    def get_value (self, param: str) -> any:
         '''
         This method returns the JSON data associated with the parameter
         passed in at the current time in the simulation.
@@ -144,8 +149,7 @@ class Object(Entity):
         # Fetch all values and parse only the one in the parameter
         data: dict = self.get_values(param)
         if data == {}:
-            printer.error("Failed to find parameter '%s' in class '%s'. Please check the documentation for valid variables." % (param, self.__type))
-            return None
+            raise NominalException("Failed to find parameter '%s' in class '%s'. Please check the documentation for valid variables." % (param, self.__type))
         return data[param]
     
     def set_values (self, **kwargs) -> bool:
@@ -164,13 +168,12 @@ class Object(Entity):
 
         # Construct the JSON body
         body: dict = {
-            "guid": self.id
+            "ID": self.id
         }
 
         # Check if no values exists and set the data
         if len(kwargs) == 0:
-            printer.error("No values to set.")
-            return False
+            raise NominalException("No keyword-arguments parsed into object 'set_values' method.")
         
         # Clean up if using the 'set_value' function
         if 'param_name' in kwargs:
@@ -179,7 +182,7 @@ class Object(Entity):
             del kwargs['param_value']
         
         # Update the data in the body
-        body["data"] = helper.serialize(kwargs)
+        body["Data"] = helper.serialize(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body)
@@ -187,8 +190,7 @@ class Object(Entity):
         # Create the response from the PATCH request and get the IDs
         response = http.patch_request(self._credentials, self._api_type, data=request_data)
         if response == False:
-            printer.error("Failed to set data on %s." % self._api_type)
-            return False
+            raise NominalException("Failed to set data on %s." % self._api_type)
         
         # Update the flag for needing to get values
         self._require_update()
@@ -231,7 +233,7 @@ class Object(Entity):
 
             # Construct the JSON body
             request_data: str = helper.jsonify({
-                "name": self.__type
+                "Type": self.__type
             })
 
             # Create the request and check for valid
@@ -263,7 +265,7 @@ class Object(Entity):
 
         # Attempt to find the variable
         if not name in variables.keys():
-            raise NominalException(f"The variable '{name}' does not exist on a class of type '{self.__type}'.")
+            raise NominalException(f"The variable '{name}' does not exist on a class of type '{self.get_type()}'.")
         
         # Return the dictionary data
         return variables[name]
@@ -280,7 +282,7 @@ class Object(Entity):
         # Construct the JSON body
         request_data: str = helper.jsonify(
             {
-                "guid": self.id
+                "ID": self.id
             }
         )
 
@@ -296,8 +298,7 @@ class Object(Entity):
         
         # Failed to delete
         else:
-            printer.error("Failed to delete object '%s'." % self.id)
-            return False
+            raise NominalException("Failed to delete object '%s'." % self.id)
     
     def __str__ (self) -> str:
         '''

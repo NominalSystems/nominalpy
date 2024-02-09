@@ -1,7 +1,7 @@
 #                     [ NOMINAL SYSTEMS ]
 # This code is developed by Nominal Systems to aid with communication 
 # to the public API. All code is under the the license provided along
-# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+# with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 '''
 This module contains public static class methods that can be used to 
@@ -34,6 +34,28 @@ def vector3 (x: float, y: float, z: float) -> dict:
     value: dict = {"X": float(x), "Y": float(y), "Z": float(z)}
     return value
 
+def vector4 (x: float, y: float, z: float, w: float) -> dict:
+    '''
+    Defines a way for specifying a particular value based
+    on a Vector4 structure.
+
+    :param x:   The X value of the vector
+    :type x:    float
+    :param y:   The Y value of the vector
+    :type y:    float
+    :param z:   The Z value of the vector
+    :type z:    float
+    :param w:   The W value of the vector
+    :type w:    float
+
+
+    :returns:   The JSON dictionary of the vector
+    :rtype:     dict
+    '''
+
+    value: dict = {"X": float(x), "Y": float(y), "Z": float(z), "W": float(w)}
+    return value
+
 def matrix33 (m1: tuple, m2: tuple, m3: tuple) -> list:
     '''
     Defines a way for specifying a particular value based
@@ -53,6 +75,31 @@ def matrix33 (m1: tuple, m2: tuple, m3: tuple) -> list:
     value: list = [[float(m1[0]), float(m1[1]), float(m1[2])], 
         [float(m2[0]), float(m2[1]), float(m2[2])], 
         [float(m3[0]), float(m3[1]), float(m3[2])]]
+    return value
+
+def matrix (r: int, c: int, *rows) -> list:
+    '''
+    Constructs a matrix from a particular set of rows. This is a 
+    generic r x c matrix, where r is the number of rows and c is
+    the number of columns.
+
+    :param r:       The number of rows in the matrix
+    :type r:        int
+    :param c:       The number of columns in the matrix
+    :type c:        int
+    :param rows:    A list of tuples containing the values
+    :type rows:     list
+
+    :returns:       A matrix list of data in the correct format
+    :rtype:         list
+    '''
+    
+    value: list = []
+    for _ in range(r):
+        value.append([0.0] * c)
+    for i in range(r):
+        for j in range(c):
+            value[i][j] = rows[i][j]
     return value
 
 def datetime (year: int, month: int, day: int, hour: int = 0, min: int = 0, sec: int = 0) -> dict:
