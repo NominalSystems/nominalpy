@@ -1,9 +1,10 @@
 #                     [ NOMINAL SYSTEMS ]
 # This code is developed by Nominal Systems to aid with communication 
 # to the public API. All code is under the the license provided along
-# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+# with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
-import time
+import time, os, json
+from datetime import datetime
 from .component import Component
 from .entity import Entity
 from .message import Message
@@ -25,6 +26,9 @@ class Simulation(Entity):
     __components: list = []
     '''Defines a list of components added to the simulation. This will be populated by adding components to the simulation.'''
 
+    __systems: dict = {}
+    '''Defines a dictionary of systems that have been added to the simulation, based on the type and the object.'''
+
     __time: float = 0.0
     '''Defines the current simulation since starting the simulation. This is calculated based on the number of ticks that have occurred.'''
 
@@ -37,16 +41,18 @@ class Simulation(Entity):
     __messages: dict = {}
     '''Defines a list of messages associated with a particular property for easy fetching'''
 
-    def __init__ (self, credentials: Credentials, reset: bool = True) -> None:
+    def __init__ (self, credentials: Credentials, reset: bool = True, delete_database: bool = True) -> None:
         '''
         Default constructor for the simulation handler which takes 
         in the credentials to access the API. The reset flag will attempt
         to reset the simulation when initialised by default.
 
-        :param credentials: The Credentials object that is used for the API
-        :type credentials:  Credentials
-        :param reset:       A flag whether to reset the previous simulation loaded in the session if existed
-        :type reset:        bool
+        :param credentials:     The Credentials object that is used for the API
+        :type credentials:      Credentials
+        :param reset:           A flag whether to reset the previous simulation loaded in the session if existed
+        :type reset:            bool
+        :param delete_database: A flag whether to delete the database that exists too
+        :type delete_database:  bool
         '''
 
         super().__init__(credentials=credentials, id=None)
@@ -54,6 +60,8 @@ class Simulation(Entity):
         self._credentials = credentials
         if self._credentials == None:
             raise NominalException("Invalid Credentials: No credentials passed into the Simulation.")
+        if not self._credentials.is_valid():
+            raise NominalException("Invalid Credentials: The credentials are missing information.")
         
         # Attempt a simple request
         if not self._credentials.is_local:
@@ -61,23 +69,23 @@ class Simulation(Entity):
 
         # Resets the simulation if valid credentials
         if reset and self._credentials != None:
-            self.reset()
+            self.reset(delete_database)
 
         # Fetch the current ID
-        timeline: dict = self.__get_timeline()
-        if timeline != None:
-            self.id = timeline["ID"]
+        simulation: dict = self.__get_simulation()
+        if simulation != None:
+            self.id = simulation["ID"]
     
-    def __get_timeline (self) -> dict:
+    def __get_simulation (self) -> dict:
         '''
         Attempts to fetch the current timeline information from the simulation, 
         including the initial epoch, ID and current time.
 
-        :returns:   The timeline information in the form of a JSON object
+        :returns:   The simulation timeline information in the form of a JSON object
         :rtype:     dict
         '''
         
-        response = http.get_request(self._credentials, "timeline")
+        response = http.get_request(self._credentials, "simulation")
         if response == {}:
             return None
         return response
@@ -126,16 +134,16 @@ class Simulation(Entity):
        
         # Construct the JSON body
         body: dict = {
-            "type": type
+            "Type": type
         }
         
         # Add in owner to the body
         if owner != None and isinstance(owner, Component):
-            body["owner"] = owner.id
+            body["Owner"] = owner.id
 
         # If there are keyword arguments
         if len(kwargs) > 0:
-            body["data"] = helper.serialize(kwargs)
+            body["Data"] = helper.serialize(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body, True)
@@ -145,7 +153,8 @@ class Simulation(Entity):
         printer.log("Attempted to create %d component(s) with IDs: \n\t%s" % (len(response), response))
 
         # Skip on empty list
-        if len(response) == 0: return None
+        if len(response) == 0:
+            return None
 
         # Check the GUID and return a new component with that ID or a None component
         guid: str = response[0]
@@ -153,11 +162,15 @@ class Simulation(Entity):
             printer.success("Component of type '%s' created." % type)
             obj: Component = Component(self._credentials, guid)
             self.__components.append(obj)
+
+            # Add the child to the owner
+            if owner != None:
+                owner._Component__children.append(obj)
+
             return obj
-        
+
         # Throw an error if no object or valid ID
-        printer.error("Could not construct object of class '%s'" % type)
-        return None
+        raise NominalException(f"Could not construct object of class {type}. Object name may be invalid.")
     
     def get_system (self, type: str, **kwargs) -> Object:
         '''
@@ -173,7 +186,128 @@ class Simulation(Entity):
         :rtype:         Object
         '''
 
-        return self.add_component(type, **kwargs)
+        # Checks if the type exists, update the values and return
+        if type in self.__systems:
+            system: Component = self.__systems[type]
+            if len(kwargs) > 0:
+                system.set_values(**kwargs)
+            return system
+        
+        # Otherwise, add a new component and return
+        system: Component = self.add_component(type, **kwargs)
+        self.__systems[type] = system
+        return system
+    
+    def get_components_added (self) -> list:
+        '''
+        Returns the list of components that have been added to this
+        simulation.
+
+        :returns:   A list of component objects as a copied list
+        :rtype:     list
+        '''
+        return self.__components
+    
+    def find_component (self, id: str) -> Component:
+        '''
+        Attempts to find a component with a particular ID in the
+        simulation and is able to create it as a python object if
+        it does not yet exist. This searches the simulation API
+        for an ID and if it doesn't exist in the Python simulation
+        object, then it will be created and added. Otherwise, if
+        it does exist, the reference to the object will be returned.
+
+        :param id:  The GUID of the object being searched for
+        :type id:   str
+
+        :returns:   A reference to the component that was found
+        :rtype:     Component
+        '''
+
+        # If empty ID, throw exception
+        if not helper.is_valid_guid(id):
+            raise NominalException(f"Invalid ID '{id}' passed.")
+
+        # Check if the ID matches within the list and return the object
+        obj: Component = next((obj for obj in self.__components if obj.id == id), None)
+        if obj != None:
+            return obj
+
+        # Fetch the components from the API of the type
+        request_data = helper.jsonify({
+            "ID": id,
+            "Params": ["Owner"]
+        })
+
+        # Fetch the object if it exists
+        response: list = http.post_request(self._credentials, "query/object", data=request_data)
+        
+        # If no response, throw an exception
+        if response == None:
+            raise NominalException(f"Failed to find component with ID '{id}'.")
+        
+        # Create the new object
+        printer.success("Component of type '%s' found and added to the simulation." % response["Type"])
+        id = response["ID"]
+        obj: Component = Component(self._credentials, id)
+        self.__components.append(obj)
+
+        # Return the new object
+        return obj
+    
+    def find_components_of_type (self, type: str) -> list:
+        '''
+        Attempts to find components of a particular type and
+        returns a list of components of a particular type that
+        exist within the simulation. This will also check off
+        any components that may already exist in this simulation
+        object.
+
+        :param type:    The full Nominal type of the object to filter by
+        :type type:     str
+
+        :returns:       A list of components that match the type
+        :rtype:         list
+        '''
+
+        # Sanitise the type
+        if "NominalSystems" not in type:
+            if "." not in type:
+                type = "NominalSystems.Classes." + type
+            else:
+                type = "NominalSystems." + type
+
+        # Fetch the components from the API of the type
+        request_data = helper.jsonify({
+            "Type": type,
+            "Params": ["Owner"] # This is to force no other data to come through
+        })
+
+        # Make the request to get the data
+        response: list = http.post_request(self._credentials, "query/objects", data=request_data)
+
+        # Create the components list
+        components: list = []
+
+        # Loop through each component
+        for component in response:
+            id: str = component["ID"]
+
+            # Fetch the component and add it
+            components.append(self.find_component(id))
+
+        # Return the list
+        return components
+    
+    def get_systems_added (self) -> list:
+        '''
+        Returns the list of all systems that have been added to the simulation.
+        This will return the system as a list as a cache.
+
+        :returns:   A list of system objects as a copied list
+        :rtype:     list
+        '''
+        return self.__systems.values()
     
     def get_message_types (self) -> list:
         '''
@@ -200,28 +334,31 @@ class Simulation(Entity):
         :rtype:         Message
         '''
 
+        # Skip if missing planet
+        if planet == None or planet == "":
+            raise NominalException("Invalid planet name passed into 'get_planet_message' function.")
+
         # Get the lower of the planet
         planet = planet.lower()
 
         # Check if the message exists
-        if planet in self.__messages:
+        if planet in self.__messages.keys():
             return self.__messages[planet]
 
         # Create the data packet to be submitted to the api
-        body = dict(planet=str(planet))
-        body["data"] = {}
+        body = dict(Planet=str(planet))
+        body["Params"] = {}
         request_data: str = helper.jsonify(body)
 
         # Make the request to get the data
         response = http.post_request(self._credentials, "query/planet", data=request_data)
 
         # Check for a valid response and update the data
-        if response == None or response == {}:
-            printer.error("Failed to retrieve data from planet '%s'." % planet)
-            return
+        if response is None or response == {}:
+            raise NominalException(f"Failed to retrieve data from planet {planet}.")
         
         # Transform the data into a Message object
-        msg: Message = Message(credentials=self._credentials, id=response["guid"])
+        msg: Message = Message(credentials=self._credentials, id=response["ID"])
         self.__messages[planet] = msg
         return msg
 
@@ -247,12 +384,12 @@ class Simulation(Entity):
 
         # Construct the JSON body
         body: dict = {
-            "type": type
+            "Type": type
         }
 
         # If there are keyword arguments
         if len(kwargs) > 0:
-            body["values"] = helper.serialize(kwargs)
+            body["Data"] = helper.serialize(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body, True)
@@ -272,36 +409,61 @@ class Simulation(Entity):
             return msg
         
         # Throw an error if no message or valid ID
-        printer.error("Could not construct message of class '%s'" % type)
-        return None
+        raise NominalException(f"Could not construct message of class {type}. Message name may be invalid.")
 
-    def tick (self, step: float = 1e-3, iterations: int = 1) -> None:
+    def tick (self, step: float = 1e-3, iterations: int = 1, batch: bool = True, callback = None) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will
         tick the simulation with some step size, in the form of a time
         span, and the iterations. The iterations are ticked on the
-        simulation side and will tick with the same step size.
+        simulation side and will tick with the same step size. By calling
+        the 'batch' as True, then the simulation will run the iterations
+        on the simulation side. However, for running one API request per
+        iteration, set the 'batch' parameter to False.
 
         :param step:        The step-size to tick the simulation in seconds
         :type step:         float
         :param iterations:  The number of iterations to run the simulation at
         :type iterations:   int
+        :param batch:       This defines whether the simulation should run the simulation at batch
+        :type batch:        bool
+        :param callaback:   An optional function callback that is executed after each tick. This must have a time parameter.
+        :type callback:     function
         '''
 
-        # Get the timespan and number of seconds and milliseconds to tick
+        # Sanitise the inputs
         step = float(step)
+        if step <= 1e-9:
+            raise NominalException("Invalid step. Unable to tick a simulation with a timestep under 1e-9 seconds.")
+        if iterations < 1:
+            raise NominalException("Invalid iterations. Unable to tick a simulation with iterations < 1.")
+
+        # Get the timespan and number of seconds and milliseconds to tick
         timespan: str = value.timespan(0, 0, 0, int(step), int(step * 1000) - int(step) * 1000)
-        
-        # Construct the JSON body
+
+        # Create the generic body for the request data
         request_data: str = helper.jsonify(
             {
-                "timestep": timespan,
-                "iterations": iterations
+                "Timestep": timespan,
+                "Iterations": iterations if batch else 1
             }
         )
 
-        # Create the response from the POST request on the timeline
-        http.post_request(self._credentials, "timeline/tick", data=request_data)
+        # If running the batch command, create the body and the response
+        if batch:
+            http.post_request(self._credentials, "simulation/tick", data=request_data)
+            if callback is not None: 
+                callback(self.__time + step * float(iterations))
+        
+        # If running one at a time, perform the loop and print the update
+        else:
+            for i in range (int(iterations)):
+                http.post_request(self._credentials, "simulation/tick", data=request_data)
+                printer.log('Ticked the simulation with a step of %.3fs. \t[%d / %d].' % (step, i + 1, int(iterations) + 1))
+                if callback is not None: 
+                    callback(self.__time + step * float(i))
+
+        # Output the success message
         printer.success('Ticked the simulation with a step of %.3fs %d time(s).' % (step, iterations))
 
         # Increase the time
@@ -312,7 +474,33 @@ class Simulation(Entity):
             obj._require_update()
         for msg in self.__messages.values():
             msg._require_update()
-        
+
+    def tick_duration (self, duration: float, step: float = 1e-3, batch: bool = True, callback = None) -> None:
+        '''
+        Attempts to tick the simulation by a certain amount. This will
+        tick the simulation with some step size, in the form of a time
+        span, and the iterations. The iterations are ticked on the
+        simulation side and will tick with the same step size.
+
+        :param duration:    The number of seconds forward in time to tick the simulation
+        :type duration:     float
+        :param step:        The size of the step to tick the simulation in seconds
+        :type step:         float
+        :param batch:       This defines whether the simulation should run the simulation at batch
+        :type batch:        bool
+        :param callaback:   An optional function callback that is executed after each tick. This must have a time parameter.
+        :type callback:     function
+        '''
+
+        # Sanitise the inputs
+        if step <= 1e-9:
+            raise NominalException("Invalid step. Unable to tick a simulation with a timestep under 1e-9 seconds.")
+        if duration <= 0.0:
+            raise NominalException("Invalid duration. Unable to tick a simulation for a duration that is less than or equal to 0 seconds.")
+
+        # Call the tick with some time
+        return self.tick(step=step, iterations=int(duration / step), batch=batch, callback=callback)
+
     def get_time (self) -> float:
         '''
         Returns the current simulation time based on the number of
@@ -323,6 +511,20 @@ class Simulation(Entity):
         '''
 
         return self.__time
+    
+    def get_datetime (self) -> datetime:
+        '''
+        Returns the current datetime of the simulation at the current
+        point in the simulation. This will be returned from the simulation
+        and is the sum of the initial Epoch and the time elapsed.
+
+        :returns:   The current datetime of the simulation
+        :rtype:     datetime
+        '''
+
+        # Fetches the datetime data and returns the structure
+        dt: dict = self.__get_simulation()["SimulationDate"]
+        return datetime(dt["Year"], dt["Month"], dt["Day"], dt["Hour"], dt["Minute"], dt["Second"], dt["Millisecond"] * 1000)
 
     def capture_image (self, file_name: str, spacecraft: Object, fov: float = 90.0, exposure: float = 0.0,
         ray_tracing: bool = False, size: tuple = (500, 500), camera_position: dict = None, 
@@ -377,7 +579,7 @@ class Simulation(Entity):
         camera_rotation: dict = helper.serialize_object(camera_rotation)
 
         # Create the visualiser if it doesn't exist
-        if self.__visualiser == None:
+        if self.__visualiser is None:
             self.__visualiser = Visualiser()
 
         # Fetch the cesium values
@@ -420,9 +622,9 @@ class Simulation(Entity):
         '''
 
         if access_token == "" or access_token == None:
-            printer.error("Invalid Cesium Ion Access Token.")
+            raise NominalException("Invalid Cesium Ion Access Token.")
         if terrain_id == 0 or imagery_id == 0:
-            printer.error("Invalid Terrain or Imagery asset IDs entered.")
+            raise NominalException("Invalid Terrain or Imagery asset IDs entered.")
 
         # Configure the Cesium data
         self.__cesium = {
@@ -431,16 +633,142 @@ class Simulation(Entity):
             "terrain_id": terrain_id,
             "imagery_id": imagery_id
         }
+    
+    def get_state (self) -> dict:
+        '''
+        Attempts to fetch the current simulation state in the form of a
+        JSON object and returns the state of the simulation as a dictionary.
+        If there is an error in the simulation, this will be caught and
+        displayed as an error thrown. The simulation state includes all
+        component, message and system parameters.
 
-    def reset (self) -> None:
+        :returns:   A dictionary with the simulation state stored
+        :rtype:     dict
+        '''
+
+        # Fetch the data
+        response = http.post_request(self._credentials, "simulation")
+
+        # Return the response as a dictionary
+        return response
+    
+    def save_state (self, path: str = None) -> None:
+        '''
+        Saves the state of the simulation to a file relative to
+        the current working directory. This will save the entire
+        simulation as JSON into a text file.
+
+        :param path:    The relative (or full) path to the file to save to
+        :type path:     str
+        '''
+
+        # Fetch the current state
+        state: dict = self.get_state()
+
+        # Fetch the path
+        path = self.__get_state_file_name(path)
+        
+        # Check if the directory needs to be created
+        directory: str = "".join(path.replace("\\", "/").split("/")[:-1])
+        os.makedirs(directory, exist_ok=True)
+
+        # Save the file in the directory
+        with open(path, "+w") as file:
+            json.dump(state, file, indent=4)
+    
+    def load_state (self, path: str = None, data: dict = None) -> None:
+        '''
+        Attempts to load the state of the simulation to a valid JSON
+        object. This data can be found in either a file, with a valid
+        path, or from a JSON data object. Once the simulation is reloaded,
+        all components are deleted and the objects are recreated based
+        on the simulation state that was saved.
+
+        :param path:    The full or relative path to the file with the json data
+        :type path:     str
+        :param data:    Alternatively, the json data can be passed through here
+        :type data:     dict
+        '''
+
+        # If there is a path, load it as the json
+        if path != None:
+            path = self.__get_state_file_name(path)
+
+            # Check if the file exists
+            if not os.path.exists(path):
+                raise NominalException(f"Unable to find file with path: '{path}'.")
+
+            # Open the file and load it as a JSON into the json data
+            with open(path, "r") as file:
+                data = json.load(file)
+        
+        # If there is no data, then throw an error
+        if data is None:
+            raise NominalException("Invalid or missing data passed into the load state for the simulation.")
+
+        # Attempt to load the simulation with the data
+        id: str = http.put_request(self._credentials, "simulation", data=helper.jsonify(data))
+
+        # Reset the simulation and update the id
+        self.__reset()
+        self.id = id
+
+    def __get_state_file_name (self, path: str) -> str:
+        '''
+        Cleans up the simulation file name and makes sure
+        it is of the correct format. It must end with a
+        .json and must be a file.
+        '''
+
+        # Check if the path is empty
+        if path == None:
+            path = ""
+
+        # Clean the path name
+        path = path.rstrip().lstrip()
+
+        # Check if there is no ending to the path
+        if path == "" or path.endswith("/"):
+            path += "simulation"
+        
+        # Check if the path does not have the correct ending
+        if not path.endswith(".json"):
+            path += ".json"
+
+        # Return the path
+        return path
+
+    def reset (self, delete_database: bool = True) -> None:
         '''
         Deletes and resets the simulation. All components, data
         and messages associated with the timeline on the simulation
         will be deleted.
+
+        :param delete_database: A flag whether to delete the database that exists too
+        :type delete_database:  bool
         '''
+
+        # Create the generic body for the request data
+        request_data: str = helper.jsonify(
+            {
+                "Database": delete_database
+            }
+        )
         
-        http.delete_request(self._credentials, "timeline")
+        # Delete the simulation and the database if required
+        http.delete_request(self._credentials, "simulation", data=request_data)
+        self.__reset()
+    
+    def __reset (self) -> None:
+        '''
+        Performs a soft reset, only adjusting the data within the
+        simulation on the python end without making a HTTP REST
+        endpoint call.
+        '''
+
+        # Reset any data
         self.__components = []
+        self.__systems = {}
         self.__messages = {}
         self.__time = 0.0
         self.id = None

@@ -100,6 +100,7 @@
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.connection.html#nominalpy.connection.credentials.Credentials"><code class="docutils literal notranslate"><span class="pre">Credentials</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.connection.html#nominalpy.connection.credentials.Credentials.access_key"><code class="docutils literal notranslate"><span class="pre">Credentials.access_key</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.connection.html#nominalpy.connection.credentials.Credentials.is_local"><code class="docutils literal notranslate"><span class="pre">Credentials.is_local</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.connection.html#nominalpy.connection.credentials.Credentials.is_valid"><code class="docutils literal notranslate"><span class="pre">Credentials.is_valid()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.connection.html#nominalpy.connection.credentials.Credentials.port"><code class="docutils literal notranslate"><span class="pre">Credentials.port</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.connection.html#nominalpy.connection.credentials.Credentials.session_id"><code class="docutils literal notranslate"><span class="pre">Credentials.session_id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.connection.html#nominalpy.connection.credentials.Credentials.url"><code class="docutils literal notranslate"><span class="pre">Credentials.url</span></code></a></li>
@@ -150,20 +151,37 @@
 <li class="toctree-l1"><a class="reference internal" href="nominalpy.maths.html">nominalpy.maths package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="nominalpy.maths.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nominalpy.maths.html#module-nominalpy.maths.astro">nominalpy.maths.astro module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.argument_of_latitude"><code class="docutils literal notranslate"><span class="pre">argument_of_latitude()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.calculate_circular_orbit_velocity"><code class="docutils literal notranslate"><span class="pre">calculate_circular_orbit_velocity()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.calculate_orbital_velocity"><code class="docutils literal notranslate"><span class="pre">calculate_orbital_velocity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.classical_to_non_singular_elements"><code class="docutils literal notranslate"><span class="pre">classical_to_non_singular_elements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.classical_to_relative_elements"><code class="docutils literal notranslate"><span class="pre">classical_to_relative_elements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.classical_to_relative_elements_mean"><code class="docutils literal notranslate"><span class="pre">classical_to_relative_elements_mean()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.classical_to_vector_elements"><code class="docutils literal notranslate"><span class="pre">classical_to_vector_elements()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.classical_to_vector_elements_deg"><code class="docutils literal notranslate"><span class="pre">classical_to_vector_elements_deg()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.eccentric_to_mean_anomaly"><code class="docutils literal notranslate"><span class="pre">eccentric_to_mean_anomaly()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.eccentric_to_true_anomaly"><code class="docutils literal notranslate"><span class="pre">eccentric_to_true_anomaly()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.geodetic_lla_to_pcpf"><code class="docutils literal notranslate"><span class="pre">geodetic_lla_to_pcpf()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.geodetic_lla_to_pcpf_deg"><code class="docutils literal notranslate"><span class="pre">geodetic_lla_to_pcpf_deg()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.get_planet_mu"><code class="docutils literal notranslate"><span class="pre">get_planet_mu()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.get_planet_property"><code class="docutils literal notranslate"><span class="pre">get_planet_property()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.mean_motion"><code class="docutils literal notranslate"><span class="pre">mean_motion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.mean_to_eccentric_anomaly"><code class="docutils literal notranslate"><span class="pre">mean_to_eccentric_anomaly()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.mean_to_osculating_elements"><code class="docutils literal notranslate"><span class="pre">mean_to_osculating_elements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.mean_to_true_anomaly"><code class="docutils literal notranslate"><span class="pre">mean_to_true_anomaly()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.non_singular_to_relative_elements"><code class="docutils literal notranslate"><span class="pre">non_singular_to_relative_elements()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.pcpf_to_geodetic_lla"><code class="docutils literal notranslate"><span class="pre">pcpf_to_geodetic_lla()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.pcpf_to_geodetic_lla_deg"><code class="docutils literal notranslate"><span class="pre">pcpf_to_geodetic_lla_deg()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.perifocal_to_vector_elements"><code class="docutils literal notranslate"><span class="pre">perifocal_to_vector_elements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.period"><code class="docutils literal notranslate"><span class="pre">period()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.semi_latus_rectum_to_vector_elements"><code class="docutils literal notranslate"><span class="pre">semi_latus_rectum_to_vector_elements()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.t_perifocal_to_vector_elements"><code class="docutils literal notranslate"><span class="pre">t_perifocal_to_vector_elements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.true_to_eccentric_anomaly"><code class="docutils literal notranslate"><span class="pre">true_to_eccentric_anomaly()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.true_to_mean_anomaly"><code class="docutils literal notranslate"><span class="pre">true_to_mean_anomaly()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.vector_to_classical_elements"><code class="docutils literal notranslate"><span class="pre">vector_to_classical_elements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.vector_to_classical_elements_mean"><code class="docutils literal notranslate"><span class="pre">vector_to_classical_elements_mean()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.vector_to_relative_elements"><code class="docutils literal notranslate"><span class="pre">vector_to_relative_elements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.astro.vector_to_relative_elements_mean"><code class="docutils literal notranslate"><span class="pre">vector_to_relative_elements_mean()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="nominalpy.maths.html#module-nominalpy.maths.constants">nominalpy.maths.constants module</a><ul>
@@ -305,6 +323,50 @@
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constants.VENUS_RP"><code class="docutils literal notranslate"><span class="pre">VENUS_RP</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="nominalpy.maths.html#module-nominalpy.maths.constellations">nominalpy.maths.constellations module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation"><code class="docutils literal notranslate"><span class="pre">Constellation</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.argument_of_periapsis"><code class="docutils literal notranslate"><span class="pre">Constellation.argument_of_periapsis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.eccentricity"><code class="docutils literal notranslate"><span class="pre">Constellation.eccentricity</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.inclination"><code class="docutils literal notranslate"><span class="pre">Constellation.inclination</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.init_classical_elements"><code class="docutils literal notranslate"><span class="pre">Constellation.init_classical_elements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.init_classical_elements_mean"><code class="docutils literal notranslate"><span class="pre">Constellation.init_classical_elements_mean()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.init_classical_elements_osculating"><code class="docutils literal notranslate"><span class="pre">Constellation.init_classical_elements_osculating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.init_state_vectors"><code class="docutils literal notranslate"><span class="pre">Constellation.init_state_vectors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.init_state_vectors_mean"><code class="docutils literal notranslate"><span class="pre">Constellation.init_state_vectors_mean()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.init_state_vectors_osculating"><code class="docutils literal notranslate"><span class="pre">Constellation.init_state_vectors_osculating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.is_valid_spacecraft_id"><code class="docutils literal notranslate"><span class="pre">Constellation.is_valid_spacecraft_id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.iter_state_vectors"><code class="docutils literal notranslate"><span class="pre">Constellation.iter_state_vectors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.num_satellites"><code class="docutils literal notranslate"><span class="pre">Constellation.num_satellites</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.right_ascension"><code class="docutils literal notranslate"><span class="pre">Constellation.right_ascension</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.semi_major_axis"><code class="docutils literal notranslate"><span class="pre">Constellation.semi_major_axis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.set_mean_elements"><code class="docutils literal notranslate"><span class="pre">Constellation.set_mean_elements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.set_variable"><code class="docutils literal notranslate"><span class="pre">Constellation.set_variable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.spacecraft"><code class="docutils literal notranslate"><span class="pre">Constellation.spacecraft</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.true_anomaly_offset"><code class="docutils literal notranslate"><span class="pre">Constellation.true_anomaly_offset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Constellation.true_argument_of_latitude"><code class="docutils literal notranslate"><span class="pre">Constellation.true_argument_of_latitude()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Coplanar"><code class="docutils literal notranslate"><span class="pre">Coplanar</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Coplanar.init_classical_elements"><code class="docutils literal notranslate"><span class="pre">Coplanar.init_classical_elements()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.CoplanarCircular"><code class="docutils literal notranslate"><span class="pre">CoplanarCircular</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.CoplanarCircular.eccentricity"><code class="docutils literal notranslate"><span class="pre">CoplanarCircular.eccentricity</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Walker"><code class="docutils literal notranslate"><span class="pre">Walker</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.Walker.num_planes"><code class="docutils literal notranslate"><span class="pre">Walker.num_planes</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.WalkerDelta"><code class="docutils literal notranslate"><span class="pre">WalkerDelta</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.WalkerDelta.init_classical_elements"><code class="docutils literal notranslate"><span class="pre">WalkerDelta.init_classical_elements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.WalkerDelta.relative_spacing"><code class="docutils literal notranslate"><span class="pre">WalkerDelta.relative_spacing</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.classical_elements_mean"><code class="docutils literal notranslate"><span class="pre">classical_elements_mean()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.constellations.state_vectors"><code class="docutils literal notranslate"><span class="pre">state_vectors()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="nominalpy.maths.html#module-nominalpy.maths.data">nominalpy.maths.data module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.data.bytes2bits"><code class="docutils literal notranslate"><span class="pre">bytes2bits()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.data.gigabytes2bits"><code class="docutils literal notranslate"><span class="pre">gigabytes2bits()</span></code></a></li>
@@ -317,14 +379,22 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="nominalpy.maths.html#module-nominalpy.maths.utils">nominalpy.maths.utils module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.utils.acos_quadrant_check"><code class="docutils literal notranslate"><span class="pre">acos_quadrant_check()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.utils.angle_between_vectors"><code class="docutils literal notranslate"><span class="pre">angle_between_vectors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.utils.normalize_angle"><code class="docutils literal notranslate"><span class="pre">normalize_angle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.utils.normalize_array"><code class="docutils literal notranslate"><span class="pre">normalize_array()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.utils.parallel_vector"><code class="docutils literal notranslate"><span class="pre">parallel_vector()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.utils.perpendicular_vector"><code class="docutils literal notranslate"><span class="pre">perpendicular_vector()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.utils.shortest_angular_difference"><code class="docutils literal notranslate"><span class="pre">shortest_angular_difference()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="nominalpy.maths.html#module-nominalpy.maths.value">nominalpy.maths.value module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.value.datetime"><code class="docutils literal notranslate"><span class="pre">datetime()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.value.get_array"><code class="docutils literal notranslate"><span class="pre">get_array()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.value.matrix"><code class="docutils literal notranslate"><span class="pre">matrix()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.value.matrix33"><code class="docutils literal notranslate"><span class="pre">matrix33()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.value.timespan"><code class="docutils literal notranslate"><span class="pre">timespan()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.value.vector3"><code class="docutils literal notranslate"><span class="pre">vector3()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.maths.html#nominalpy.maths.value.vector4"><code class="docutils literal notranslate"><span class="pre">vector4()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="nominalpy.maths.html#module-nominalpy.maths">Module contents</a></li>
@@ -358,8 +428,11 @@
 <li class="toctree-l2"><a class="reference internal" href="nominalpy.objects.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nominalpy.objects.html#module-nominalpy.objects.component">nominalpy.objects.component module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.component.Component"><code class="docutils literal notranslate"><span class="pre">Component</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.component.Component.get_child"><code class="docutils literal notranslate"><span class="pre">Component.get_child()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.component.Component.get_children"><code class="docutils literal notranslate"><span class="pre">Component.get_children()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.component.Component.get_message"><code class="docutils literal notranslate"><span class="pre">Component.get_message()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.component.Component.get_model"><code class="docutils literal notranslate"><span class="pre">Component.get_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.component.Component.invoke"><code class="docutils literal notranslate"><span class="pre">Component.invoke()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -389,6 +462,8 @@
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.object.Object.get_type"><code class="docutils literal notranslate"><span class="pre">Object.get_type()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.object.Object.get_value"><code class="docutils literal notranslate"><span class="pre">Object.get_value()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.object.Object.get_values"><code class="docutils literal notranslate"><span class="pre">Object.get_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.object.Object.get_variable"><code class="docutils literal notranslate"><span class="pre">Object.get_variable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.object.Object.get_variables"><code class="docutils literal notranslate"><span class="pre">Object.get_variables()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.object.Object.set_value"><code class="docutils literal notranslate"><span class="pre">Object.set_value()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.object.Object.set_values"><code class="docutils literal notranslate"><span class="pre">Object.set_values()</span></code></a></li>
 </ul>
@@ -401,13 +476,22 @@
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.capture_image"><code class="docutils literal notranslate"><span class="pre">Simulation.capture_image()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.confiure_cesium"><code class="docutils literal notranslate"><span class="pre">Simulation.confiure_cesium()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.create_message"><code class="docutils literal notranslate"><span class="pre">Simulation.create_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.find_component"><code class="docutils literal notranslate"><span class="pre">Simulation.find_component()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.find_components_of_type"><code class="docutils literal notranslate"><span class="pre">Simulation.find_components_of_type()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.get_component_types"><code class="docutils literal notranslate"><span class="pre">Simulation.get_component_types()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.get_components_added"><code class="docutils literal notranslate"><span class="pre">Simulation.get_components_added()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.get_datetime"><code class="docutils literal notranslate"><span class="pre">Simulation.get_datetime()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.get_message_types"><code class="docutils literal notranslate"><span class="pre">Simulation.get_message_types()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.get_planet_message"><code class="docutils literal notranslate"><span class="pre">Simulation.get_planet_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.get_state"><code class="docutils literal notranslate"><span class="pre">Simulation.get_state()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.get_system"><code class="docutils literal notranslate"><span class="pre">Simulation.get_system()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.get_systems_added"><code class="docutils literal notranslate"><span class="pre">Simulation.get_systems_added()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.get_time"><code class="docutils literal notranslate"><span class="pre">Simulation.get_time()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.load_state"><code class="docutils literal notranslate"><span class="pre">Simulation.load_state()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.reset"><code class="docutils literal notranslate"><span class="pre">Simulation.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.save_state"><code class="docutils literal notranslate"><span class="pre">Simulation.save_state()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.tick"><code class="docutils literal notranslate"><span class="pre">Simulation.tick()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html#nominalpy.objects.simulation.Simulation.tick_duration"><code class="docutils literal notranslate"><span class="pre">Simulation.tick_duration()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -483,6 +567,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="nominalpy.utils.html#module-nominalpy.utils.types">nominalpy.utils.types module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.utils.html#nominalpy.utils.types.GROUND_STATION"><code class="docutils literal notranslate"><span class="pre">GROUND_STATION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nominalpy.utils.html#nominalpy.utils.types.PHYSICAL_COMPONENT"><code class="docutils literal notranslate"><span class="pre">PHYSICAL_COMPONENT</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.utils.html#nominalpy.utils.types.SPACECRAFT"><code class="docutils literal notranslate"><span class="pre">SPACECRAFT</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nominalpy.utils.html#nominalpy.utils.types.UNIVERSE"><code class="docutils literal notranslate"><span class="pre">UNIVERSE</span></code></a></li>
 </ul>

@@ -1,7 +1,7 @@
 #                     [ NOMINAL SYSTEMS ]
 # This code is developed by Nominal Systems to aid with communication 
 # to the public API. All code is under the the license provided along
-# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+# with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 '''
 This modules assists with some helper functions for defining what values
@@ -13,7 +13,7 @@ including numpy ndarrays and datetimes.
 import json, numpy as np
 from datetime import datetime
 from ..maths import value
-from ..utils import printer
+from ..utils import NominalException
 
 def jsonify (data: dict, array: bool = False) -> str:
     '''
@@ -31,7 +31,7 @@ def jsonify (data: dict, array: bool = False) -> str:
     '''
 
     if array:
-        return "[%s]" %  json.dumps(data)
+        return "[%s]" % json.dumps(data)
     return json.dumps(data)
 
 def serialize (params: dict) -> dict:
@@ -70,21 +70,39 @@ def serialize_object (obj: object) -> dict:
 
     :returns:   A full dictionary in a JSON format of the serialized data
     :rtype:     dict
-    
     '''
+    
+    # Check for lists and loop through each of the objects
+    if isinstance(obj, list):
+        serialized: list = []
+        for o in obj:
+            serialized.append(serialize_object(o))
+        return serialized
 
-    if isinstance(obj, np.ndarray):  # Mathematical arrays
+    # Mathematical arrays
+    elif isinstance(obj, np.ndarray):
         shape = obj.shape
         if shape == (3,):       # Vector3
             return value.vector3(obj[0], obj[1], obj[2])
+        elif shape == (4,):       # Vector4
+            return value.vector4(obj[0], obj[1], obj[2], obj[3])
         elif shape == (3,3):    # Matrix3x3
            return value.matrix33(obj[0], obj[1], obj[2])
+        elif len(shape) == 2:   # Generic 2 dimensional matrix
+            return value.matrix(shape[0], shape[1], *obj.tolist())
         else:
-            printer.error("Unsupported numpy array shape: %s." % str(shape))
-            return {}
+            raise NominalException("Unsupported numpy array shape: %s." % str(shape))
+
+    # Datetimes
     elif isinstance(obj, datetime):   # DateTimes
         return value.datetime(obj.year, obj.month, obj.day, obj.hour, obj.minute, obj.second)
-    else:   # All other values
+    
+    # Generic objects
+    elif hasattr(obj, "id"):
+        return getattr(obj, "id")
+    
+    # Any other value
+    else:
         return obj
 
 def deserialize (param: object) -> object:
@@ -103,7 +121,9 @@ def deserialize (param: object) -> object:
 
     # Handle dictionaries or skip
     if isinstance(param, dict):
-        if contains(param, "X", "Y", "Z"):
+        if contains(param, "X", "Y", "Z", "W"):
+            return np.array([param["X"], param["Y"], param["Z"], param["W"]])
+        elif contains(param, "X", "Y", "Z"):
             return np.array([param["X"], param["Y"], param["Z"]])
 
     # Handles arrays for matricies

@@ -1,7 +1,7 @@
 #                     [ NOMINAL SYSTEMS ]
 # This code is developed by Nominal Systems to aid with communication 
 # to the public API. All code is under the the license provided along
-# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+# with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 from . import printer
 
@@ -24,9 +24,9 @@ class NominalException (Exception):
         :type message:      str
         '''
 
+        printer.error(message)
         super().__init__(message)
         self.message = message
-        printer.error(self.message)
 
     def __str__ (self) -> str:
         '''

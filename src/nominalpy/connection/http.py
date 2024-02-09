@@ -1,7 +1,7 @@
 #                     [ NOMINAL SYSTEMS ]
 # This code is developed by Nominal Systems to aid with communication 
 # to the public API. All code is under the the license provided along
-# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+# with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 '''
 This modules assists with having some helper functions for requesting
@@ -67,13 +67,18 @@ def handle_request_data (response: requests.Response) -> dict:
     
     # Check if the request was valid and return the json data
     if response.status_code == 200:
-        if response.text == "":
-            return {}
-        data = json.loads(response.text)
-        return data
+        
+        # Attempt to get the data
+        data: dict = json.loads(response.text)
+        
+        # Check if there is an error
+        if "Error" in data.keys():
+            raise NominalException(f"Error: {data['Error']}")
+        
+        # Otherwise, return the data in the response
+        return data["Result"]
     
     # Throw an error if not
-    printer.error("Invalid request with status code %d." % response.status_code)
     raise create_web_exception(response.status_code)
 
 def get_request (credentials: Credentials, url: str, params: dict = {}) -> dict:

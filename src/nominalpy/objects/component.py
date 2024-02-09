@@ -1,10 +1,10 @@
 #                     [ NOMINAL SYSTEMS ]
 # This code is developed by Nominal Systems to aid with communication 
 # to the public API. All code is under the the license provided along
-# with the 'nominalpy' module. Copyright Nominal Systems, 2023.
+# with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 from ..connection import Credentials, helper, http
-from ..utils import printer
+from ..utils import printer, NominalException
 from .message import Message
 from .object import Object
 
@@ -22,6 +22,9 @@ class Component (Object):
     __models: dict = {}
     '''Defines a list of component models associated with a particular name for easy fetching'''
 
+    __children: list = []
+    '''Defines a list of all child components that have been added to this particular object'''
+
     def __init__ (self, credentials: Credentials, id: str) -> None:
         '''
         Initialises the component with a set of credentials and a
@@ -35,6 +38,7 @@ class Component (Object):
 
         self.__messages = {}
         self.__models = {}
+        self.__children = []
 
         super().__init__(credentials, id)
 
@@ -74,19 +78,19 @@ class Component (Object):
             type = "NominalSystems.Classes." + type
         
         # Attempts to find the model if it exists
-        if type.lower() in self.__models:
+        if type.lower() in self.__models.keys():
             return self.__models[type.lower()]
        
         # Construct the JSON body
         body: dict = {
-            "type": type,
-            "owner": self.id
+            "Type": type,
+            "Owner": self.id
         }
 
         # If there are keyword arguments
         if len(kwargs) == 0:
             kwargs["IsEnabled"] = True
-        body["data"] = helper.serialize(kwargs)
+        body["Data"] = helper.serialize(kwargs)
 
         # Create the data
         request_data: str = helper.jsonify(body, True)
@@ -107,8 +111,7 @@ class Component (Object):
             return obj
         
         # Throw an error if no object or valid ID
-        printer.error("Could not add component model of type '%s'." % type)
-        return None
+        raise NominalException("Could not add component model of type '%s'." % type)
     
     def get_message (self, name: str) -> Message:
         '''
@@ -125,7 +128,7 @@ class Component (Object):
         '''
 
         # Check if the message exists
-        if name.lower() in self.__messages:
+        if name.lower() in self.__messages.keys():
             return self.__messages[name.lower()]
 
         # Fetch the ID from the message and create the message object
@@ -135,3 +138,86 @@ class Component (Object):
         # Add the message to the array for caching
         self.__messages[name.lower()] = msg
         return msg
+
+    def invoke (self, method: str, *args: list) -> str:
+        '''
+        Attempts to invoke a public method that exists on the object.
+        This passes in some parameters of some types and is able to
+        invoke a particular method. If the method does not exist or
+        the parameters do not match, then an error will be thrown.
+
+        :param method:  The name of the method to invoke on the object
+        :type method:   str
+        :param args:    A list of arguments that are in a JSON format
+        :type args:     list
+
+        :returns:       The JSON value from the result of the message
+        :rtype:         str
+        '''
+        
+        # Construct the JSON body
+        body: dict = {
+            "ID": self.id,
+            "Method": method,
+            "Params": [helper.serialize_object(arg) for arg in args]
+        }
+        
+        # Create the data
+        request_data: str = helper.jsonify(body)
+
+        # Create the response from the PATCH request and get the IDs
+        response = http.post_request(self._credentials, "method", data=request_data)
+        
+        # Update the flag for needing to get values
+        self._require_update()
+        return response
+
+    def get_child (self, index: int) -> Object:
+        '''
+        Attempts to fetch a child that has been added to this
+        class based on the index of the child that was added.
+        If the index is out of range, then a None object will
+        be returned.
+
+        :param index:   The integer index of the child that is stored
+        :type index:    int
+
+        :returns:       The component reference if it exists
+        :rtype:         Component
+        '''
+
+        # Check if the index is out of range
+        if index >= len(self.__children):
+            raise NominalException(f"Invalid index '{index}' when getting a child from component.")
+        
+        # Return the child
+        return self.__children[index]
+    
+    def get_children (self, type: str) -> list:
+        '''
+        Attempts to fetch the list of children that have
+        been added to this component that match the specific
+        type specified. If there are no children that match,
+        then an empty array will be returned.
+
+        :param type:    The Nominal type of the object to search for
+        :type type:     str
+
+        :returns:       A list of all children objects that match the type
+        :rtype:         list
+        '''
+
+        # Construct the list
+        children: list = []
+
+        # Filter the type
+        type = type.split(".")[-1]
+
+        # Check for matching type
+        for child in self.__children:
+            c_type: str = child.get_type().split(".")[-1]
+            if c_type == type:
+                children.append(child)
+
+        # Return the list
+        return children
