@@ -11,7 +11,7 @@ setup(
     version='0.8.0',
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
-    install_requires=["requests", "urllib3", "paho-mqtt", "numpy", "pandas"],
+    install_requires=["requests", "urllib3", "paho-mqtt", "numpy", "pandas", "matplotlib"],
     author='Nominal Systems',
     author_email='support@nominalsys.com',
     description='Python Interface to the Nominal API for simulations',
@@ -19,5 +19,5 @@ setup(
         It enables accessing the REST API simulation functions in an easy format.\
         Examples of how to construct Nominal simulations are provided on the\
         Nominal Systems documentation found at https://docs.nominalsys.com.",
-    url='https://www.nominalsys.com',
+    url='https://github.com/NominalSystems/nominalpy',
 )

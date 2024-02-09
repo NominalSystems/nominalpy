@@ -113,6 +113,46 @@
 simulation or to other objects within the simulation. Components 
 have messages that can store data.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.component.Component.get_child">
+<span class="sig-name descname"><span class="pre">get_child</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nominalpy.objects.object.Object" title="nominalpy.objects.object.Object"><span class="pre">Object</span></a></span></span><a class="headerlink" href="#nominalpy.objects.component.Component.get_child" title="Link to this definition"></a></dt>
+<dd><p>Attempts to fetch a child that has been added to this
+class based on the index of the child that was added.
+If the index is out of range, then a None object will
+be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – The integer index of the child that is stored</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The component reference if it exists</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#nominalpy.objects.component.Component" title="nominalpy.objects.component.Component">Component</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.component.Component.get_children">
+<span class="sig-name descname"><span class="pre">get_children</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.objects.component.Component.get_children" title="Link to this definition"></a></dt>
+<dd><p>Attempts to fetch the list of children that have
+been added to this component that match the specific
+type specified. If there are no children that match,
+then an empty array will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>type</strong> (<em>str</em>) – The Nominal type of the object to search for</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of all children objects that match the type</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.objects.component.Component.get_message">
 <span class="sig-name descname"><span class="pre">get_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nominalpy.objects.message.Message" title="nominalpy.objects.message.Message"><span class="pre">Message</span></a></span></span><a class="headerlink" href="#nominalpy.objects.component.Component.get_message" title="Link to this definition"></a></dt>
 <dd><p>Returns a message with a particular name, if it exists, on
@@ -152,6 +192,29 @@ that will initialise the model with some starting parameters.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#nominalpy.objects.object.Object" title="nominalpy.objects.object.Object">Object</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.component.Component.invoke">
+<span class="sig-name descname"><span class="pre">invoke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#nominalpy.objects.component.Component.invoke" title="Link to this definition"></a></dt>
+<dd><p>Attempts to invoke a public method that exists on the object.
+This passes in some parameters of some types and is able to
+invoke a particular method. If the method does not exist or
+the parameters do not match, then an error will be thrown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<em>str</em>) – The name of the method to invoke on the object</p></li>
+<li><p><strong>args</strong> (<em>list</em>) – A list of arguments that are in a JSON format</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The JSON value from the result of the message</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -377,7 +440,7 @@ namespace of the object. This requires a call to fetch the object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.objects.object.Object.get_value">
-<span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#nominalpy.objects.object.Object.get_value" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">any</span></span></span><a class="headerlink" href="#nominalpy.objects.object.Object.get_value" title="Link to this definition"></a></dt>
 <dd><p>This method returns the JSON data associated with the parameter
 passed in at the current time in the simulation.</p>
 <dl class="field-list simple">
@@ -409,6 +472,42 @@ current simulation time.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.object.Object.get_variable">
+<span class="sig-name descname"><span class="pre">get_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.objects.object.Object.get_variable" title="Link to this definition"></a></dt>
+<dd><p>This method will attempt to get the information about a particular
+variable that exists on the object’s class. This provides information
+about the expected type and whether the variable can be written to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the variable to look for</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with the data about the variable</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.object.Object.get_variables">
+<span class="sig-name descname"><span class="pre">get_variables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.objects.object.Object.get_variables" title="Link to this definition"></a></dt>
+<dd><p>This method will attempt to get the information about all publically
+available variables that exists on the object’s class. This provides 
+information about the expected type and whether the variable can be 
+written to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary of variable names with the data about the variable</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -463,7 +562,7 @@ set.</p>
 <span id="nominalpy-objects-simulation-module"></span><h2>nominalpy.objects.simulation module<a class="headerlink" href="#module-nominalpy.objects.simulation" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.objects.simulation.</span></span><span class="sig-name descname"><span class="pre">Simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nominalpy.connection.html#nominalpy.connection.credentials.Credentials" title="nominalpy.connection.credentials.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nominalpy.objects.simulation.</span></span><span class="sig-name descname"><span class="pre">Simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nominalpy.connection.html#nominalpy.connection.credentials.Credentials" title="nominalpy.connection.credentials.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#nominalpy.objects.entity.Entity" title="nominalpy.objects.entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></a></p>
 <p>The Simulation class allows for a simulation to be constructed using
 the API and for objects to be added to the simulation. All objects
@@ -568,6 +667,49 @@ object if created correctly.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.find_component">
+<span class="sig-name descname"><span class="pre">find_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nominalpy.objects.component.Component" title="nominalpy.objects.component.Component"><span class="pre">Component</span></a></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.find_component" title="Link to this definition"></a></dt>
+<dd><p>Attempts to find a component with a particular ID in the
+simulation and is able to create it as a python object if
+it does not yet exist. This searches the simulation API
+for an ID and if it doesn’t exist in the Python simulation
+object, then it will be created and added. Otherwise, if
+it does exist, the reference to the object will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – The GUID of the object being searched for</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A reference to the component that was found</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#nominalpy.objects.component.Component" title="nominalpy.objects.component.Component">Component</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.find_components_of_type">
+<span class="sig-name descname"><span class="pre">find_components_of_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.find_components_of_type" title="Link to this definition"></a></dt>
+<dd><p>Attempts to find components of a particular type and
+returns a list of components of a particular type that
+exist within the simulation. This will also check off
+any components that may already exist in this simulation
+object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>type</strong> (<em>str</em>) – The full Nominal type of the object to filter by</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of components that match the type</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.get_component_types">
 <span class="sig-name descname"><span class="pre">get_component_types</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.get_component_types" title="Link to this definition"></a></dt>
 <dd><p>This will return a list of all component types available in the simulation
@@ -580,6 +722,37 @@ inside a list.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.get_components_added">
+<span class="sig-name descname"><span class="pre">get_components_added</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.get_components_added" title="Link to this definition"></a></dt>
+<dd><p>Returns the list of components that have been added to this
+simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of component objects as a copied list</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.get_datetime">
+<span class="sig-name descname"><span class="pre">get_datetime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.get_datetime" title="Link to this definition"></a></dt>
+<dd><p>Returns the current datetime of the simulation at the current
+point in the simulation. This will be returned from the simulation
+and is the sum of the initial Epoch and the time elapsed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current datetime of the simulation</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>datetime</p>
 </dd>
 </dl>
 </dd></dl>
@@ -619,6 +792,24 @@ the data from the SPICE kernels via the Universe system.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.get_state">
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.get_state" title="Link to this definition"></a></dt>
+<dd><p>Attempts to fetch the current simulation state in the form of a
+JSON object and returns the state of the simulation as a dictionary.
+If there is an error in the simulation, this will be caught and
+displayed as an error thrown. The simulation state includes all
+component, message and system parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary with the simulation state stored</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.get_system">
 <span class="sig-name descname"><span class="pre">get_system</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nominalpy.objects.object.Object" title="nominalpy.objects.object.Object"><span class="pre">Object</span></a></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.get_system" title="Link to this definition"></a></dt>
 <dd><p>Fetches a particular simulation system that is valid
@@ -640,6 +831,21 @@ from the simulation and returns it as an object.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.get_systems_added">
+<span class="sig-name descname"><span class="pre">get_systems_added</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.get_systems_added" title="Link to this definition"></a></dt>
+<dd><p>Returns the list of all systems that have been added to the simulation.
+This will return the system as a list as a cache.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of system objects as a copied list</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.get_time">
 <span class="sig-name descname"><span class="pre">get_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.get_time" title="Link to this definition"></a></dt>
 <dd><p>Returns the current simulation time based on the number of
@@ -655,16 +861,74 @@ seconds that have been ticked.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.load_state">
+<span class="sig-name descname"><span class="pre">load_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.load_state" title="Link to this definition"></a></dt>
+<dd><p>Attempts to load the state of the simulation to a valid JSON
+object. This data can be found in either a file, with a valid
+path, or from a JSON data object. Once the simulation is reloaded,
+all components are deleted and the objects are recreated based
+on the simulation state that was saved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – The full or relative path to the file with the json data</p></li>
+<li><p><strong>data</strong> (<em>dict</em>) – Alternatively, the json data can be passed through here</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.reset">
-<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.reset" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delete_database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.reset" title="Link to this definition"></a></dt>
 <dd><p>Deletes and resets the simulation. All components, data
 and messages associated with the timeline on the simulation
 will be deleted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delete_database</strong> (<em>bool</em>) – A flag whether to delete the database that exists too</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.save_state">
+<span class="sig-name descname"><span class="pre">save_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.save_state" title="Link to this definition"></a></dt>
+<dd><p>Saves the state of the simulation to a file relative to
+the current working directory. This will save the entire
+simulation as JSON into a text file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – The relative (or full) path to the file to save to</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.tick">
-<span class="sig-name descname"><span class="pre">tick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.tick" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">tick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.tick" title="Link to this definition"></a></dt>
+<dd><p>Attempts to tick the simulation by a certain amount. This will
+tick the simulation with some step size, in the form of a time
+span, and the iterations. The iterations are ticked on the
+simulation side and will tick with the same step size. By calling
+the ‘batch’ as True, then the simulation will run the iterations
+on the simulation side. However, for running one API request per
+iteration, set the ‘batch’ parameter to False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>float</em>) – The step-size to tick the simulation in seconds</p></li>
+<li><p><strong>iterations</strong> (<em>int</em>) – The number of iterations to run the simulation at</p></li>
+<li><p><strong>batch</strong> (<em>bool</em>) – This defines whether the simulation should run the simulation at batch</p></li>
+<li><p><strong>callaback</strong> – An optional function callback that is executed after each tick. This must have a time parameter.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nominalpy.objects.simulation.Simulation.tick_duration">
+<span class="sig-name descname"><span class="pre">tick_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nominalpy.objects.simulation.Simulation.tick_duration" title="Link to this definition"></a></dt>
 <dd><p>Attempts to tick the simulation by a certain amount. This will
 tick the simulation with some step size, in the form of a time
 span, and the iterations. The iterations are ticked on the
@@ -672,8 +936,10 @@ simulation side and will tick with the same step size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>step</strong> (<em>float</em>) – The step-size to tick the simulation in seconds</p></li>
-<li><p><strong>iterations</strong> (<em>int</em>) – The number of iterations to run the simulation at</p></li>
+<li><p><strong>duration</strong> (<em>float</em>) – The number of seconds forward in time to tick the simulation</p></li>
+<li><p><strong>step</strong> (<em>float</em>) – The size of the step to tick the simulation in seconds</p></li>
+<li><p><strong>batch</strong> (<em>bool</em>) – This defines whether the simulation should run the simulation at batch</p></li>
+<li><p><strong>callaback</strong> – An optional function callback that is executed after each tick. This must have a time parameter.</p></li>
 </ul>
 </dd>
 </dl>

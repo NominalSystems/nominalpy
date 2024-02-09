@@ -20,6 +20,14 @@ nominalpy.maths.constants module
    :undoc-members:
    :show-inheritance:
 
+nominalpy.maths.constellations module
+-------------------------------------
+
+.. automodule:: nominalpy.maths.constellations
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 nominalpy.maths.data module
 ---------------------------
 
