@@ -32,6 +32,8 @@ NominalPy requires the following Third-Party Python libraries to be installed al
 - requests
 - urllib3
 - paho-mqtt
+- matplotlib
+- setuptools
 
 <br>
 
