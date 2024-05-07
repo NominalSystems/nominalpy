@@ -8,10 +8,10 @@ from setuptools import setup, find_packages
 # Setup the project
 setup(
     name='nominalpy',
-    version='0.8.1',
+    version='0.8.1.1',
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
-    install_requires=["requests", "urllib3", "paho-mqtt", "numpy", "pandas", "matplotlib"],
+    install_requires=["requests", "urllib3", "paho-mqtt", "numpy", "pandas", "matplotlib", "setuptools"],
     author='Nominal Systems',
     author_email='support@nominalsys.com',
     description='Python Interface to the Nominal API for simulations',

@@ -2,11 +2,13 @@
 
 [![PyPI Version](https://img.shields.io/pypi/v/nominalpy.svg)](https://pypi.org/project/nominalpy/)
 
-NominalPy is a Python library that enables easy access to the Nominal API. The API is a REST interface to the Nominal simulation library, enabling simulations of spacecraft, ground stations, maritime objects and more. The API requires an access key that can be purchased by contacting Nominal Systems at `support@nominalsys.com`.
+NominalPy is a Python library that enables easy access to the Nominal API. The API is a REST interface to the Nominal simulation library, enabling simulations of spacecraft, ground stations, maritime objects and more. The API requires an [access key](#accessing-your-api-token) that is available with a free account from the Nominal website.
 
 Example simulation scripts and usage of the NominalPy library can be found in the public repository [NominalPy Examples](https://github.com/NominalSystems/nominalpy_examples). This contains some sample scripts showcasing how to use the library and how to run spacecraft simulations with flight software and requesting data from the simulation API. This requires an API key to execute but can be used as a basis for development.
 
 Additional tutorials and functionality for the library can be found on the public documentation at [docs.nominalsys.com](https://docs.nominalsys.com) under the Guides page.
+
+![Sun Pointing Simulation](https://docs.nominalsys.com/v0.8/articles/NominalSystems/guides/images/Untitled%203.png)
 
 <br>
 
@@ -32,6 +34,8 @@ NominalPy requires the following Third-Party Python libraries to be installed al
 - requests
 - urllib3
 - paho-mqtt
+- matplotlib
+- setuptools
 
 <br>
 
@@ -44,3 +48,23 @@ To upgrade a version of NominalPy, make sure to upgrade the python package. This
 `
 pip install nominalpy --user --upgrade
 `
+
+---
+
+### Accessing your API Token
+
+API Tokens are accessible via the [Nominal Website](https://www.nominalsys.com/account/sign-in). Create a free account and start a 14-day free trial of the software. This will give you access to unlimited sessions and requests during the trial period. The access token is available from the dashboard once the account is created and logged in.
+
+To enable your token, create a Credential object and pass into the Simulation class when constructing simulations. Alternatively, if using the example library, update the token in the `credential_helper.py` class for easier access to the token over multiple files. More information can be found in the [Public Documentation](https://docs.nominalsys.com/v0.8/articles/NominalSystems/guides/Python/GettingStarted/3_APIAccessKeys/index.html).
+
+---
+
+### API Sessions
+
+Each token enables a single API session to be made. Multiple sessions cannot be created at once using the free-tier of the API. Each session is associated with a single cloud instance running the simulation that you have access to. This instance will run for 2 hours once connected. When first connected to the session, it may take between 3 and 5 minutes for the instance to start when you run a simulation for the first time. After that, the instance will be available without any load times for 2 hours. Upon the completion of the session, a new session can be started immediately after with a similar load-up time as before. There is no limit for the number of sessions available during a period of time, with the exception of having one session running concurrently.
+
+---
+
+</br>
+
+![Atmospheric Drag Analysis](https://docs.nominalsys.com/v0.8/articles/NominalSystems/guides/Python/GettingStarted/images/Untitled.png)
