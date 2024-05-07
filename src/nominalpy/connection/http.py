@@ -299,5 +299,9 @@ def create_web_exception (code: int) -> None:
         raise NominalException("Invalid Credentials: Access key is unauthorised to connect to the API.")
     elif code == 404:
         raise NominalException("Invalid Connection: The URL specified does not exist.")
+    elif code == 500:
+        raise NominalException("Invalid Connection: An internal server exception was thrown. Please try again later.")
+    elif code == 402:
+        raise NominalException("Invalid Connection: Your API key is not associated with a valid account. Please create an account and try again.")
     else:
         raise NominalException("Unknown Error: A communication link with the API is broken. Status Code: %d" % code)
