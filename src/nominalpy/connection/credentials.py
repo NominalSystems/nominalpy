@@ -3,8 +3,9 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
-import requests, time
-from ..utils import printer
+import requests, time, json
+from ..utils import printer, NominalException
+import pkg_resources
 
 
 class Credentials:
@@ -78,16 +79,13 @@ class Credentials:
         
         # A flag for whether this is the first attempt
         first_attempt: bool = True
-        SESSION_TIMEOUT: float = 30
-        counter: float = SESSION_TIMEOUT
+        
+        # Attempt to create the session
+        # If there is no valid session, it will throw an execption at this point.
+        self.__create_session()
         
         # Loop until the health is valid
         while True:
-
-            # If the time is greater than the wait, create a session
-            if counter >= SESSION_TIMEOUT:
-                self.__create_session()
-                counter = 0.0
 
             # Fetch the health
             if self.__is_healthy():
@@ -95,15 +93,11 @@ class Credentials:
             
             # Print some information
             if first_attempt:
-                printer.warning("New sessions may take up to 3 minutes to start up. Please wait while your session is being configured.")
+                printer.warning("New sessions may take up to 3 minutes to start up. Each session will last 2 hours once created. Please wait while your session is being configured...")
                 first_attempt = False
-            else:
-                printer.log("Unable to find session. Attempting again in 10 seconds.")
             
-            # Wait some time
-            delta: float = 10.0
-            time.sleep(delta)
-            counter += delta
+            # Wait some time before attempting again
+            time.sleep(3.0)
 
     def __create_session (self) -> None:
         '''
@@ -116,17 +110,49 @@ class Credentials:
         response = requests.get(
             self.url + "session", 
             verify=False, 
-            params={}, 
+            params={},
             headers = {'x-api-key': self.access_key, 'Content-Type': 'application/json'}
         )
 
         # Update the data and get the data
         if response.status_code == 200:
-            self.session_id = response.text
-            printer.log("A session has been created successfully.")
-        else:
-            printer.error("Failed to create an API user session or retrieve previous session.")
+            data: dict = json.loads(response.text)
+            self.session_id = data['id']
+            printer.log("A session has been found. Continuing session...")
 
+            # Fetch the version
+            api_version: str = data['version']
+            pkg_version: str = pkg_resources.get_distribution('nominalpy').version
+
+            # If the versions do not match, print a warning
+            if api_version != pkg_version:
+                printer.warning("API Version Mismatch. You are on an older version of the API. " +
+                    f"\nPlease upgrade to version {api_version} via 'pip install nominalpy --upgrade'. Some features may not work as intended.")
+        
+        # If there is a code, check the status
+        else:
+
+            # In the case of 402, then the account needs to purchase more credits
+            # In this case, stop the loop.
+            if response.status_code == 402:
+                data: dict = json.loads(response.text)
+                raise NominalException(data["error"])
+            
+            # Otherwise, check if there is an error message
+            else:
+
+                # Attempt to raise an exception with the custom error
+                try:
+                    data: dict = json.loads(response.text)
+                    error: str = data["error"]
+
+                # Otherwise, just raise the error manually
+                except:
+                    raise NominalException(f"ERROR {response.status_code}: {response.text}")
+                
+                # Raise the error with the data
+                raise NominalException(error)
+                
     def __is_healthy (self) -> bool:
         '''
         Returns whether the current session with the instance that is available
