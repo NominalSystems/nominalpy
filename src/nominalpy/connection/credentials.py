@@ -124,11 +124,11 @@ class Credentials:
             api_version: str = data['version']
             pkg_version: str = pkg_resources.get_distribution('nominalpy').version
 
-            # If the versions do not match, print a warning
-            if api_version != pkg_version:
+            # Check if the package version is less than the api version
+            if not self.__compare_versions(api_version, pkg_version):
                 printer.warning("API Version Mismatch. You are on an older version of the API. " +
                     f"\nPlease upgrade to version {api_version} via 'pip install nominalpy --upgrade'. Some features may not work as intended.")
-        
+
         # If there is a code, check the status
         else:
 
@@ -179,6 +179,35 @@ class Credentials:
         # Catch any exception
         except:
             return False
+        
+    def __compare_versions (self, api_version: str, pkg_version: str) -> bool:
+        '''
+        Compares two version numbers to see if the package version is less than
+        public API version. If so, then this method will return True and the
+        API will need to be updated.
+
+        :param api_version:     The API version number
+        :type api_version:      str
+        :param pkg_version:     The package version number
+        :type pkg_version:      str
+
+        :returns:   A version comparison flag if the version is valid
+        :rtype:     bool
+        '''
+        api_parts = list(map(int, api_version.split('.')))
+        pkg_parts = list(map(int, pkg_version.split('.')))
+
+        # Make the version parts equal in length by adding zeros to the shorter version
+        max_len = max(len(api_parts), len(pkg_parts))
+        api_parts.extend([0] * (max_len - len(api_parts)))
+        pkg_parts.extend([0] * (max_len - len(pkg_parts)))
+
+        # Compare each part of the version number
+        for part1, part2 in zip(api_parts, pkg_parts):
+            if part1 > part2:
+                return False
+
+        return True
     
     def is_valid (self) -> bool:
         '''
