@@ -411,7 +411,8 @@ class Simulation(Entity):
         # Throw an error if no message or valid ID
         raise NominalException(f"Could not construct message of class {type}. Message name may be invalid.")
 
-    def tick (self, step: float = 1e-3, iterations: int = 1, batch: bool = True, callback = None) -> None:
+    def tick (self, step: float = 1e-3, iterations: int = 1, batch: bool = True, callback = None,
+              batch_lim: int = 100) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will
         tick the simulation with some step size, in the form of a time
@@ -427,12 +428,11 @@ class Simulation(Entity):
         :type iterations:   int
         :param batch:       This defines whether the simulation should run the simulation at batch
         :type batch:        bool
-        :param callaback:   An optional function callback that is executed after each tick. This must have a time parameter.
+        :param callback:   An optional function callback that is executed after each tick. This must have a time parameter.
         :type callback:     function
+        :param batch_lim:   The batch limit for the number of iterations to run at once
+        :type batch_lim:    int
         '''
-
-        batch_lim: int = 100
-
         # Sanitise the inputs
         step = float(step)
         if step <= 1e-9:
@@ -492,7 +492,8 @@ class Simulation(Entity):
         for msg in self.__messages.values():
             msg._require_update()
 
-    def tick_duration (self, duration: float, step: float = 1e-3, batch: bool = True, callback = None) -> None:
+    def tick_duration (self, duration: float, step: float = 1e-3, batch: bool = True, callback = None,
+                       batch_lim: int = 100) -> None:
         '''
         Attempts to tick the simulation by a certain amount. This will
         tick the simulation with some step size, in the form of a time
@@ -505,8 +506,10 @@ class Simulation(Entity):
         :type step:         float
         :param batch:       This defines whether the simulation should run the simulation at batch
         :type batch:        bool
-        :param callaback:   An optional function callback that is executed after each tick. This must have a time parameter.
+        :param callback:   An optional function callback that is executed after each tick. This must have a time parameter.
         :type callback:     function
+        :param batch_lim:   The batch limit for the number of iterations to run at once
+        :type batch_lim:    int
         '''
 
         # Sanitise the inputs
@@ -516,7 +519,7 @@ class Simulation(Entity):
             raise NominalException("Invalid duration. Unable to tick a simulation for a duration that is less than or equal to 0 seconds.")
 
         # Call the tick with some time
-        return self.tick(step=step, iterations=int(duration / step), batch=batch, callback=callback)
+        return self.tick(step=step, iterations=int(duration / step), batch=batch, callback=callback, batch_lim=batch_lim)
 
     def get_time (self) -> float:
         '''
