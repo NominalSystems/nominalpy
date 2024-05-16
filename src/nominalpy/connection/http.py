@@ -303,5 +303,8 @@ def create_web_exception (code: int) -> None:
         raise NominalException("Invalid Connection: An internal server exception was thrown. Please try again later.")
     elif code == 402:
         raise NominalException("Invalid Connection: Your API key is not associated with a valid account. Please create an account and try again.")
+    elif code == 504:
+        raise NominalException("Invalid Connection: If ticking a long simulation, please split the ticking into smaller "
+                               "batches.")
     else:
         raise NominalException("Unknown Error: A communication link with the API is broken. Status Code: %d" % code)
