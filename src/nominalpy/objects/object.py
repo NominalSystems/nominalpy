@@ -84,7 +84,7 @@ class Object(Entity):
         
         # Check for a valid response and update the data
         if response == None or response == {}:
-            raise NominalException("Failed to retrieve data from %s '%s'." % (self._api_type, self.id))
+            raise NominalException(f"Failed to retrieve data from {self._api_type} {self.id}.")
         else:
             self.__update_required = False
             self.__type = response["Type"]
@@ -149,7 +149,9 @@ class Object(Entity):
         # Fetch all values and parse only the one in the parameter
         data: dict = self.get_values(param)
         if data == {}:
-            raise NominalException("Failed to find parameter '%s' in class '%s'. Please check the documentation for valid variables." % (param, self.__type))
+            raise NominalException(
+                f"Failed to find parameter {param} in class {self.__type}. Please check the documentation for valid variables."
+            )
         return data[param]
     
     def set_values (self, **kwargs) -> bool:
@@ -190,7 +192,7 @@ class Object(Entity):
         # Create the response from the PATCH request and get the IDs
         response = http.patch_request(self._credentials, self._api_type, data=request_data)
         if response == False:
-            raise NominalException("Failed to set data on %s." % self._api_type)
+            raise NominalException(f"Failed to set data on {self._api_type}.")
         
         # Update the flag for needing to get values
         self._require_update()
@@ -289,7 +291,7 @@ class Object(Entity):
         # Create the response
         response = http.delete_request(self._credentials, self._api_type, data=request_data)
         if response == True:
-            printer.success("Successfully deleted object '%s' of type '%s'." % (self.id, self.__type))
+            printer.success(f"Successfully deleted object {self.id} of type {self.__type}.")
             self.id = None
             self.__type = None
             self.__update_required = True
@@ -298,7 +300,7 @@ class Object(Entity):
         
         # Failed to delete
         else:
-            raise NominalException("Failed to delete object '%s'." % self.id)
+            raise NominalException(f"Failed to delete object {self.id}.")
     
     def __str__ (self) -> str:
         '''

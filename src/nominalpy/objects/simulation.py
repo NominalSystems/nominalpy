@@ -431,6 +431,8 @@ class Simulation(Entity):
         :type callback:     function
         '''
 
+        batch_lim: int = 100
+
         # Sanitise the inputs
         step = float(step)
         if step <= 1e-9:
@@ -445,7 +447,7 @@ class Simulation(Entity):
         request_data: str = helper.jsonify(
             {
                 "Timestep": timespan,
-                "Iterations": iterations if batch else 1
+                "Iterations": iterations if batch else batch_lim
             }
         )
 
@@ -457,10 +459,25 @@ class Simulation(Entity):
         
         # If running one at a time, perform the loop and print the update
         else:
-            for i in range (int(iterations)):
+            for i in range (int(iterations/batch_lim)):
                 http.post_request(self._credentials, "simulation/tick", data=request_data)
                 printer.log('Ticked the simulation with a step of %.3fs. \t[%d / %d].' % (step, i + 1, int(iterations) + 1))
                 if callback is not None: 
+                    callback(self.__time + step * float(i))
+            # tick any residual iterations
+            iterations_residual = iterations % batch_lim
+            if iterations_residual > 0:
+                request_data: str = helper.jsonify(
+                    {
+                        "Timestep": timespan,
+                        "Iterations": iterations_residual
+                    }
+                )
+                http.post_request(self._credentials, "simulation/tick", data=request_data)
+                printer.log(
+                    'Ticked the simulation with a step of %.3fs. \t[%d / %d].' % (step, i + 1, int(iterations) + 1)
+                )
+                if callback is not None:
                     callback(self.__time + step * float(i))
 
         # Output the success message
