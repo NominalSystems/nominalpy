@@ -90,6 +90,8 @@ def serialize_object (obj: object) -> dict:
            return value.matrix33(obj[0], obj[1], obj[2])
         elif len(shape) == 2:   # Generic 2 dimensional matrix
             return value.matrix(shape[0], shape[1], *obj.tolist())
+        elif len(shape) == 1:
+            return value.vector(*obj.tolist())
         else:
             raise NominalException("Unsupported numpy array shape: %s." % str(shape))
 

@@ -1388,9 +1388,6 @@ def mean_motion(semi_major_axis: float, planet="earth") -> float:
     return np.sqrt(mu / semi_major_axis ** 3)
 
 
-import numpy as np
-
-
 def t_lvlh_eci(r_bn_n_chief: np.ndarray, v_bn_n_chief: np.ndarray) -> np.ndarray:
     """
     Calculate the transformation matrix of the LVLH frame based on the chief spacecraft's state vector.
@@ -1559,3 +1556,104 @@ def future_relative_state_cw(omega: float, initial_state: np.ndarray, accelerati
     future_state = phi @ initial_state + acc_effect @ accelerations
 
     return future_state
+
+
+def get_sun_synchronous_inclination_estimate(
+        orbit_mean_motion: float,
+        semi_latus_rectum: float,
+        planet_radius: float,
+        planet_semi_major_axis: float,
+        planet_j2: float,
+        planet: str
+):
+    """
+    Calculates the sun synchronous inclination estimate based on the position
+    of the planet relative to the sun and the mean and perturbed motion of the
+    orbit.
+
+    :param orbit_mean_motion: [s^-2] The mean motion of the orbit
+    :type orbit_mean_motion: float
+    :param perturbed_motion: [s^-2] The perturbed motion of the orbit
+    :type perturbed_motion: float
+    :param planet_radius: [m] The radius of the orbiting body
+    :type planet_radius: float
+    :param planet_semi_major_axis: [m] The sun-body radius of the orbit of the orbiting body
+    :type planet_semi_major_axis: float
+    :param planet_j2: [-] The orbiting body J2 value
+    :type planet_j2: float
+    :param planet: [m^3 s^-2] The gravitational Mu parameter of the parent of the orbital body
+    :type planet: str
+    :return: [rad] The estimated inclination of the orbit
+    :rtype: float
+    """
+    mean_motion_body = mean_motion(planet=planet, semi_major_axis=planet_semi_major_axis)
+    value = -2 * (semi_latus_rectum / planet_radius)**2 * mean_motion_body / (3 * orbit_mean_motion * planet_j2)
+    value = np.max(0, np.min(np.fabs(value), np.pi)) * np.sign(value)
+    return np.arccos(value)
+
+
+def semi_lactus_rectum(semi_major_axis: float, eccentricity: float) -> float:
+    """
+    Calculates the cross section of the semi-major lactus of the orbit.
+
+    :param semi_major_axis: [m] The SMA of the orbit
+    :type semi_major_axis: float
+    :param eccentricity: [-] The eccentricity of the orbit
+    :type eccentricity: float
+    :return: [m] The Semi Lactus Rectum parameter
+    :rtype: float
+    """
+    return semi_major_axis * (1 - eccentricity * eccentricity)
+
+
+def sun_synchronous_inclination(planet: str, semi_major_axis: float, eccentricity: float = 0.0) -> float:
+    """
+    Returns the inclination in radians of a defined SSO orbit based on the semi major axis and desired
+    eccentricity of the orbit.
+
+    :param planet: [-] The orbiting planet to orbit around
+    :type planet: str
+    :param semi_major_axis: [m] The SMA of the orbit
+    :type semi_major_axis: float
+    :param eccentricity: [-] The eccentricity of the orbit
+    :type eccentricity: float
+    :return: [rad] The inclination angle of the orbit
+    :rtype: float
+    """
+    n = mean_motion(planet=planet, semi_major_axis=semi_major_axis)
+    p = semi_lactus_rectum(semi_major_axis, eccentricity)
+
+    mu = get_planet_mu(planet=planet)
+    req = get_planet_property(planet=planet, property="REQ")
+    j2 = get_planet_property(planet=planet, property="j2")
+    orbit_semi_major_axis = get_planet_property(planet=planet, property="orbit_sma")
+
+    i0 = get_sun_synchronous_inclination_estimate(
+        orbit_mean_motion=n,
+        semi_latus_rectum=p,
+        planet_radius=req,
+        planet_semi_major_axis=orbit_semi_major_axis,
+        planet_j2=j2,
+        planet=planet
+    )
+    inclination = 0.0
+
+    it = 0
+    error = 1.0
+    # Iterate to find the inclination
+    while error >= 1e-6 and it < 100:
+        mean_motion_j2 = n * (1 + 1.5 * j2 * (req / p)**2 * np.sqrt(1 - eccentricity * eccentricity) * (1 - 1.5 * np.sin(i0)**2))
+        inclination = get_sun_synchronous_inclination_estimate(
+            orbit_mean_motion=mean_motion_j2,
+            semi_latus_rectum=p,
+            planet_radius=req,
+            planet_semi_major_axis=orbit_semi_major_axis,
+            planet_j2=j2,
+            planet=planet
+        )
+
+        error = abs(inclination - i0)
+        i0 = inclination
+        it += 1
+
+    return inclination
