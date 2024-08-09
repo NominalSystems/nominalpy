@@ -18,6 +18,77 @@ from . import helper
 # Disable the insecure request warning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+def __http_request (credentials: Credentials, method: str, path: str, data: dict = {}) -> dict:
+    '''
+    Creates a generic HTTP request to the API with the specified type, path
+    and some data in the form of a JSON dictionary. This will return the JSON
+    value from the response if the request was successful. It will throw an
+    exception if the request was not successful.
+    '''
+
+    # Define the URL and headers
+    url = f"http://{credentials.url}{path}"
+    headers = {'Content-Type': 'application/json'}
+    params = {'x-api-key': credentials.access_key}
+
+    # Log the request
+    printer.log("Attempting a %s request to '%s' with data: %s" % (method, url, data))
+
+    # Handle the request
+    if method == 'GET':
+        response = requests.get(url, headers=headers, data=json.dumps(data), params=params)
+    elif method == 'POST':
+        response = requests.post(url, headers=headers, data=json.dumps(data), params=params)
+    elif method == 'PUT':
+        response = requests.put(url, headers=headers, data=json.dumps(data), params=params)
+    elif method == 'PATCH':
+        response = requests.patch(url, headers=headers, data=json.dumps(data), params=params)
+    elif method == 'DELETE':
+        response = requests.delete(url, headers=headers, data=json.dumps(data), params=params)
+    
+    # Check if the response is valid
+    if response.status_code != 200:
+        raise NominalException('Error [%d]: %s' % (response.status_code, response.text))
+    
+    # Return the JSON data (or None)
+    try:
+        if response.text != None and response.text != "": 
+            return json.loads(response.text)
+    except:
+        return response.text
+    return None
+
+def get (credentials: Credentials, path: str, data: dict = {}) -> dict:
+    return __http_request(credentials, 'GET', path, data)
+
+def post (credentials: Credentials, path: str, data: dict = {}) -> dict:
+    return __http_request(credentials, 'POST', path, data)
+
+def put (credentials: Credentials, path: str, data: dict = {}) -> dict:
+    return __http_request(credentials, 'PUT', path, data)
+
+def patch (credentials: Credentials, path: str, data: dict = {}) -> dict:
+    return __http_request(credentials, 'PATCH', path, data)
+
+def delete (credentials: Credentials, path: str, data: dict = {}) -> dict:
+    return __http_request(credentials, 'DELETE', path, data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def validate_credentials (credentials: Credentials) -> None:
     '''
     Creates a GET request to test if the credentials are valid by

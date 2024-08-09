@@ -1,9 +1,9 @@
 # Define the version
-__version__ = "0.7.0"
+__version__ = "1.0.0"
 
 # Import the standard utilities
-from .utils import NominalException, printer, types
+from .utils import NominalException, printer, types, helper
 
 # Import the standard classes that are commonly used
 from .connection import Credentials
-from .objects import Component, Message, Object, Simulation
+from .objects import *

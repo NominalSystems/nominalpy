@@ -9,7 +9,7 @@ the simulation, making it easier to instantiate these objects.
 '''
 
 
-UNIVERSE        = "NominalSystems.Universe.UniverseSystem"
+SOLAR_SYSTEM        = "NominalSystems.Universe.SolarSystem"
 '''This defines the Universe System that is used to initialise all Universe conditions.'''
 
 GROUND_STATION  = "NominalSystems.Universe.GroundStation"

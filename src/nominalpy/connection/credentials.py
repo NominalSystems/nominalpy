@@ -30,7 +30,7 @@ class Credentials:
     session_id: str = None
     '''This defines the session ID for the current working session, stored for public API keys.'''
 
-    def __init__ (self, url: str = "https://api.nominalsys.com", port: int = None, access: str = "") -> None:
+    def __init__ (self, url: str = "https://api.nominalsys.com", port: int = 8080, access: str = "") -> None:
         '''
         Initialises some credentials to access the API and will be called
         by the simulation when making requests. If using a public API
@@ -222,5 +222,4 @@ class Credentials:
         if self.url == None: return False
         if self.url == "": return False
         if len(self.url) < 8: return False
-        if "http" not in self.url: return False
         return True

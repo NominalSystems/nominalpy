@@ -15,6 +15,9 @@ from datetime import datetime
 from ..maths import value
 from ..utils import NominalException
 
+
+
+
 def jsonify (data: dict, array: bool = False) -> str:
     '''
     Converts a particular data as a dictionary to string
@@ -156,24 +159,3 @@ def contains (data: dict, *args) -> bool:
     # Returns a success
     return True
 
-def is_valid_guid (guid: str) -> bool:
-    '''
-    Determines if a parsed GUID, as a string,
-    is valid. This will ensure that it is of
-    the correct format.
-
-    :param guid:    The unique GUID of the object, in the correct form
-    :type guid:     str
-
-    :returns:       A flag whether the GUID is valid
-    :rtype:         bool
-    '''
-
-    empty: str = "00000000-0000-0000-0000-000000000000"
-    if guid == empty: return False
-    if len(guid) != len(empty): return False
-    if guid[8] != empty[8]: return False
-    if guid[13] != empty[13]: return False
-    if guid[18] != empty[18]: return False
-    if guid[23] != empty[23]: return False
-    return True

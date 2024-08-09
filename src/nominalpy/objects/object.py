@@ -3,309 +3,397 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
-from ..connection import Credentials, http, helper
-from ..utils import printer, NominalException
-from .entity import Entity
+from __future__ import annotations
+from ..connection import Credentials, http
+from ..utils import printer, NominalException, helper
+from .instance import Instance
+from .behaviour import Behaviour
+from .model import Model
+from .message import Message
 
 
-class Object(Entity):
+class Object (Instance):
     '''
-    The Object class represents an object within the simulation. Objects
-    can have data that can be set and returned. This wrapper ensures that
-    all data is cached and updated when required. Cached data is fetched
-    on an API call and if no simulation events have occurred, the data is
-    not fetched again.
+    The Object class is able to define an instance that can exist within the simulation.
+    An object will have a 3D representation within the simulation and can have behaviours
+    and models attached to it. Objects can also have children objects attached to them.
+    Objects will always have a position and rotation within the simulation and are the main
+    structure for simulation object.
     '''
 
-    __update_required: bool = True
-    '''A flag that defines whether the caching needs updated on the parameter. This will be triggered when a simulation is ticked.'''
+    __instances: dict = {}
+    '''Defines all instances that have been connected to the object, by ID.'''
 
-    __data: dict = None
-    '''A dictionary that holds all of the JSON data for the object that is fetched when the get methods are called.'''
+    __children: list = []
+    '''Defines all children objects that are attached to the object.'''
 
-    __type: str = None
-    '''Defines the full Nominal class name of the object that has been fetched. This is updated when values are fetched.'''
+    __behaviours: list = []
+    '''Defines all behaviours that are attached to the object.'''
 
-    __type_metadata: dict = None
-    '''Defines the full set of variable and method information about the object that has been fetched. This is updated once as it is fixed per class.'''
+    __models: dict = {}
+    '''Defines all models that are attached to the object, by type.'''
 
-    _api_type = "object"
-    '''The API type defines the root object type of the class. This is either 'object' or 'message'.'''
+    __messages: dict = {}
+    '''Defines all messages that are attached to the object, by name.'''
 
-    def __init__ (self, credentials: Credentials, id: str, api_type: str = "object") -> None:
+    __parent: Object = None
+    '''Defines the parent object that the object is attached to.'''
+
+    def __init__ (self, credentials: Credentials, id: str) -> None:
         '''
-        The initialisation of the object must take in some API credentials,
-        which control the access to the API, a unique GUID identifier
-        associated with the simulation object and the type of requests that
-        must be made.
+        Initialises the object with the credentials and the ID of the object.
 
-        :param credentials: The Credentials object that is used for the API
-        :type credentials:  Credentials
-        :param id:          The unique identifier for the Entity in a GUID format
-        :type id:           str
-        :param api_type:    The defined root object of this class, either 'object' or 'message'.
-        :type api_type:     str
+        :param credentials:     The credentials to access the API
+        :type credentials:      Credentials
+        :param id:              The GUID ID of the object
+        :type id:               str
         '''
 
-        # Check for an invalid type
-        api_type = api_type.lower()
-        if api_type not in ["object", "message"]:
-            raise NominalException(f"Invalid Object type '{api_type}' created with object.")
+        super().__init__(credentials, id)
 
-        # Continue with the creation
-        super().__init__(credentials=credentials, id=id)  
-        self._api_type = api_type
+        # Clear and reset the data
+        self.__instances = {}
+        self.__children = []
+        self.__behaviours = []
+        self.__models = {}
+        self.__messages = {}
+        self.__parent = None
 
-    def _require_update (self) -> None:
+    def _get_data (self) -> None:
         '''
-        When this function is called, from the simulation when a new tick is
-        executed, this will ensure that the cached data is needed to be
-        updated again from the API.
-        '''
-
-        self.__update_required = True
-
-    def _get_object (self) -> None:
-        '''
-        This is an internal method that fetches all of the current simulation
-        JSON data from the API and stores it locally in the cache. If the
-        data does not require an update, it will skip this process.
+        Overrides the base class method to fetch the data from the API and store it in the
+        object. This is used to ensure that the data is fetched correctly and is up to date.
+        Additionally, this function will also fetch all the children, behaviours, models and
+        messages that are attached to the object.
         '''
 
-        # Check if the update has not occurred
-        if not self.__update_required:
+        # Fetch the base data
+        if not self._refresh_cache:
             return
+        super()._get_data()
         
-        # Perform the request on the data
-        request_data: str = helper.jsonify({
-            "ID": self.id
-        })
-        response = http.post_request(self._credentials, "query/" + self._api_type, data=request_data)
+        # Loop through the behaviours
+        for id in self.get("Behaviours"):
+            if id not in self.__instances:
+                behaviour = Behaviour(self._credentials, id)
+                behaviour.__parent = self
+                self.__instances[id] = behaviour
+                self.__behaviours.append(behaviour)
+                printer.log(f"Behaviour of type '{behaviour.get_type()}' was found and created successfully in the background.")
         
-        # Check for a valid response and update the data
-        if response == None or response == {}:
-            raise NominalException("Failed to retrieve data from %s '%s'." % (self._api_type, self.id))
-        else:
-            self.__update_required = False
-            self.__type = response["Type"]
-            self.__data = response["Data"]
+        # Loop through the children
+        for id in self.get("Children"):
+            if id not in self.__instances:
+                child = Object(self._credentials, id)
+                child.__parent = self
+                self.__instances[id] = child
+                self.__children.append(child)
+                printer.log(f"Child object of type '{child.get_type()}' was found and created successfully in the background.")
+        
+        # Loop through the models
+        for id in self.get("Models"):
+            if id not in self.__instances:
+                model = Model(self._credentials, id)
+                model.__target = self
+                self.__instances[id] = model
+                self.__models[model.get_type()] = model
+                printer.log(f"Model of type '{model.get_type()}' was found and created successfully in the background.")
+
+    def _require_refresh (self) -> None:
+        '''
+        Overrides the base class method to set the flag for refreshing the cache to true.
+        This will ensure that all sub-objects will also require a refresh.
+        '''
+
+        # Ensure all sub-objects require a refresh too
+        for id, instance in self.__instances.items():
+            instance._require_refresh()
+        super()._require_refresh()
+
+    def get_parent (self) -> Object:
+        '''
+        Returns the parent object that the object is attached to, if it exists.
+
+        :returns:   The parent object that the object is attached to
+        :rtype:     Object
+        '''
+
+        return self.__parent
     
-    def get_type (self) -> str:
+    def get_instance_with_id (self, id: str) -> Instance:
         '''
-        This method returns the full simulation type class name, including the
-        namespace of the object. This requires a call to fetch the object.
+        Returns the instance that is attached to the object with the specified ID. If the
+        instance does not exist, None will be returned.
 
-        :returns:   The full simulation type of the object from the simulation
-        :rtype:     str
-        '''
+        :param id:  The ID of the instance to fetch
+        :type id:   str
 
-        self._get_object()
-        return self.__type
-
-    def get_values (self, *values) -> dict:
-        '''
-        This method returns a JSON dictionary of parameters passed within the
-        function. The values can be a set of parameter names to fetch and the
-        JSON data associated with the object's data will be returned at the
-        current simulation time.
-
-        :param values:  A list of parameters within the object to search for
-        :type values:   list
-        
-        :returns:       A dictionary of parameter values in the order they were specified in
-        :rtype:         dict
+        :returns:   The instance that is attached to the object with the specified ID
+        :rtype:     Instance
         '''
 
-        # Attempt to get the current object data or throw an error.
-        self._get_object()
-        if self.__data == None:
-            raise NominalException("No data available on the component.")
-        
-        # If no values, return all of the data
-        if values == None or len(values) == 0:
-            return self.__data
-        
-        # Parse the data to only fetch the data requested by the user
-        data: dict = {}
-        for param in values:
-            if param in self.__data:
-                data[param] = helper.deserialize(self.__data[param])
-        
-        # Return the data
-        return data
+        if id not in self.__instances:
+            return None
+        return self.__instances[id]
 
-    def get_value (self, param: str) -> any:
+    def add_child (self, type: str, **kwargs) -> Object:
         '''
-        This method returns the JSON data associated with the parameter
-        passed in at the current time in the simulation.
+        Adds a child object to the object with the specified type. The child object will
+        be created and attached to the object and will be returned to the user.
 
-        :param param:   A parameter on the object to fetch the JSON data for
-        :type param:    str
-
-        :returns:       The JSON data for a particular parameter on the object
-        :rtype:         str
-        '''
-
-        # Fetch all values and parse only the one in the parameter
-        data: dict = self.get_values(param)
-        if data == {}:
-            raise NominalException("Failed to find parameter '%s' in class '%s'. Please check the documentation for valid variables." % (param, self.__type))
-        return data[param]
-    
-    def set_values (self, **kwargs) -> bool:
-        '''
-        This method sets a series of parameters on the object based on a
-        dictionary keyword argument set. Any number of parameters can be
-        set. If the values are incorrect, then the parameter will not be
-        set.
-
-        :param kwargs:  A set of keyword arguments for applying data to the object parameters
+        :param type:    The type of the child object to create
+        :type type:     str
+        :param kwargs:  Optional additional data to set on the child object when created
         :type kwargs:   dict
 
-        :returns:       A successful setting of all values passed in
-        :rtype:         bool
+        :returns:       The child object that was created
+        :rtype:         Object
         '''
-
-        # Construct the JSON body
-        body: dict = {
-            "ID": self.id
-        }
-
-        # Check if no values exists and set the data
-        if len(kwargs) == 0:
-            raise NominalException("No keyword-arguments parsed into object 'set_values' method.")
-        
-        # Clean up if using the 'set_value' function
-        if 'param_name' in kwargs:
-            kwargs[kwargs['param_name']] = kwargs['param_value']
-            del kwargs['param_name']
-            del kwargs['param_value']
-        
-        # Update the data in the body
-        body["Data"] = helper.serialize(kwargs)
-
-        # Create the data
-        request_data: str = helper.jsonify(body)
-
-        # Create the response from the PATCH request and get the IDs
-        response = http.patch_request(self._credentials, self._api_type, data=request_data)
-        if response == False:
-            raise NominalException("Failed to set data on %s." % self._api_type)
-        
-        # Update the flag for needing to get values
-        self._require_update()
-        return True
-    
-    def set_value (self, param: str, value: str) -> bool:
-        '''
-        This method attempts to set a particular parameter to a particular
-        value, provided that the value is in the correct JSON format. If
-        the parameter name or the value is incorrect, the value will not be
-        set and return a failure.
-
-        :param param:   The parameter name of the value to update in the object
-        :type param:    str
-        :param value:   The correct JSON formatted value of the parameter that should be set
-        :type value:    str
-
-        :returns:       A successful setting of the parameter and associated value
-        :rtype:         bool
-        '''
-
-        return self.set_values(param_name=param, param_value=value)
-        
-    def get_variables (self) -> dict:
-        '''
-        This method will attempt to get the information about all publically
-        available variables that exists on the object's class. This provides 
-        information about the expected type and whether the variable can be 
-        written to.
-
-        :returns:       A dictionary of variable names with the data about the variable
-        :rtype:         dict
-        '''
-
-        # Check if the type metadata has not been loaded
-        if self.__type_metadata == None:
-
-            # Ensure that some data has been fetched from the type
-            self._get_object()
-
-            # Construct the JSON body
-            request_data: str = helper.jsonify({
-                "Type": self.__type
-            })
-
-            # Create the request and check for valid
-            response = http.post_request(self._credentials, "query/object/type", data=request_data)
-            if response == {} or response == "":
-                return {}
             
-            # Set the value
-            self.__type_metadata = response
-        
-        # Return the list of variable names
-        return self.__type_metadata["Variables"]
-    
-    def get_variable (self, name: str) -> dict:
-        '''
-        This method will attempt to get the information about a particular
-        variable that exists on the object's class. This provides information
-        about the expected type and whether the variable can be written to.
+        # Check the type and validate it
+        type = helper.validate_type(type)
 
-        :param name:    The name of the variable to look for
+        # Create the request
+        request: dict = {"type": type, "meta": { "owner": self.id }}
+        if len(kwargs) > 0:
+            request["data"] = kwargs
+
+        # Create the object using a post request
+        result = http.post(self._credentials, "object", request)
+        if not result:
+            raise NominalException("Failed to create object of type '%s'." % type)
+        id: str = result["guid"]
+        
+        # Create the object
+        object = Object(self._credentials, id)
+        object.__parent = self
+        self.__children.append(object)
+        self.__instances[id] = object
+
+        # Print the success message
+        printer.success(f"Child object of type '{type}' created successfully.")
+        return object
+
+    def get_child (self, index: int) -> Object:
+        '''
+        Returns the child object at the specified index. If the index is invalid, an
+        exception will be raised.
+
+        :param index:   The index of the child object to fetch
+        :type index:    int
+
+        :returns:       The child object at the specified index
+        :rtype:         Object
+        '''
+
+        # Fetch the child and perform a safety check
+        if index < 0 or index >= len(self.__children):
+            raise NominalException("Invalid index provided to get child object.")
+        return self.__children[index]
+
+    def get_children (self) -> list:
+        '''
+        Returns all of the children objects that are attached to the object.
+
+        :returns:   All of the children objects that are attached to the object
+        :rtype:     list
+        '''
+
+        return self.__children
+    
+    def get_children_of_type (self, type: str) -> list:
+        '''
+        Returns all of the children objects that are attached to the object of the specified
+        type. If the type is not found, an empty list will be returned.
+
+        :param type:    The type of the children objects to fetch
+        :type type:     str
+
+        :returns:       All of the children objects that are attached to the object of the specified type
+        :rtype:         list
+        '''
+            
+        # Check the type and validate it
+        type = helper.validate_type(type)
+
+        # Filter the children by type
+        return [child for child in self.__children if child.get_type() == type]
+
+    def add_behaviour (self, type: str, **kwargs) -> Behaviour:
+        '''
+        Adds a behaviour to the object with the specified type. The behaviour will be created
+        and attached to the object and will be returned to the user.
+
+        :param type:    The type of the behaviour to create
+        :type type:     str
+        :param kwargs:  Optional additional data to set on the behaviour when created
+        :type kwargs:   dict
+
+        :returns:       The behaviour that was created
+        :rtype:         Behaviour
+        '''
+            
+        # Check the type and validate it
+        type = helper.validate_type(type)
+
+        # Create the request
+        request: dict = {"type": type, "meta": { "owner": self.id }}
+        if len(kwargs) > 0:
+            request["data"] = kwargs
+
+        # Create the behaviour using a post request
+        result = http.post(self._credentials, "object", request)
+        if not result:
+            raise NominalException("Failed to create behaviour of type '%s'." % type)
+        id: str = result["guid"]
+        
+        # Create the behaviour
+        behaviour = Behaviour(self._credentials, id)
+        behaviour.__parent = self
+        self.__behaviours.append(behaviour)
+        self.__instances[id] = behaviour
+
+        # Print the success message
+        printer.success(f"Behaviour of type '{type}' created successfully.")
+        return behaviour
+
+    def get_behaviour (self, index: int) -> Behaviour:
+        '''
+        Gets the behaviour at the specified index. If the index is invalid, an exception
+        will be raised.
+
+        :param index:   The index of the behaviour to fetch
+        :type index:    int
+
+        :returns:       The behaviour at the specified index
+        :rtype:         Behaviour
+        '''
+        
+        # Fetch the child and perform a safety check
+        if index < 0 or index >= len(self.__behaviours):
+            raise NominalException("Invalid index provided to get behaviour.")
+        return self.__behaviours[index]
+    
+    def get_behaviours (self) -> list:
+        '''
+        Returns all of the behaviours that are attached to the object.
+
+        :returns:   All of the behaviours that are attached to the object
+        :rtype:     list
+        '''
+
+        return self.__behaviours
+
+    def get_behaviours_of_type (self, type: str) -> list:
+        '''
+        Returns all of the behaviours that are attached to the object of the specified type.
+        If the type is not found, an empty list will be returned.
+
+        :param type:    The type of the behaviours to fetch
+        :type type:     str
+
+        :returns:       All of the behaviours that are attached to the object of the specified type
+        :rtype:         list
+        '''
+                
+        # Check the type and validate it
+        type = helper.validate_type(type)
+
+        # Filter the children by type
+        return [behaviour for behaviour in self.__behaviours if behaviour.get_type() == type]
+    
+    def get_model (self, type: str, **kwargs) -> Model:
+        '''
+        Attempts to get the model of the specified type that is attached to the object. If the
+        model does not exist, it will be created and attached to the object. If the model cannot
+        be created, an exception will be raised.
+
+        :param type:    The type of the model to fetch
+        :type type:     str
+        :param kwargs:  The additional data to add to the model
+        :type kwargs:   dict
+
+        :returns:       The model of the specified type that is attached to the object
+        :rtype:         Model
+        '''
+
+        # Check the type and validate it
+        type = helper.validate_type(type)
+
+        # Check to see if the model exists
+        if type in self.__models.keys():
+            model: Model = self.__models[type]
+            if len(kwargs) > 0:
+                model.set(**kwargs)
+            return model
+        
+        # Attempt to find or create the model
+        id: str = http.patch(self._credentials, "object", {"guid": self.id, "name": "GetModel", "args": [type]})
+        if not helper.is_valid_guid(id):
+            raise NominalException("Failed to create model of type '%s'." % type)
+        
+        # Create the model with the ID
+        model = Model(self._credentials, id)
+        model.__target = self
+        self.__models[type] = model
+        self.__instances[id] = model
+
+        # Set the data if it exists
+        if len(kwargs) > 0:
+            model.set(**kwargs)
+        
+        # Print the success message
+        printer.success(f"Model of type '{type}' created successfully.")
+        return model
+
+    def get_models (self) -> list:
+        '''
+        Returns all of the models that are attached to the object.
+
+        :returns:   All of the models that are attached to the object
+        :rtype:     list
+        '''
+
+        return self.__models.values()
+
+    def get_message (self, name: str) -> Message:
+        '''
+        Attempts to get the message with the specified name that is attached to the object. If the
+        message does not exist, it will be created and attached to the object. If the message cannot
+        be created, an exception will be raised.
+
+        :param name:    The name of the message to fetch
         :type name:     str
 
-        :returns:       A dictionary with the data about the variable
-        :rtype:         dict
+        :returns:       The message with the specified name that is attached to the object
+        :rtype:         Message
         '''
+
+        # Check if the name is within the message structure and return that
+        if name in self.__messages.keys():
+            return self.__messages[name]
         
-        # Fetch all the data
-        variables: dict = self.get_variables()
-
-        # Attempt to find the variable
-        if not name in variables.keys():
-            raise NominalException(f"The variable '{name}' does not exist on a class of type '{self.get_type()}'.")
+        # Fetch the data
+        id = self.get(name)
+        if not helper.is_valid_guid(id):
+            raise NominalException("Failed to find message '%s'." % name)
         
-        # Return the dictionary data
-        return variables[name]
+        # Create the message object with the ID
+        message = Message(self._credentials, id)
+        self.__messages[name] = message
+        self.__instances[id] = message
 
-    def delete (self) -> bool:
+        # Return the message of that name
+        printer.success(f"Message with name '{name}' created successfully.")
+        return message
+
+    def get_messages (self) -> list:
         '''
-        This method will delete the current object from the simulation and
-        remove access to all objects associated with this.
+        Returns all of the messages that are attached to the object. This will only include the
+        messages that have currently been fetched.
 
-        :returns:   A successful deletion operation flag
-        :rtype:     bool
+        :returns:   All of the messages that are attached to the object
+        :rtype:     list
         '''
 
-        # Construct the JSON body
-        request_data: str = helper.jsonify(
-            {
-                "ID": self.id
-            }
-        )
-
-        # Create the response
-        response = http.delete_request(self._credentials, self._api_type, data=request_data)
-        if response == True:
-            printer.success("Successfully deleted object '%s' of type '%s'." % (self.id, self.__type))
-            self.id = None
-            self.__type = None
-            self.__update_required = True
-            self.__data = None
-            return True
-        
-        # Failed to delete
-        else:
-            raise NominalException("Failed to delete object '%s'." % self.id)
-    
-    def __str__ (self) -> str:
-        '''
-        The automated cast of this object to a string will only return the
-        GUID identifier of the object.
-
-        :returns:   The formatted ID from the object
-        :rtype:     str
-        '''
-        return self.id
+        return self.__messages.values()
