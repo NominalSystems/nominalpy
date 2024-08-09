@@ -1587,8 +1587,8 @@ def get_sun_synchronous_inclination_estimate(
     :rtype: float
     """
     mean_motion_body = mean_motion(planet=planet, semi_major_axis=planet_semi_major_axis)
-    value = -2 * (semi_latus_rectum / planet_radius)**2 * mean_motion_body / (3 * orbit_mean_motion * planet_j2)
-    value = np.max(0, np.min(np.fabs(value), np.pi)) * np.sign(value)
+    value = -2.0 * (semi_latus_rectum / planet_radius)**2 * mean_motion_body / (3.0 * orbit_mean_motion * planet_j2)
+    value = max(0.0, min(np.fabs(value), np.pi)) * np.sign(value)
     return np.arccos(value)
 
 
