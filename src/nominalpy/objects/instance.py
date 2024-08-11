@@ -111,7 +111,7 @@ class Instance:
         # Check if the param is in the data
         if param not in self.__data:
             raise NominalException(f"Parameter '{param}' not found in object '{self.id}'.")
-        return self.__data[param]
+        return helper.deserialize(self.__data[param])
 
     def get_all (self) -> dict:
         '''
@@ -137,6 +137,10 @@ class Instance:
         :type kwargs:   dict
         '''
 
+        # For each of the key values, serialize the data
+        for key in kwargs:
+            kwargs[key] = helper.serialize(kwargs[key])
+
         # Add the put request to update the data
         http.put(self._credentials, "object", {'guid': self.id, **kwargs})
 
@@ -157,6 +161,11 @@ class Instance:
         :returns:           The response from the function call
         :rtype:             any
         '''
+
+        # For each of the arguments, serialize the data
+        args = list(args)
+        for i in range(len(args)):
+            args[i] = helper.serialize(args[i])
 
         # Create the request data
         request = {

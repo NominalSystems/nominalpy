@@ -143,6 +143,10 @@ class Simulation ():
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
 
+        # For each of the kwargs, serialize the data
+        for key in kwargs:
+            kwargs[key] = helper.serialize(kwargs[key])
+
         # Create the request
         request: dict = {"type": type}
         if len(kwargs) > 0:
@@ -181,6 +185,10 @@ class Simulation ():
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
 
+        # For each of the kwargs, serialize the data
+        for key in kwargs:
+            kwargs[key] = helper.serialize(kwargs[key])
+
         # Create the request
         request: dict = {"type": type}
         if len(kwargs) > 0:
@@ -216,6 +224,10 @@ class Simulation ():
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
+
+        # For each of the kwargs, serialize the data
+        for key in kwargs:
+            kwargs[key] = helper.serialize(kwargs[key])
         
         # Check if the system exists and return it
         if type in self.__systems:
@@ -268,6 +280,10 @@ class Simulation ():
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type, "Messages")
+
+        # For each of the kwargs, serialize the data
+        for key in kwargs:
+            kwargs[key] = helper.serialize(kwargs[key])
 
         # Create the request
         request: dict = {"type": type}

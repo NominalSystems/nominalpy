@@ -9,6 +9,8 @@ can be turned into JSON and whether GUID IDs are valid. This also includes
 some methods for serializing and deserializing JSON data to standard formats.
 '''
 
+import numpy as np
+from datetime import datetime
 from ..utils import NominalException
 
 def is_valid_guid (guid: str) -> bool:
@@ -63,3 +65,74 @@ def validate_type (type: str, namespace: str = "Classes") -> str:
 
     # Return the correct type
     return type
+
+def serialize (value: any) -> any:
+    '''
+    Serializes the value into a JSON serializable format. This will
+    convert the value into a list if it is a numpy array or a datetime
+    into a string.
+
+    :param value:   The value to serialize
+    :type value:    any
+
+    :returns:       The serialized value
+    :rtype:         any
+    '''
+
+    # Check if the value is a numpy array
+    if isinstance(value, np.ndarray):
+        # Check if the numpy array contains numbers
+        if np.issubdtype(value.dtype, np.number):
+            return value.tolist()  # Convert to list or list of lists
+        return value
+        
+    # Check if the value is a datetime
+    if isinstance(value, datetime):
+        return value.strftime('%Y/%m/%d %H:%M:%S.%f')
+    
+    # Return the value as is for other types
+    return value
+
+def deserialize (value: any) -> any:
+    '''
+    Deserializes the value from a JSON serializable format. This will
+    convert the value into a numpy array if it is a list of numbers or
+    a datetime string into a datetime object.
+
+    :param value:   The value to deserialize
+    :type value:    any
+
+    :returns:       The deserialized value
+    :rtype:         any
+    '''
+
+    # Check if the value is a list
+    if isinstance(value, list):
+
+        # Attempt to convert list of numbers to a numpy array
+        try:
+            array = np.array(value)
+            if np.issubdtype(array.dtype, np.number):
+                return array
+        except:
+            pass
+
+        # If conversion fails or is not a list of numbers, return the list as is
+        return value
+    
+    # Check if the value is a datetime string
+    if isinstance(value, str):
+        try:
+            # Handle datetime string with variable microseconds length
+            date_part, time_part = value.split(" ")
+            if '.' in time_part:
+                time_main, microseconds = time_part.split(".")
+                if len(microseconds) > 6:
+                    microseconds = microseconds[:6]  # Truncate to 6 digits
+                value = f"{date_part} {time_main}.{microseconds}"
+            return datetime.strptime(value, '%Y/%m/%d %H:%M:%S.%f')
+        except ValueError:
+            return value
+        
+    # Return the value as is for other types
+    return value

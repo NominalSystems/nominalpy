@@ -153,6 +153,10 @@ class Object (Instance):
         # Check the type and validate it
         type = helper.validate_type(type)
 
+        # For each of the kwargs, serialize the data
+        for key in kwargs:
+            kwargs[key] = helper.serialize(kwargs[key])
+
         # Create the request
         request: dict = {"type": type, "meta": { "owner": self.id }}
         if len(kwargs) > 0:
@@ -235,6 +239,10 @@ class Object (Instance):
             
         # Check the type and validate it
         type = helper.validate_type(type)
+        
+        # For each of the kwargs, serialize the data
+        for key in kwargs:
+            kwargs[key] = helper.serialize(kwargs[key])
 
         # Create the request
         request: dict = {"type": type, "meta": { "owner": self.id }}
@@ -319,6 +327,10 @@ class Object (Instance):
 
         # Check the type and validate it
         type = helper.validate_type(type)
+
+        # For each of the kwargs, serialize the data
+        for key in kwargs:
+            kwargs[key] = helper.serialize(kwargs[key])
 
         # Check to see if the model exists
         if type in self.__models.keys():

@@ -7,6 +7,7 @@ from __future__ import annotations
 import json, os
 from .. import NominalException
 from matplotlib import pyplot as plt
+import numpy as np
 
 
 class DataFrame:
@@ -86,20 +87,23 @@ class DataFrame:
             raise NominalException("Invalid path provided to load DataFrame.")
         return DataFrame(json.loads(path))
 
-    def get_times (self) -> list:
+    def get_times (self) -> np.ndarray:
         '''
         Returns the time values that are associated with the DataFrame. This is a helper
         function that is able to fetch the time values from the DataFrame, where each
         value is in seconds.
 
         :returns:   The time values that are associated with the DataFrame in seconds
-        :rtype:     list
+        :rtype:     np.ndarray
         '''
 
-        # Ensure that the time is casted as a float
-        return [float(x) for x in self.get_values("Time")]
+        # Ensure that the time is casted as a float as a numpy arra
+        times = [float(x) for x in self.get_values("Time")]
+
+        # Convert and return as a numpy array
+        return np.array(times)
     
-    def get_values (self, parameter: str) -> list:
+    def get_values (self, parameter: str) -> np.ndarray:
         '''
         Returns the values that are associated with a particular parameter in the DataFrame.
         This is a helper function that is able to fetch the values associated with a particular
@@ -109,7 +113,7 @@ class DataFrame:
         :type parameter:    str
 
         :returns:           The values that are associated with the parameter
-        :rtype:             list
+        :rtype:             np.ndarray
         '''
 
         # Check if the parameter does not exist
@@ -118,7 +122,8 @@ class DataFrame:
         
         # Fetch the index and data associated with it
         index = self.fields.index(parameter)
-        return [row[index] for row in self.data]
+        values: list = [row[index] for row in self.data]
+        return np.array(values)
 
     def plot (self, title="Simulation Data", params=None) -> None:
         '''
