@@ -536,6 +536,22 @@ class Simulation ():
 
         # Invoke the track object
         system.invoke("TrackObject", instance.id, isAdvanced)
+
+    def set_tracking_interval (self, interval: float) -> None:
+        '''
+        Updates the tracking interval for all the objects that have been tracked. This will
+        be an interval in simulation seconds and will be the same across all objects. The
+        default value is 10.0 seconds.
+
+        :param interval:    The interval to track the objects by in seconds
+        :type interval:     float
+        '''
+
+        # Get the tracking system
+        system: System = self.get_system(TRACKING_SYSTEM)
+
+        # Invoke the set track interval
+        system.set(Interval=interval)
     
     def query_object (self, instance: Instance) -> DataFrame:
         '''
