@@ -3,7 +3,7 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
-from ..objects import Entity, Message
+from ..simulation import Entity, Message
 from ..connection import Credentials
 from ..utils import printer
 from .case import SensitivityCase

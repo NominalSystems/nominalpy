@@ -4,7 +4,7 @@
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 from abc import ABC, abstractmethod
-from ..objects import Component, Message, Object, Simulation
+from ..simulation import Component, Message, Object, Simulation
 from ..connection import Credentials
 from ..utils import NominalException
 
