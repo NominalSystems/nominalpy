@@ -85,7 +85,6 @@ class Behaviour (Instance):
         # Create the message object with the ID
         message = Message(self._credentials, id)
         self.__messages[name] = message
-        self.__instances[id] = message
 
         # Return the message of that name
         printer.success(f"Message with name '{name}' created successfully.")

@@ -90,6 +90,10 @@ def serialize (value: any) -> any:
     if isinstance(value, datetime):
         return value.strftime('%Y/%m/%d %H:%M:%S.%f')
     
+    # Check if the value is a simulation instance
+    if hasattr(value, 'id') and hasattr(value, 'get_type'):
+        return value.id
+    
     # Return the value as is for other types
     return value
 

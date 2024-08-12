@@ -39,7 +39,10 @@ def __http_request (credentials: Credentials, method: str, path: str, data: dict
     '''
 
     # Define the URL and headers
-    url = f"http://{credentials.url}{path}"
+    if "http" not in credentials.url:
+        url = f"http://{credentials.url}{path}"
+    else:
+        url = f"{credentials.url}{path}"
     headers = {'Content-Type': 'application/json'}
     params = {'x-api-key': credentials.access_key}
 

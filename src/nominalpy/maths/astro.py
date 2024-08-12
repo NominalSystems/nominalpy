@@ -12,7 +12,6 @@ or return the position and velocity from an orbit.
 import numpy as np
 from typing import Tuple
 from . import constants
-from . import value
 from . import utils
 from ..utils import NominalException
 

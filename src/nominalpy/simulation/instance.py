@@ -110,7 +110,7 @@ class Instance:
 
         # Check if the param is in the data
         if param not in self.__data:
-            raise NominalException(f"Parameter '{param}' not found in object '{self.id}'.")
+            raise NominalException(f"Parameter '{param}' not found in object '{self.id}' of type '{self.get_type()}'.")
         return helper.deserialize(self.__data[param])
 
     def get_all (self) -> dict:
