@@ -1,1 +1,1 @@
-from .frame import DataFrame
+from .frame import SimulationData

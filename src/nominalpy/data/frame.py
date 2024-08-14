@@ -8,9 +8,10 @@ import json, os
 from .. import NominalException
 from matplotlib import pyplot as plt
 import numpy as np
+import pandas as pd
 
 
-class DataFrame:
+class SimulationData:
     '''
     The DataFrame class is able to store a series of parameters and data associated
     with a particular simulation instance. This class is a pure data class and is
@@ -22,20 +23,20 @@ class DataFrame:
     '''Defines the raw data that is fetched from the API.'''
 
     type: str = ""
-    '''Defines the object type that was used for this DataFrame.'''
+    '''Defines the object type that was used for this SimulationData.'''
 
     id: str = ""
     '''Defines the unique GUID identifier of the object. This needs to be in the correct GUID format.'''
 
     fields: list = []
-    '''Defines the fields that are associated with the DataFrame.'''
+    '''Defines the fields that are associated with the SimulationData.'''
 
     data: list = []
-    '''Defines the data that is associated with the DataFrame.'''
+    '''Defines the data that is associated with the SimulationData.'''
 
     def __init__ (self, data: dict) -> None:
         '''
-        Initialises the DataFrame with the data that is fetched from the API. This must be
+        Initialises the SimulationData with the data that is fetched from the API. This must be
         created using the JSON data that is fetched from the API and is able to be exported
         back to the API in the same format.
 
@@ -57,12 +58,12 @@ class DataFrame:
             self.type = data["Type"]
         self.type = data["Type"]
         if "Data" not in data:
-            raise NominalException("DataFrame Data not found in data.")
+            raise NominalException("SimulationData Data not found in data.")
         
         # Data should be an array of arrays
         data = list(data["Data"])
         if len(data) == 0:
-            raise NominalException("DataFrame Data is empty.")
+            raise NominalException("SimulationData Data is empty.")
         self.fields = data[0]
 
         # Loop through the data
@@ -70,30 +71,30 @@ class DataFrame:
             self.data.append(data[i])
     
     @classmethod
-    def load (cls, path: str) -> DataFrame:
+    def load (cls, path: str) -> SimulationData:
         '''
-        Loads a DataFrame from a file path and returns the DataFrame object. This is a
+        Loads a SimulationData from a file path and returns the SimulationData object. This is a
         class method and does not require an instance to be created.
 
-        :param path:    The path to the file that contains the DataFrame
+        :param path:    The path to the file that contains the SimulationData
         :type path:     str
 
-        :returns:       The DataFrame object that is loaded from the file
-        :rtype:         DataFrame
+        :returns:       The SimulationData object that is loaded from the file
+        :rtype:         SimulationData
         '''
 
         # Check if the path is not valid and throw exception
         if not path or not os.path.exists(path):
-            raise NominalException("Invalid path provided to load DataFrame.")
-        return DataFrame(json.loads(path))
+            raise NominalException("Invalid path provided to load SimulationData.")
+        return SimulationData(json.loads(path))
 
     def get_times (self) -> np.ndarray:
         '''
-        Returns the time values that are associated with the DataFrame. This is a helper
-        function that is able to fetch the time values from the DataFrame, where each
+        Returns the time values that are associated with the SimulationData. This is a helper
+        function that is able to fetch the time values from the SimulationData, where each
         value is in seconds.
 
-        :returns:   The time values that are associated with the DataFrame in seconds
+        :returns:   The time values that are associated with the SimulationData in seconds
         :rtype:     np.ndarray
         '''
 
@@ -105,9 +106,9 @@ class DataFrame:
     
     def get_values (self, parameter: str) -> np.ndarray:
         '''
-        Returns the values that are associated with a particular parameter in the DataFrame.
+        Returns the values that are associated with a particular parameter in the SimulationData.
         This is a helper function that is able to fetch the values associated with a particular
-        parameter in the DataFrame.
+        parameter in the SimulationData.
 
         :param parameter:   The parameter to fetch the values for
         :type parameter:    str
@@ -118,7 +119,7 @@ class DataFrame:
 
         # Check if the parameter does not exist
         if parameter not in self.fields:
-            raise NominalException(f"Parameter '{parameter}' not found in DataFrame.")
+            raise NominalException(f"Parameter '{parameter}' not found in SimulationData.")
         
         # Fetch the index and data associated with it
         index = self.fields.index(parameter)
@@ -127,7 +128,7 @@ class DataFrame:
 
     def plot (self, title="Simulation Data", params=None) -> None:
         '''
-        Creates a quick plot of the DataFrame data. This will plot the data in a simple
+        Creates a quick plot of the SimulationData data. This will plot the data in a simple
         line plot format and will display the data in a single plot or multiple plots
         depending on the parameters provided. The following formats for the parameters 
         will work:
@@ -178,20 +179,20 @@ class DataFrame:
 
     def export (self) -> dict:
         '''
-        Exports the DataFrame to a dictionary format that is able to be exported to the API.
-        This will return the DataFrame in the same format that is fetched from the API.
+        Exports the SimulationData to a dictionary format that is able to be exported to the API.
+        This will return the SimulationData in the same format that is fetched from the API.
 
-        :returns:   The DataFrame in a dictionary format
+        :returns:   The SimulationData in a dictionary format
         :rtype:     dict
         '''
         return self.__raw
     
     def save (self, path: str) -> None:
         '''
-        Saves the DataFrame to a file path in a JSON format. This will save the DataFrame
-        in a JSON format that is able to be loaded back into the DataFrame class.
+        Saves the SimulationData to a file path in a JSON format. This will save the SimulationData
+        in a JSON format that is able to be loaded back into the SimulationData class.
 
-        :param path:    The path to save the DataFrame to
+        :param path:    The path to save the SimulationData to
         :type path:     str
         '''
         with open(path, "w") as f:
@@ -199,9 +200,35 @@ class DataFrame:
     
     def __str__ (self) -> str:
         '''
-        Converts the DataFrame to a string format that is able to be exported to a JSON format.
+        Converts the SimulationData to a string format that is able to be exported to a JSON format.
 
-        :returns:   The DataFrame in a string format
+        :returns:   The SimulationData in a string format
         :rtype:     str
         '''
         return json.dumps(self.export(), indent=4)
+
+    def to_dataframe(self):
+        '''
+        Converts the SimulationData to a pandas DataFrame. This will convert the SimulationData
+        to a pandas DataFrame and will return the DataFrame object.
+
+        :returns:   The SimulationData in a pandas DataFrame format
+        :rtype:     pd.DataFrame
+        '''
+        # Create a dictionary of the data
+        data = {}
+        for row in self.data:
+            for i, field in enumerate(self.fields):
+                # if any of the row values are a lists, then break the list into separate columns
+                if isinstance(row[i], list):
+                    for j, value in enumerate(row[i]):
+                        # Check if the key exists in the dictionary, if not create it
+                        if f"{field}_{j}" not in data:
+                            data[f"{field}_{j}"] = []
+                        data[f"{field}_{j}"].append(value)
+                else:
+                    # Check if the key exists in the dictionary, if not create it
+                    if field not in data:
+                        data[field] = []
+                    data[field].append(row[i])
+        return pd.DataFrame(data)

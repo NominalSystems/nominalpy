@@ -4,6 +4,9 @@
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 import os, json
+
+import pandas as pd
+
 from .instance import Instance
 from .message import Message
 from .object import Object
@@ -11,7 +14,7 @@ from .behaviour import Behaviour
 from .system import System
 from ..connection import Credentials, http
 from ..utils import NominalException, printer, helper
-from ..data import DataFrame
+from ..data import SimulationData
 
 
 # Define the systems used for extra functionality
@@ -560,7 +563,7 @@ class Simulation ():
         # Invoke the set track interval
         system.set(Interval=interval)
     
-    def query_object (self, instance: Instance) -> DataFrame:
+    def query_object (self, instance: Instance) -> SimulationData:
         '''
         Queries the object within the simulation. This will query the object and return the data
         that has been stored for the object. This will return the data as a data frame. If there
@@ -581,7 +584,7 @@ class Simulation ():
         data = system.invoke("ExportToJSON", instance.id)
 
         # Create and return the data frame
-        return DataFrame(data)
+        return SimulationData(data)
     
     def get_planet (self, name: str) -> Object:
         '''
@@ -615,3 +618,19 @@ class Simulation ():
 
         # Return the object
         return object
+
+    def query_dataframe(self, instance: Instance) -> pd.DataFrame:
+        '''
+        Queries the object within the simulation. This will query the object and return the data
+        that has been stored for the object. This will return the data as a data frame. If there
+        is no data for the object, or if the object has not yet been tracked, an empty data frame
+        will be returned.
+
+        :param instance:    The instance to query within the simulation
+        :type instance:     Instance
+
+        :returns:           The data that has been stored for the object
+        :rtype:             DataFrame
+        '''
+        # Create and return the data frame
+        return self.query_object(instance=instance).to_dataframe()
