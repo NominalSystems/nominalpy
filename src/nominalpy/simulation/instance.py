@@ -171,8 +171,11 @@ class Instance:
         request = {
             'guid': self.id,
             'name': function,
-            'args': list(args)
         }
+
+        # only add 'args' to the request if args is not empty
+        if args:
+            request['args'] = list(args)
 
         # Create the response from the PATCH request and get the IDs
         response = http.patch(self._credentials, "object", request)
