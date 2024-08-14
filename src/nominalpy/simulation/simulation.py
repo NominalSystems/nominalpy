@@ -17,6 +17,7 @@ from ..data import DataFrame
 # Define the systems used for extra functionality
 TRACKING_SYSTEM  = "NominalSystems.Universe.TrackingSystem"
 EXTENSION_SYSTEM = "NominalSystems.Universe.ExtensionSystem"
+SOLAR_SYSTEM     = "NominalSystems.Universe.SolarSystem"
 
 class Simulation ():
     '''
@@ -41,6 +42,9 @@ class Simulation ():
     
     __messages: list = []
     '''Defines all messages that are created within the simulation, with the simulation root.'''
+
+    __planets: dict = {}
+    '''Defines all planets that are created within the simulation, with the simulation root.'''
 
     __time: float = 0.0
     '''Defines the current time of the simulation.'''
@@ -75,6 +79,7 @@ class Simulation ():
         self.__behaviours = []
         self.__systems = {}
         self.__messages = []
+        self.__planets = {}
         self.__time = 0.0
     
     def __require_refresh (self) -> None:
@@ -92,6 +97,8 @@ class Simulation ():
             system._require_refresh()
         for message in self.__messages:
             message._require_refresh()
+        for planet in self.__planets.values():
+            planet._require_refresh()
 
     def __find_instance (self, id: str) -> Instance:
         '''
@@ -575,3 +582,36 @@ class Simulation ():
 
         # Create and return the data frame
         return DataFrame(data)
+    
+    def get_planet (self, name: str) -> Object:
+        '''
+        Returns the planet with the specified name within the simulation. This will return the
+        planet object that has been created within the simulation. If the planet does not exist,
+        it will be created and returned. If the planet cannot be created, None will be returned.
+
+        :param name:    The name of the planet to get or create
+        :type name:     str
+
+        :returns:       The planet with the specified name
+        :rtype:         Object
+        '''
+
+        # Check if the planet already exists
+        if name.lower() in self.__planets:
+            return self.__planets[name.lower()]
+
+        # Fetch the solar system
+        system: System = self.get_system(SOLAR_SYSTEM)
+
+        # Grab the planet by invoking the method
+        id = system.invoke("GetBody", name)
+        if not helper.is_valid_guid(id):
+            return None
+        
+        # Construct the object
+        object: Object = Object(self.__credentials, id)
+        self.__planets[name.lower()] = object
+        self.__objects.append(object)
+
+        # Return the object
+        return object
