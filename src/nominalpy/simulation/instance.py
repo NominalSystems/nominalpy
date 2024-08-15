@@ -142,7 +142,7 @@ class Instance:
             kwargs[key] = helper.serialize(kwargs[key])
 
         # Add the put request to update the data
-        http.put(self._credentials, "object", {'guid': self.id, **kwargs})
+        http.put(self._credentials, "object", {'guid': self.id, 'data': kwargs })
 
         # Ensure that the cache is refreshed for the next get
         self._require_refresh()
