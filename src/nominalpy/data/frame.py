@@ -56,9 +56,8 @@ class SimulationData:
            self.id = data["ID"]
         if "Type" in data:
             self.type = data["Type"]
-        self.type = data["Type"]
         if "Data" not in data:
-            raise NominalException("SimulationData Data not found in data.")
+            raise NominalException("Data not found.")
         
         # Data should be an array of arrays
         data = list(data["Data"])
