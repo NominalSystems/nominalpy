@@ -52,6 +52,9 @@ class Simulation ():
     __time: float = 0.0
     '''Defines the current time of the simulation.'''
 
+    __ticked: bool = False
+    '''Defines whether the simulation has been ticked or not.'''
+
     def __init__ (self, credentials: Credentials, reset: bool = True) -> None:
         '''
         Initialises the simulation with the credentials and the ID of the simulation. If the ID is
@@ -84,6 +87,7 @@ class Simulation ():
         self.__messages = []
         self.__planets = {}
         self.__time = 0.0
+        self.__ticked = False
     
     def __require_refresh (self) -> None:
         '''
@@ -411,12 +415,17 @@ class Simulation ():
         :type step:     float
         '''
 
+        # If the simulation has not been ticked yet, call a tick with 0.0 to initialise the tracking data
+        if not self.__ticked:
+            http.patch(self.__credentials, "simulation", {"name": "TickSeconds", "args": [0.0]})
+            self.__ticked = True
+
         # Invoke the tick function on the simulation
         http.patch(self.__credentials, "simulation", {"name": "TickSeconds", "args": [step]})
 
         # Update the time
         self.__time += step
-
+        
         # Ensure the refresh is required
         self.__require_refresh()
 
@@ -431,6 +440,11 @@ class Simulation ():
         :param step:    The time-step of the tick, used for physics calculations in seconds
         :type step:     float
         '''
+
+        # If the simulation has not been ticked yet, call a tick with 0.0 to initialise the tracking data
+        if not self.__ticked:
+            http.patch(self.__credentials, "simulation", {"name": "TickSeconds", "args": [0.0]})
+            self.__ticked = True
 
         # Get the extension system
         system: System = self.get_system(EXTENSION_SYSTEM)

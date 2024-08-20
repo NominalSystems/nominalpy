@@ -12,11 +12,11 @@ the simulation, making it easier to instantiate these objects.
 SOLAR_SYSTEM        = "NominalSystems.Universe.SolarSystem"
 '''This defines the Universe System that is used to initialise all Universe conditions.'''
 
-GROUND_STATION  = "NominalSystems.Universe.GroundStation"
+GROUND_STATION      = "NominalSystems.Universe.GroundStation"
 '''This is a ground station that can be placed on a location on the planet.'''
 
-PHYSICAL_Object = "NominalSystems.Universe.PhysicalObject"
+PHYSICAL_OBJECT     = "NominalSystems.Universe.PhysicalObject"
 '''This is a physical component that can be attached to other objects in a spacecraft or entity.'''
 
-SPACECRAFT      = "NominalSystems.Universe.Spacecraft"
+SPACECRAFT          = "NominalSystems.Universe.Spacecraft"
 '''This is a spacecraft class that can be initialised at some location in space.'''
