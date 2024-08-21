@@ -43,26 +43,43 @@ def __http_request (credentials: Credentials, method: str, path: str, data: dict
         url = f"http://{credentials.url}{path}"
     else:
         url = f"{credentials.url}{path}"
-    headers = {'Content-Type': 'application/json'}
-    params = {'x-api-key': credentials.access_key}
+    headers = {'Content-Type': 'application/json', 'x-api-key': credentials.access_key}
+    params = {'session': credentials.get_session_id() }
 
     # Log the request
     printer.log("Attempting a %s request to '%s' with data: %s" % (method, url, data))
 
-    # Handle the request
-    if method == 'GET':
-        response = requests.get(url, headers=headers, data=json.dumps(data), params=params)
-    elif method == 'POST':
-        response = requests.post(url, headers=headers, data=json.dumps(data), params=params)
-    elif method == 'PUT':
-        response = requests.put(url, headers=headers, data=json.dumps(data), params=params)
-    elif method == 'PATCH':
-        response = requests.patch(url, headers=headers, data=json.dumps(data), params=params)
-    elif method == 'DELETE':
-        response = requests.delete(url, headers=headers, data=json.dumps(data), params=params)
+    # If a local deployment
+    if credentials.is_local:
+        if method == 'GET':
+            response = requests.get(url, headers=headers, data=json.dumps(data), params=params)
+        elif method == 'POST':
+            response = requests.post(url, headers=headers, data=json.dumps(data), params=params)
+        elif method == 'PUT':
+            response = requests.put(url, headers=headers, data=json.dumps(data), params=params)
+        elif method == 'PATCH':
+            response = requests.patch(url, headers=headers, data=json.dumps(data), params=params)
+        elif method == 'DELETE':
+            response = requests.delete(url, headers=headers, data=json.dumps(data), params=params)
+
+    # If a cloud deployment
+    else:
+        if method == 'GET':
+            action: str = "get"
+        elif method == 'POST':
+            action: str = "new"
+        elif method == 'PUT':
+            action: str = "set"
+        elif method == 'PATCH':
+            action: str = "ivk"
+        elif method == 'DELETE':
+            action: str = "del"
+        params['action'] = action
+        response = requests.post(url, headers=headers, data=json.dumps(data), params=params, verify=False)
     
     # Check if the response is valid
     if response.status_code != 200:
+        printer.error(response.text)
         if response.status_code == 403:
             raise NominalException("Invalid Credentials: Access key is unauthorised to connect to the API.")
         elif response.status_code == 404:

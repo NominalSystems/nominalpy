@@ -3,10 +3,9 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
-import os, json
-
+import os, json, time
 import pandas as pd
-
+import requests
 from .instance import Instance
 from .message import Message
 from .object import Object
@@ -55,7 +54,10 @@ class Simulation ():
     __ticked: bool = False
     '''Defines whether the simulation has been ticked or not.'''
 
-    def __init__ (self, credentials: Credentials, reset: bool = True) -> None:
+    __session_id: str = None
+    '''Defines the session ID for the current working session, stored for public API keys.'''
+
+    def __init__ (self, credentials: Credentials, session_id: str = "") -> None:
         '''
         Initialises the simulation with the credentials and the ID of the simulation. If the ID is
         not provided, a new simulation will be created. If the reset flag is set to true, the simulation
@@ -63,12 +65,13 @@ class Simulation ():
 
         :param credentials:     The credentials to access the API
         :type credentials:      Credentials
-        :param reset:           Whether to reset the simulation or not
-        :type reset:            bool
+        :param session_id:      The session ID for the current working session
+        :type session_id:       str
         '''
 
         # Configure the root object
         self.__credentials = credentials
+        self.__session_id = session_id
 
         # If the credentials are bad, throw an exception
         if not self.__credentials:
@@ -76,9 +79,30 @@ class Simulation ():
         if not self.__credentials.is_valid():
             raise NominalException("Invalid Credentials: The credentials are missing information.")
         
-        # If resetting, make sure that the simulation is disposed and cleaned
-        if reset:
-            http.patch(self.__credentials, "simulation", {"name": "Dispose"})
+        # If the API is not local, then start creating a session
+        if not self.__credentials.is_local:
+            if self.__session_id == "" or self.__session_id is None:
+                raise NominalException("Invalid Session: No session ID passed into the Simulation.")
+
+            # Fetch if the session is active
+            first: bool = True
+            while True:
+                sessions: dict = Simulation.get_sessions(self.__credentials)
+                if self.__session_id not in sessions:
+                    raise NominalException("Invalid Session: The session ID is not valid.")
+                if sessions[self.__session_id]:
+                    break
+
+                # Repeat until the session is ready
+                time.sleep(3.0)
+                if first:
+                    first = False
+                    printer.warning("Waiting for session to be created and become active. This may take up to 1 minute.")
+                else:
+                    printer.log("Waiting for session to be active...")
+            
+            # Set the session ID in the credentials
+            self.__credentials.set_session_id(self.__session_id)
 
         # Reset the objects and systems
         self.__objects = []
@@ -405,6 +429,25 @@ class Simulation ():
         # Return the time
         return self.__time
     
+    def reset (self) -> None:
+        '''
+        Resets the simulation. This will reset the simulation and clear all objects, behaviours,
+        systems and messages that have been created within the simulation. This will also reset
+        the time of the simulation to zero.
+        '''
+
+        # Reset the objects and systems
+        self.__objects = []
+        self.__behaviours = []
+        self.__systems = {}
+        self.__messages = []
+        self.__planets = {}
+        self.__time = 0.0
+        self.__ticked = False
+
+        # Ensure the simulation is reset
+        http.patch(self.__credentials, "simulation", {"name": "Dispose"})
+    
     def tick (self, step: float = 1e-1) -> None:
         '''
         Ticks the simulation by the specified amount of time. This will invoke the tick function
@@ -633,7 +676,7 @@ class Simulation ():
         # Return the object
         return object
 
-    def query_dataframe(self, instance: Instance) -> pd.DataFrame:
+    def query_dataframe (self, instance: Instance) -> pd.DataFrame:
         '''
         Queries the object within the simulation. This will query the object and return the data
         that has been stored for the object. This will return the data as a data frame. If there
@@ -648,3 +691,124 @@ class Simulation ():
         '''
         # Create and return the data frame
         return self.query_object(instance=instance).to_dataframe()
+
+    @classmethod
+    def get_sessions (cls, credentials: Credentials) -> dict:
+        '''
+        Returns the active sessions that are currently running on the API for the user's
+        credentials. This will return a list of session IDs that are currently active. If
+        there are no active sessions, an empty list will be returned.
+
+        :param credentials:     The credentials to access the API
+        :type credentials:      Credentials
+
+        :returns:   The dictionary of sessions and whether they are active or not
+        :rtype:     dict
+        '''
+
+        # Get the sessions from the API and throw an error if there are no sessions
+        headers = {'Content-Type': 'application/json', 'x-api-key': credentials.access_key}
+        response = requests.get(credentials.url + "session", headers=headers)
+        if response.status_code != 200:
+            raise NominalException(f"Failed to get sessions: {response.text}")
+        output: dict = json.loads(response.text)
+
+        # Create a dictionary of session values and whether they are active
+        sessions: dict = {}
+        active: list = output["active_sessions"]
+        pending: list = output["pending_sessions"]
+        for session in active:
+            sessions[session] = True
+        for session in pending:
+            sessions[session] = False
+        return sessions
+    
+    @classmethod
+    def create_session (cls, credentials: Credentials) -> str:
+        '''
+        Attempts to create a new session with the public API. This will create a new session
+        with the API and return the session ID. If the session cannot be created, an exception
+        will be raised.
+
+        :param credentials:     The credentials to access the API
+        :type credentials:      Credentials
+
+        :returns:   The session ID of the new session
+        :rtype:     str
+        '''
+
+        # Create a new session from the API
+        headers = {'Content-Type': 'application/json', 'x-api-key': credentials.access_key}
+        data = {
+            'version': '1.0', #TODO fetch from package information
+            'duration': '2h'
+        }
+        response = requests.post(credentials.url + "session", headers=headers, data=json.dumps(data))
+        
+        # Ensure that the request was successful
+        if response.status_code != 200:
+            try:
+                output: dict = json.loads(response.text)
+            except:
+                output = response.text
+            raise NominalException(f"Failed to create session: {output}")
+        output: dict = json.loads(response.text)
+
+        # Check if there was no session, throw an error with the message
+        if "session" not in output:
+            raise NominalException("Failed to create session. Message: %s" % output["message"])
+        
+        # Return the session
+        return output["session"]
+
+    @classmethod
+    def get (cls, credentials: Credentials, reset: bool = True) -> "Simulation":
+        '''
+        TODO
+        '''
+
+        # If the credentials are bad, throw an exception
+        if not credentials:
+            raise NominalException("Invalid Credentials: No credentials passed into the Simulation.")
+        if not credentials.is_valid():
+            raise NominalException("Invalid Credentials: The credentials are missing information.")
+        
+        # Fetch the sessions
+        sessions: dict = Simulation.get_sessions(credentials)
+
+        # If no sessions, create a new one
+        if sessions == None or len(sessions) == 0:
+            session = Simulation.create_session(credentials)
+            return Simulation(credentials, session_id=session)
+
+        # Otherwise, get the first active session found
+        else:
+            session: str = ""
+            for s in sessions.keys():
+                if sessions[s]:
+                    session = s
+                    break
+            if session == "":
+                session = sessions.keys()[0]
+
+            # Create the simulation and reset it if the parameter is passed through
+            simulation: Simulation = Simulation(credentials, session_id=session)
+            if reset:
+                simulation.reset()
+            return simulation
+    
+    @classmethod
+    def create (cls, credentials: Credentials) -> "Simulation":
+        '''
+        TODO
+        '''
+
+        # If the credentials are bad, throw an exception
+        if not credentials:
+            raise NominalException("Invalid Credentials: No credentials passed into the Simulation.")
+        if not credentials.is_valid():
+            raise NominalException("Invalid Credentials: The credentials are missing information.")
+
+        # Create a new session and return it
+        session: str = Simulation.create_session(credentials)
+        return Simulation(credentials, session_id=session)
