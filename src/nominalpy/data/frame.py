@@ -57,12 +57,16 @@ class SimulationData:
         if "Type" in data:
             self.type = data["Type"]
         if "Data" not in data:
-            raise NominalException("Data not found.")
+            raise NominalException(
+                "Data not found. Please ensure the queried data name is correct and has been tracked."
+            )
         
         # Data should be an array of arrays
         data = list(data["Data"])
         if len(data) == 0:
-            raise NominalException("SimulationData Data is empty.")
+            raise NominalException(
+                "SimulationData Data is empty. Please ensure the queried data name is correct and has been tracked."
+            )
         self.fields = data[0]
 
         # Loop through the data
