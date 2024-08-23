@@ -72,7 +72,8 @@ class Credentials:
             self.url += "/"
         
         # Add in the version end-point
-        self.url += f"{VERSION}/"
+        if not self.is_local:
+            self.url += f"{VERSION}/"
 
         # Set the access key
         self.access_key = access
@@ -95,3 +96,13 @@ class Credentials:
         :rtype:     str
         '''
         return self.__session_id
+        
+    def is_valid (self) -> bool:
+        '''
+        Checks if the credentials are valid by checking if the URL is valid
+        and the access key is valid.
+
+        :returns:   Whether the credentials are valid
+        :rtype:     bool
+        '''
+        return self.url != "" and (self.access_key != "" or self.is_local)

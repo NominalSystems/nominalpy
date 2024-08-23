@@ -460,7 +460,8 @@ class Simulation ():
 
         # If the simulation has not been ticked yet, call a tick with 0.0 to initialise the tracking data
         if not self.__ticked:
-            http.patch(self.__credentials, "simulation", {"name": "TickSeconds", "args": [0.0]})
+            system: System = self.get_system(EXTENSION_SYSTEM)
+            system.invoke("InitializeSimulation")
             self.__ticked = True
 
         # Invoke the tick function on the simulation
@@ -484,13 +485,13 @@ class Simulation ():
         :type step:     float
         '''
 
-        # If the simulation has not been ticked yet, call a tick with 0.0 to initialise the tracking data
-        if not self.__ticked:
-            http.patch(self.__credentials, "simulation", {"name": "TickSeconds", "args": [0.0]})
-            self.__ticked = True
-
         # Get the extension system
         system: System = self.get_system(EXTENSION_SYSTEM)
+
+        # If the simulation has not been ticked yet, call a tick with 0.0 to initialise the tracking data
+        if not self.__ticked:
+            system.invoke("InitializeSimulation")
+            self.__ticked = True
 
         # Calculate the number of steps to take
         iterations = int(time / step)
@@ -772,7 +773,9 @@ class Simulation ():
             raise NominalException("Invalid Credentials: No credentials passed into the Simulation.")
         if not credentials.is_valid():
             raise NominalException("Invalid Credentials: The credentials are missing information.")
-        
+        if credentials.is_local:
+            return Simulation(credentials, "localhost")
+
         # Fetch the sessions
         sessions: dict = Simulation.get_sessions(credentials)
 
