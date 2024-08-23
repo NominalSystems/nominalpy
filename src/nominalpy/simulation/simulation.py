@@ -70,7 +70,7 @@ class Simulation ():
         '''
 
         # Configure the root object
-        self.__credentials = credentials
+        self.__credentials = credentials.copy()
         self.__session_id = session_id
 
         # If the credentials are bad, throw an exception
@@ -708,20 +708,10 @@ class Simulation ():
         '''
 
         # Get the sessions from the API and throw an error if there are no sessions
-        headers = {'Content-Type': 'application/json', 'x-api-key': credentials.access_key}
-        response = requests.get(credentials.url + "session", headers=headers)
-        if response.status_code != 200:
-            raise NominalException(f"Failed to get sessions: {response.text}")
-        output: dict = json.loads(response.text)
-
-        # Create a dictionary of session values and whether they are active
+        result: list = http.get(credentials, "session")
         sessions: dict = {}
-        active: list = output["active_sessions"]
-        pending: list = output["pending_sessions"]
-        for session in active:
-            sessions[session] = True
-        for session in pending:
-            sessions[session] = False
+        for r in result:
+            sessions[r['guid']] = (r['status'] == "RUNNING")
         return sessions
     
     @classmethod
@@ -739,33 +729,37 @@ class Simulation ():
         '''
 
         # Create a new session from the API
-        headers = {'Content-Type': 'application/json', 'x-api-key': credentials.access_key}
         data = {
             'version': '1.0', #TODO fetch from package information
-            'duration': '2h'
+            'duration': 7200
         }
-        response = requests.post(credentials.url + "session", headers=headers, data=json.dumps(data))
-        
-        # Ensure that the request was successful
-        if response.status_code != 200:
-            try:
-                output: dict = json.loads(response.text)
-            except:
-                output = response.text
-            raise NominalException(f"Failed to create session: {output}")
-        output: dict = json.loads(response.text)
+        response = http.post(credentials, "session", data=data)
 
         # Check if there was no session, throw an error with the message
-        if "session" not in output:
-            raise NominalException("Failed to create session. Message: %s" % output["message"])
+        if "session" not in response:
+            raise NominalException("Failed to create session. Message: %s" % response["message"])
         
         # Return the session
-        return output["session"]
+        return response["guid"]
 
     @classmethod
-    def get (cls, credentials: Credentials, reset: bool = True) -> "Simulation":
+    def get (cls, credentials: Credentials, index: int = 0, reset: bool = True) -> "Simulation":
         '''
-        TODO
+        This will attempt to create a simulation that is connected to the current session. If
+        the session does not exist, a new session will be created. Assuming that the simulation
+        is not running locally, it will use your access key to fetch the most recent simulation
+        or attempt to create one. Optionally, an index can be set to define which session to use.
+        If the index does not exist, it will attempt to create it.
+
+        :param credentials:     The credentials to access the API
+        :type credentials:      Credentials
+        :param index:           The index of the session to use
+        :type index:            int
+        :param reset:           Whether to reset the simulation before initialising
+        :type reset:            bool
+
+        :returns:   The simulation that has been created
+        :rtype:     Simulation
         '''
 
         # If the credentials are bad, throw an exception
@@ -773,6 +767,8 @@ class Simulation ():
             raise NominalException("Invalid Credentials: No credentials passed into the Simulation.")
         if not credentials.is_valid():
             raise NominalException("Invalid Credentials: The credentials are missing information.")
+
+        # Check for local credentials and return a local simulation
         if credentials.is_local:
             return Simulation(credentials, "localhost")
 
@@ -780,19 +776,17 @@ class Simulation ():
         sessions: dict = Simulation.get_sessions(credentials)
 
         # If no sessions, create a new one
-        if sessions == None or len(sessions) == 0:
+        if sessions == None or len(sessions) <= index:
             session = Simulation.create_session(credentials)
             return Simulation(credentials, session_id=session)
 
         # Otherwise, get the first active session found
         else:
-            session: str = ""
-            for s in sessions.keys():
-                if sessions[s]:
-                    session = s
-                    break
-            if session == "":
-                session = sessions.keys()[0]
+            active_sessions: str = [s for s in sessions.keys() if sessions[s]]
+            if len(active_sessions) <= index:
+                session = sessions.keys()[index]
+            else:
+                session = active_sessions[index]
 
             # Create the simulation and reset it if the parameter is passed through
             simulation: Simulation = Simulation(credentials, session_id=session)

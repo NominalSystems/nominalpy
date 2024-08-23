@@ -74,7 +74,7 @@ def __http_request (credentials: Credentials, method: str, path: str, data: dict
             action: str = "ivk"
         elif method == 'DELETE':
             action: str = "del"
-        params['action'] = action
+        params['op'] = action
         response = requests.post(url, headers=headers, data=json.dumps(data), params=params, verify=False)
     
     # Check if the response is valid

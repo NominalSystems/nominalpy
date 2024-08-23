@@ -29,6 +29,9 @@ class Credentials:
     is_local: bool = False
     '''Defines whether the URL is a localhost one or not; used to ensure that a connection is valid.'''
 
+    __raw_url: str = ""
+    '''This defines the raw URL that is used for the API connection.'''
+
     __session_id: str = None
     '''This defines the session ID for the current working session, stored for public API keys.'''
 
@@ -50,6 +53,7 @@ class Credentials:
 
         # Configure the URL
         self.url = url
+        self.__raw_url = url
         if url == "" or url == None:
             self.url = "https://localhost"
         if "localhost" in self.url:
@@ -106,3 +110,12 @@ class Credentials:
         :rtype:     bool
         '''
         return self.url != "" and (self.access_key != "" or self.is_local)
+    
+    def copy (self) -> "Credentials":
+        '''
+        Copies the current credentials to a new instance of the credentials.
+
+        :returns:   A new instance of the credentials
+        :rtype:     Credentials
+        '''
+        return Credentials(self.__raw_url, self.port, self.access_key)
