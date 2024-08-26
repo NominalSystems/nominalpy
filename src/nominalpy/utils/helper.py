@@ -60,8 +60,24 @@ def validate_type (type: str, namespace: str = "Classes") -> str:
     # Ensure the type has the namespace
     if "NominalSystems" not in type:
         if "." not in type:
-            return f"NominalSystems.{namespace}." + type
-        return "NominalSystems." + type
+            type = f"NominalSystems.{namespace}." + type
+        else:
+            type = "NominalSystems." + type
+    
+    # For certain types, ensure the namespace is correct
+    universe_types: list = ["UniverseObject", "UniverseModel", "UniverseBehaviour", "UniverseSystem",
+        "ExtensionSystem", "MaritimeSystem", "SolarSystem", "TrackingSystem", "CelestialBody",
+        "PhysicalObject", "DynamicEffector", "StateEffector", "GroundObject", "GroundStation",
+        "Vehicle", "Vessel", "Rover", "Spacecraft", "StarSphere", "BodyEffector", "AlbedoPlanetModel", 
+        "AlbedoModel", "AtmosphereModel", "AtmospherePlanetModel", "AtmosphereExponentialPlanetModel",
+        "AtmosphereNRLMSISPlanetModel", "ElectromagneticModel", "GravityModel", "MagneticFieldPlanetModel",
+        "MagneticFieldCenteredDipolePlanetModel", "MagneticFieldWMMPlanetModel", "MagneticModel",
+        "SolarModel", "SphericalHarmonicsModel", "StateModel", "ThermalModel"]
+    
+    # If the type is a universe type, ensure the namespace is correct
+    small_type: str = type.split(".")[-1]
+    if small_type in universe_types:
+        return "NominalSystems.Universe." + small_type
 
     # Return the correct type
     return type
