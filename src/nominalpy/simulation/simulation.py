@@ -770,7 +770,10 @@ class Simulation ():
 
         # Check for local credentials and return a local simulation
         if credentials.is_local:
-            return Simulation(credentials, "localhost")
+            simulation: Simulation = Simulation(credentials, "localhost")
+            if reset:
+                simulation.reset()
+            return simulation
 
         # Fetch the sessions
         sessions: dict = Simulation.get_sessions(credentials)
