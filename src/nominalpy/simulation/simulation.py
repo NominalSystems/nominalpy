@@ -5,7 +5,7 @@
 
 import os, json, time
 import pandas as pd
-import requests
+from importlib.metadata import version
 from .instance import Instance
 from .message import Message
 from .object import Object
@@ -97,7 +97,7 @@ class Simulation ():
                 time.sleep(3.0)
                 if first:
                     first = False
-                    printer.warning("Waiting for session to be created and become active. This may take up to 1 minute.")
+                    printer.warning("API session is in a pending state as the instance is starting. This may take up to 1 minute.")
                 else:
                     printer.log("Waiting for session to be active...")
             
@@ -763,9 +763,16 @@ class Simulation ():
         :rtype:     str
         '''
 
+        # Output information about creating a sessiojn
+        printer.warning("Attempting to create a new session with your API key. This may take up to a minute.")
+
+        # Fetch the version from the package information and only select the first two digits
+        package_version = version('nominalpy')
+        package_version = package_version[:package_version.rfind(".")]
+
         # Create a new session from the API
         data = {
-            'version': '1.0', #TODO fetch from package information
+            'version': package_version, 
             'duration': 7200
         }
         response = http.post(credentials, "session", data=data)
@@ -835,7 +842,15 @@ class Simulation ():
     @classmethod
     def create (cls, credentials: Credentials) -> "Simulation":
         '''
-        TODO
+        Creates a new simulation with the specified credentials. This will create a new simulation
+        session with the API and return the simulation that has been created. If the credentials are
+        invalid, an exception will be raised.
+
+        :param credentials:     The credentials to access the API
+        :type credentials:      Credentials
+
+        :returns:   The simulation that has been created
+        :rtype:     Simulation
         '''
 
         # If the credentials are bad, throw an exception
