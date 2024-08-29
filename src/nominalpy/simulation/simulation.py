@@ -6,6 +6,7 @@
 import os, json, time
 import pandas as pd
 from importlib.metadata import version
+from __future__ import annotations
 from .instance import Instance
 from .message import Message
 from .object import Object
@@ -785,7 +786,7 @@ class Simulation ():
         return response["guid"]
 
     @classmethod
-    def get (cls, credentials: Credentials, index: int = 0, reset: bool = True) -> "Simulation":
+    def get (cls, credentials: Credentials, index: int = 0, reset: bool = True) -> Simulation:
         '''
         This will attempt to create a simulation that is connected to the current session. If
         the session does not exist, a new session will be created. Assuming that the simulation
@@ -840,7 +841,7 @@ class Simulation ():
             return simulation
     
     @classmethod
-    def create (cls, credentials: Credentials) -> "Simulation":
+    def create (cls, credentials: Credentials) -> Simulation:
         '''
         Creates a new simulation with the specified credentials. This will create a new simulation
         session with the API and return the simulation that has been created. If the credentials are

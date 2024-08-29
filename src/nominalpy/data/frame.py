@@ -5,10 +5,10 @@
 
 from __future__ import annotations
 import json, os
-from .. import NominalException
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
+from .. import NominalException
 
 
 class SimulationData:
@@ -200,17 +200,8 @@ class SimulationData:
         '''
         with open(path, "w") as f:
             f.write(self.__str__())
-    
-    def __str__ (self) -> str:
-        '''
-        Converts the SimulationData to a string format that is able to be exported to a JSON format.
 
-        :returns:   The SimulationData in a string format
-        :rtype:     str
-        '''
-        return json.dumps(self.export(), indent=4)
-
-    def to_dataframe(self):
+    def to_dataframe (self) -> pd.DataFrame:
         '''
         Converts the SimulationData to a pandas DataFrame. This will convert the SimulationData
         to a pandas DataFrame and will return the DataFrame object.
@@ -222,7 +213,7 @@ class SimulationData:
         data = {}
         for row in self.data:
             for i, field in enumerate(self.fields):
-                # if any of the row values are a lists, then break the list into separate columns
+                # If any of the row values are a lists, then break the list into separate columns
                 if isinstance(row[i], list):
                     for j, value in enumerate(row[i]):
                         # Check if the key exists in the dictionary, if not create it
@@ -235,3 +226,12 @@ class SimulationData:
                         data[field] = []
                     data[field].append(row[i])
         return pd.DataFrame(data)
+    
+    def __str__ (self) -> str:
+        '''
+        Converts the SimulationData to a string format that is able to be exported to a JSON format.
+
+        :returns:   The SimulationData in a string format
+        :rtype:     str
+        '''
+        return json.dumps(self.export(), indent=4)
