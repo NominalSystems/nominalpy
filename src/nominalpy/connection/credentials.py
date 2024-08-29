@@ -3,12 +3,7 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
-import requests, time, json
-from ..utils import printer, NominalException
-import pkg_resources
-
-# TODO: MOVE THIS
-VERSION: str = "v1.0"
+from importlib.metadata import version
 
 class Credentials:
     '''
@@ -28,6 +23,9 @@ class Credentials:
 
     is_local: bool = False
     '''Defines whether the URL is a localhost one or not; used to ensure that a connection is valid.'''
+
+    version: str = ""
+    '''Defines the version of the API that is being used.'''
 
     __raw_url: str = ""
     '''This defines the raw URL that is used for the API connection.'''
@@ -50,6 +48,11 @@ class Credentials:
         :param access:  The access key or token for a public API request
         :type access:   str
         '''
+
+        # Fetch the version from the package information and only select the first two digits
+        package_version: str = version('nominalpy')
+        package_version = package_version[:package_version.rfind(".")]
+        self.version = "v" + package_version
 
         # Configure the URL
         self.url = url
@@ -77,7 +80,7 @@ class Credentials:
         
         # Add in the version end-point
         if not self.is_local:
-            self.url += f"{VERSION}/"
+            self.url += f"{self.version}/"
 
         # Set the access key
         self.access_key = access
