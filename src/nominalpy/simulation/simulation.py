@@ -779,8 +779,8 @@ class Simulation ():
         response = http.post(credentials, "session", data=data)
 
         # Check if there was no session, throw an error with the message
-        if "session" not in response:
-            raise NominalException("Failed to create session. Message: %s" % response["message"])
+        if "guid" not in response:
+            raise NominalException("Failed to create session. Message: %s" % str(response))
         
         # Return the session
         return response["guid"]
