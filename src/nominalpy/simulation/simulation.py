@@ -3,10 +3,10 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
+from __future__ import annotations
 import os, json, time
 import pandas as pd
 from importlib.metadata import version
-from __future__ import annotations
 from .instance import Instance
 from .message import Message
 from .object import Object
