@@ -341,6 +341,31 @@ class Simulation ():
         printer.success(f"Message of type '{type}' created successfully.")
         return message
 
+    def add_message_by_id (self, id: str) -> Message:
+        '''
+        Adds a message to the simulation with the specified ID. This will create a message within
+        the simulation and return the message that has been created. If the message cannot be created,
+        an exception will be raised. This will add the message to the root of the simulation.
+
+        :param id:  The ID of the message to create
+        :type id:   str
+
+        :returns:   The message that has been created
+        :rtype:     Message
+        '''
+
+        # If the ID is not valid, raise an exception
+        if not helper.is_valid_guid(id):
+            raise NominalException("Failed to create a message from an ID as the guid was incorrect.")
+
+        # Create the message and add it to the array
+        message = Message(self.__credentials, id)
+        self.__messages.append(message)
+
+        # Print the success message
+        printer.success(f"Message with ID '{id}' created successfully.")
+        return message
+
     def find_instance_of_type (self, type: str) -> Instance:
         '''
         Searches for an instance of the specified type within the simulation. If the instance
@@ -692,6 +717,16 @@ class Simulation ():
         '''
         # Create and return the data frame
         return self.query_object(instance=instance).to_dataframe()
+    
+    def get_credentials (self) -> Credentials:
+        '''
+        Returns the credentials for the simulation. This will return the credentials that are
+        used to access the API and authenticate the user.
+
+        :returns:   The credentials for the simulation
+        :rtype:     Credentials
+        '''
+        return self.__credentials
 
     @classmethod
     def get_sessions (cls, credentials: Credentials) -> dict:
