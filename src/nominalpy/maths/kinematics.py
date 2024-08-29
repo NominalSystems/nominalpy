@@ -61,3 +61,33 @@ def up_axis_to_dcm(up: np.ndarray) -> np.ndarray:
 
     # Return the matrix
     return to_dcm(right, forward, up)
+
+def MRP2DCM(mrp: np.ndarray) -> np.ndarray:
+    """
+    Converts a Modified Rodrigues Parameter (MRP) to a Direction Cosine Matrix (DCM).
+
+    :param mrp: The MRP to convert.
+    :return: The DCM representation of the MRP.
+    """
+
+    q1 = mrp[0]
+    q2 = mrp[1]
+    q3 = mrp[2]
+
+    d1 = np.dot(mrp,mrp)
+    s = 1-d1
+    d = (1 + d1) * (1 + d1)
+    c = np.identity(3)
+    c[0,0] = 4 * (2 * q1 * q1 - d1) + s * s
+    c[0,1] = 8 * q1 * q2 + 4 * q3 * s
+    c[0,2] = 8 * q1 * q3 - 4 * q2 * s
+    c[1,0] = 8 * q2 * q1 - 4 * q3 * s
+    c[1,1] = 4 * (2 * q2 * q2 - d1) + s * s
+    c[1,2] = 8 * q2 * q3 + 4 * q1 * s
+    c[2,0] = 8 * q3 * q1 + 4 * q2 * s
+    c[2,1] = 8 * q3 * q2 - 4 * q1 * s
+    c[2,2] = 4 * (2 * q3 * q3 - d1) + s * s
+    c *= 1/d
+
+    return c
+
