@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>nominalpy.maths package &mdash; nominalpy 2023 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -14,13 +16,13 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=a4664895"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="nominalpy.mqtt package" href="nominalpy.mqtt.html" />
-    <link rel="prev" title="nominalpy.image package" href="nominalpy.image.html" /> 
+    <link rel="prev" title="nominalpy.data package" href="nominalpy.data.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,21 +50,22 @@
 <li class="toctree-l2 current"><a class="reference internal" href="nominalpy.html">nominalpy package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="nominalpy.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.connection.html">nominalpy.connection package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.image.html">nominalpy.image package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.data.html">nominalpy.data package</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">nominalpy.maths package</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.astro">nominalpy.maths.astro module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.computer_library">nominalpy.maths.computer_library module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.constants">nominalpy.maths.constants module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.constellations">nominalpy.maths.constellations module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.data">nominalpy.maths.data module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.kinematics">nominalpy.maths.kinematics module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.mass">nominalpy.maths.mass module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.utils">nominalpy.maths.utils module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths.value">nominalpy.maths.value module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.maths">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.mqtt.html">nominalpy.mqtt package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html">nominalpy.objects package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.sensitivity.html">nominalpy.sensitivity package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.simulation.html">nominalpy.simulation package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.utils.html">nominalpy.utils package</a></li>
 </ul>
 </li>
@@ -429,6 +432,42 @@ These are then transformed into PCI coordinates.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.future_relative_state_cw">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">future_relative_state_cw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">omega</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accelerations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.future_relative_state_cw" title="Link to this definition"></a></dt>
+<dd><p>Calculate the future relative positions and velocities (x, y, z, dot_x, dot_y, dot_z)
+using the state transition matrix based on the analytical solutions to the Clohessy-Wiltshire
+equations, considering an input of initial relative position and velocity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>omega</strong> (<em>float</em>) – The orbital angular velocity of the reference orbit (rad/s).</p></li>
+<li><p><strong>initial_state</strong> (<em>numpy.ndarray</em>) – The initial state vector containing the relative position
+and velocity [x0, y0, z0, dot_x0, dot_y0, dot_z0].</p></li>
+<li><p><strong>accelerations</strong> (<em>numpy.ndarray</em>) – The vector of constant accelerations in the x, y, and z directions [ax, ay, az].</p></li>
+<li><p><strong>t</strong> (<em>float</em>) – The time at which the future state is sought (seconds).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The future state vector containing relative positions and velocities [x, y, z, dot_x, dot_y, dot_z] at time t.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p>This function computes the future state by applying the state transition matrix to the
+initial state and incorporating the effect of constant accelerations. The analytical
+expressions for the state transition matrix and the effect of constant accelerations are
+derived from the Clohessy-Wiltshire equations.</p>
+<p>Example usage:
+&gt;&gt;&gt; omega = 0.001  # Example orbital angular velocity in rad/s
+&gt;&gt;&gt; initial_state = np.array([10, 0, 0, 0, 0, 0])  # Example initial state
+&gt;&gt;&gt; accelerations = np.array([0, 0, 0])  # Example: No acceleration
+&gt;&gt;&gt; t = 600  # Future state after 10 minutes
+&gt;&gt;&gt; future_state = calculate_future_state_with_matrix(omega, initial_state, accelerations, t)
+&gt;&gt;&gt; print(future_state)</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.geodetic_lla_to_pcpf">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">geodetic_lla_to_pcpf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lla</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.geodetic_lla_to_pcpf" title="Link to this definition"></a></dt>
 <dd><p>Converts from Latitude/Longitude/Altitude (LLA) coordinates to Planet-Centered,
@@ -503,6 +542,32 @@ then an exception will be thrown.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The value of the property</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.get_sun_synchronous_inclination_estimate">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">get_sun_synchronous_inclination_estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbit_mean_motion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semi_latus_rectum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet_semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet_j2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nominalpy.maths.astro.get_sun_synchronous_inclination_estimate" title="Link to this definition"></a></dt>
+<dd><p>Calculates the sun synchronous inclination estimate based on the position
+of the planet relative to the sun and the mean and perturbed motion of the
+orbit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orbit_mean_motion</strong> (<em>float</em>) – [s^-2] The mean motion of the orbit</p></li>
+<li><p><strong>perturbed_motion</strong> (<em>float</em>) – [s^-2] The perturbed motion of the orbit</p></li>
+<li><p><strong>planet_radius</strong> (<em>float</em>) – [m] The radius of the orbiting body</p></li>
+<li><p><strong>planet_semi_major_axis</strong> (<em>float</em>) – [m] The sun-body radius of the orbit of the orbiting body</p></li>
+<li><p><strong>planet_j2</strong> (<em>float</em>) – [-] The orbiting body J2 value</p></li>
+<li><p><strong>planet</strong> (<em>str</em>) – [m^3 s^-2] The gravitational Mu parameter of the parent of the orbital body</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[rad] The estimated inclination of the orbit</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -746,6 +811,44 @@ transformation matrix based on the provided orbital elements.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.relative_state_lvlh">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">relative_state_lvlh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bn_n_chief</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n_chief</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_bn_n_deputy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n_deputy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.relative_state_lvlh" title="Link to this definition"></a></dt>
+<dd><p>Calculate the relative position and velocity of a deputy spacecraft relative to a chief spacecraft</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r_bn_n_chief</strong> – Position vector of the chief spacecraft in the ECI frame relative to the ECI frame</p>
+</dd>
+</dl>
+<p>:type np.ndarray
+:param v_bn_n_chief: Velocity vector of the chief spacecraft in the ECI frame relative to the ECI frame
+:type np.ndarray
+:param r_bn_n_deputy: Position vector of the deputy spacecraft in the ECI frame relative to the ECI frame
+:type np.ndarray
+:param v_bn_n_deputy: Velocity vector of the deputy spacecraft in the ECI frame relative to the ECI frame
+:type np.ndarray</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.semi_lactus_rectum">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">semi_lactus_rectum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.semi_lactus_rectum" title="Link to this definition"></a></dt>
+<dd><p>Calculates the cross section of the semi-major lactus of the orbit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – [m] The SMA of the orbit</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – [-] The eccentricity of the orbit</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[m] The Semi Lactus Rectum parameter</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nominalpy.maths.astro.semi_latus_rectum_to_vector_elements">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">semi_latus_rectum_to_vector_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi_latus_rectum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ascension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument_of_periapsis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_anomaly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.semi_latus_rectum_to_vector_elements" title="Link to this definition"></a></dt>
 <dd><p>Transforms Keplerian orbital elements into position and velocity in Planet-Centered
@@ -776,6 +879,79 @@ transformed into PCI coordinates.</p>
 <dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.sun_synchronous_inclination">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">sun_synchronous_inclination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">planet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semi_major_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccentricity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.sun_synchronous_inclination" title="Link to this definition"></a></dt>
+<dd><p>Returns the inclination in radians of a defined SSO orbit based on the semi major axis and desired
+eccentricity of the orbit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>planet</strong> (<em>str</em>) – [-] The orbiting planet to orbit around</p></li>
+<li><p><strong>semi_major_axis</strong> (<em>float</em>) – [m] The SMA of the orbit</p></li>
+<li><p><strong>eccentricity</strong> (<em>float</em>) – [-] The eccentricity of the orbit</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[rad] The inclination angle of the orbit</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.t_dot_lvlh_eci">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">t_dot_lvlh_eci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bn_n_chief</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n_chief</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_bn_n_chief</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.t_dot_lvlh_eci" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Calculate the time derivative of the transformation matrix of the LVLH frame based on the chief spacecraft’s state</dt><dd><p>vector.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r_bn_n_chief</strong> – Position vector of the chief spacecraft in the ECI frame relative to the ECI frame</p>
+</dd>
+</dl>
+<p>:type np.ndarray
+:param v_bn_n_chief: Velocity vector of the chief spacecraft in the ECI frame relative to the ECI frame
+:type np.ndarray
+:param a_bn_n_chief: Acceleration vector of the chief spacecraft in the ECI frame relative to the ECI frame
+:type np.ndarray</p>
+<p>:returns the time derivative of the transformation matrix from ECI to LVLH centred on the chief spacecraft
+[</p>
+<blockquote>
+<div><p>i_r_dot: Time derivative of the unit radial vector, numpy array (3,)
+i_theta_dot: Time derivative of the unit transverse vector, numpy array (3,)
+i_h_dot: Time derivative of the unit normal vector, numpy array (3,)</p>
+</div></blockquote>
+<p>]
+:rtype np.ndarray</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.astro.t_lvlh_eci">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.astro.</span></span><span class="sig-name descname"><span class="pre">t_lvlh_eci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_bn_n_chief</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_bn_n_chief</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.astro.t_lvlh_eci" title="Link to this definition"></a></dt>
+<dd><p>Calculate the transformation matrix of the LVLH frame based on the chief spacecraft’s state vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r_bn_n_chief</strong> – Position vector of the chief spacecraft in the ECI frame relative to the ECI frame</p>
+</dd>
+</dl>
+<p>:type np.ndarray
+:param v_bn_n_chief: Velocity vector of the chief spacecraft in the ECI frame relative to the ECI frame
+:type np.ndarray</p>
+<p>:returns the transformation matrix from ECI to LVLH centred on the chief spacecraft
+[</p>
+<blockquote>
+<div><p>i_r: Unit radial vector, numpy array (3,)
+i_theta: Unit transverse vector, numpy array (3,)
+i_h: Unit normal vector, numpy array (3,)</p>
+</div></blockquote>
+<p>]
+:rtype np.ndarray</p>
 </dd></dl>
 
 <dl class="py function">
@@ -973,6 +1149,78 @@ daoml: change in mean, mean argument of latitude [m]</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-nominalpy.maths.computer_library">
+<span id="nominalpy-maths-computer-library-module"></span><h2>nominalpy.maths.computer_library module<a class="headerlink" href="#module-nominalpy.maths.computer_library" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.computer_library.create_command">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.computer_library.</span></span><span class="sig-name descname"><span class="pre">create_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.computer_library.create_command" title="Link to this definition"></a></dt>
+<dd><p>Creates a command with a list of arguments as the parameters. This will create the JSON
+object with the list of parameters required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> (<em>str</em>) – The command to execute.</p></li>
+<li><p><strong>parameters</strong> (<em>dict</em>) – The parameter dictionary containing keys and values for the command.</p></li>
+<li><p><strong>time</strong> (<em>float</em><em>, </em><em>optional</em>) – The time [s] that the command must be executed at, default is 0.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The JSON command that can be used.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.computer_library.create_guidance_command">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.computer_library.</span></span><span class="sig-name descname"><span class="pre">create_guidance_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">navigation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Simple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Inertial'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'MRP'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ReactionWheels'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.computer_library.create_guidance_command" title="Link to this definition"></a></dt>
+<dd><p>Creates a guidance command for the spacecraft operation computer to execute
+once loaded into the system at a particular time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>navigation</strong> (<em>str</em><em>, </em><em>optional</em>) – The navigation mode to set (default is “Simple”).</p></li>
+<li><p><strong>pointing</strong> (<em>str</em><em>, </em><em>optional</em>) – The pointing mode to set (default is “Inertial”).</p></li>
+<li><p><strong>controller</strong> (<em>str</em><em>, </em><em>optional</em>) – The controller mode to set (default is “MRP”).</p></li>
+<li><p><strong>mapping</strong> (<em>str</em><em>, </em><em>optional</em>) – The mapping mode to set (default is “ReactionWheels”).</p></li>
+<li><p><strong>time</strong> (<em>float</em><em>, </em><em>optional</em>) – The time [s] at which the command is executed, default is 0.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The appropriate command JSON to be executed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.computer_library.create_guidance_command_string">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.computer_library.</span></span><span class="sig-name descname"><span class="pre">create_guidance_command_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">navigation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#nominalpy.maths.computer_library.create_guidance_command_string" title="Link to this definition"></a></dt>
+<dd><p>Creates a guidance command for the spacecraft operation computer and returns it as a JSON string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>navigation</strong> (<em>str</em>) – The navigation mode to set.</p></li>
+<li><p><strong>pointing</strong> (<em>str</em>) – The pointing mode to set.</p></li>
+<li><p><strong>controller</strong> (<em>str</em>) – The controller mode to set.</p></li>
+<li><p><strong>mapping</strong> (<em>str</em>) – The mapping mode to set.</p></li>
+<li><p><strong>time</strong> (<em>float</em>) – The time [s] at which the command is executed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The JSON command as a string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2062,8 +2310,8 @@ every spacecraft in the constellation</p></li>
 data-related functions for the TT&amp;C system. These include bits
 and byte conversions.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.data.bytes2bits">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">bytes2bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.bytes2bits" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="nominalpy.maths.data.bytes_to_bits">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">bytes_to_bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.bytes_to_bits" title="Link to this definition"></a></dt>
 <dd><p>Convert a quantity from bytes to bits. This function calculates
 the number of bits that correspond to a given number of bytes.
 Note that 1 byte equals 8 bits.</p>
@@ -2081,8 +2329,8 @@ Note that 1 byte equals 8 bits.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.data.gigabytes2bits">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">gigabytes2bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gigabytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.gigabytes2bits" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="nominalpy.maths.data.gigabytes_to_bits">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">gigabytes_to_bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gigabytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.gigabytes_to_bits" title="Link to this definition"></a></dt>
 <dd><p>Convert a quantity from gigabytes to bits.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2098,10 +2346,10 @@ Note that 1 byte equals 8 bits.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.data.gigabytes2bytes">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">gigabytes2bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gigabytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.gigabytes2bytes" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="nominalpy.maths.data.gigabytes_to_bytes">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">gigabytes_to_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gigabytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.gigabytes_to_bytes" title="Link to this definition"></a></dt>
 <dd><p>Convert a quantity from gigabytes to bytes. This function uses 
-the <cite>megabytes2bytes</cite> function for the conversion, considering
+the <cite>megabytes_to_bytes</cite> function for the conversion, considering
 that 1 gigabyte equals 1024 megabytes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2117,10 +2365,10 @@ that 1 gigabyte equals 1024 megabytes.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.data.kilobytes2bits">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">kilobytes2bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kilobytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.kilobytes2bits" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="nominalpy.maths.data.kilobytes_to_bits">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">kilobytes_to_bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kilobytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.kilobytes_to_bits" title="Link to this definition"></a></dt>
 <dd><p>Convert a quantity from kilobytes to bits.  This function 
-uses the <cite>bytes2bits</cite> function for the conversion, considering
+uses the <cite>bytes_to_bits</cite> function for the conversion, considering
 that 1 kilobyte equals 1024 bytes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2136,10 +2384,10 @@ that 1 kilobyte equals 1024 bytes.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.data.kilobytes2bytes">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">kilobytes2bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kilobytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.kilobytes2bytes" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="nominalpy.maths.data.kilobytes_to_bytes">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">kilobytes_to_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kilobytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.kilobytes_to_bytes" title="Link to this definition"></a></dt>
 <dd><p>Convert a quantity from kilobytes to bytes. This function 
-uses the <cite>bytes2bytes</cite> function for the conversion, considering
+uses the <cite>bytes_to_bytes</cite> function for the conversion, considering
 that 1 kilobyte equals 1024 bytes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2155,8 +2403,8 @@ that 1 kilobyte equals 1024 bytes.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.data.megabytes2bits">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">megabytes2bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">megabytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.megabytes2bits" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="nominalpy.maths.data.megabytes_to_bits">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">megabytes_to_bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">megabytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.megabytes_to_bits" title="Link to this definition"></a></dt>
 <dd><p>Convert a quantity from megabytes to bits.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2172,10 +2420,10 @@ that 1 kilobyte equals 1024 bytes.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.data.megabytes2bytes">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">megabytes2bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">megabytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.megabytes2bytes" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="nominalpy.maths.data.megabytes_to_bytes">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.data.</span></span><span class="sig-name descname"><span class="pre">megabytes_to_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">megabytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#nominalpy.maths.data.megabytes_to_bytes" title="Link to this definition"></a></dt>
 <dd><p>Convert a quantity from megabytes to bytes. This function uses the 
-<cite>kilobytes2bytes</cite> function for the conversion, considering
+<cite>kilobytes_to_bytes</cite> function for the conversion, considering
 that 1 megabyte equals 1024 kilobytes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2186,6 +2434,296 @@ that 1 megabyte equals 1024 kilobytes</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-nominalpy.maths.kinematics">
+<span id="nominalpy-maths-kinematics-module"></span><h2>nominalpy.maths.kinematics module<a class="headerlink" href="#module-nominalpy.maths.kinematics" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.kinematics.mrp_to_dcm">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.kinematics.</span></span><span class="sig-name descname"><span class="pre">mrp_to_dcm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mrp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.kinematics.mrp_to_dcm" title="Link to this definition"></a></dt>
+<dd><p>Converts a Modified Rodrigues Parameter (MRP) to a Direction Cosine Matrix (DCM).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mrp</strong> – The MRP to convert.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The DCM representation of the MRP.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.kinematics.to_dcm">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.kinematics.</span></span><span class="sig-name descname"><span class="pre">to_dcm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.kinematics.to_dcm" title="Link to this definition"></a></dt>
+<dd><p>Converts the DCM to a new DCM using the provided vectors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>right</strong> – A unit vector representing the right axis.</p></li>
+<li><p><strong>forward</strong> – A unit vector representing the forward axis.</p></li>
+<li><p><strong>up</strong> – A unit vector representing the up axis.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The new DCM.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.kinematics.up_axis_to_dcm">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.kinematics.</span></span><span class="sig-name descname"><span class="pre">up_axis_to_dcm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.kinematics.up_axis_to_dcm" title="Link to this definition"></a></dt>
+<dd><p>Returns a DCM matrix that aligns the up axis with the given direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>up</strong> – The up axis to align with.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The DCM aligned to the up axis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-nominalpy.maths.mass">
+<span id="nominalpy-maths-mass-module"></span><h2>nominalpy.maths.mass module<a class="headerlink" href="#module-nominalpy.maths.mass" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.mass.center_of_mass_B_to_L">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.mass.</span></span><span class="sig-name descname"><span class="pre">center_of_mass_B_to_L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">com_B_B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcm_LB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_LB_B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.mass.center_of_mass_B_to_L" title="Link to this definition"></a></dt>
+<dd><p>Converts a Center of Mass in the B frame to a Center of Mass
+in the L frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>com_B_B</strong> (<em>numpy.ndarray</em>) – The center of mass in the B frame [m]</p></li>
+<li><p><strong>dcm_LB</strong> (<em>numpy.ndarray</em>) – The rotation matrix from the L to B frames [-]</p></li>
+<li><p><strong>r_LB_B</strong> (<em>numpy.ndarray</em>) – The location difference between the L and B frames [m]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The center of mass in the L frame [m]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.mass.center_of_mass_L_to_B">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.mass.</span></span><span class="sig-name descname"><span class="pre">center_of_mass_L_to_B</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">com_L_L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcm_LB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_LB_B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.mass.center_of_mass_L_to_B" title="Link to this definition"></a></dt>
+<dd><p>Converts a Center of Mass in the L frame to a Center of Mass
+in the B frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>com_L_L</strong> (<em>numpy.ndarray</em>) – The center of mass in the L frame [m]</p></li>
+<li><p><strong>dcm_LB</strong> (<em>numpy.ndarray</em>) – The rotation matrix from the L to B frames [-]</p></li>
+<li><p><strong>r_LB_B</strong> (<em>numpy.ndarray</em>) – The location difference between the L and B frames [m]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The center of mass in the B frame [m]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.mass.inertia_inverse_point_transform">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.mass.</span></span><span class="sig-name descname"><span class="pre">inertia_inverse_point_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inertia</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.mass.inertia_inverse_point_transform" title="Link to this definition"></a></dt>
+<dd><p>Transform an inertia tensor from a new frame back to the center-of-mass frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inertia</strong> (<em>numpy.ndarray</em>) – The inertia tensor in the new frame [3x3 matrix]</p></li>
+<li><p><strong>dcm</strong> (<em>numpy.ndarray</em>) – The DCM of the transformation [-]</p></li>
+<li><p><strong>position</strong> (<em>numpy.ndarray</em>) – The position of the new frame relative to the original frame [m]</p></li>
+<li><p><strong>mass</strong> (<em>float</em>) – The mass of the object [kg]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The transformed inertia tensor in the original frame [3x3 matrix]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.mass.inertia_point_transform">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.mass.</span></span><span class="sig-name descname"><span class="pre">inertia_point_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inertia</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.mass.inertia_point_transform" title="Link to this definition"></a></dt>
+<dd><p>Transform an inertia tensor from the center-of-mass frame to a new frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inertia</strong> (<em>numpy.ndarray</em>) – The inertia tensor in the original frame [3x3 matrix]</p></li>
+<li><p><strong>dcm</strong> (<em>numpy.ndarray</em>) – The DCM of the transformation [-]</p></li>
+<li><p><strong>position</strong> (<em>numpy.ndarray</em>) – The position of the new frame relative to the original frame [m]</p></li>
+<li><p><strong>mass</strong> (<em>float</em>) – The mass of the object [kg]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The transformed inertia tensor in the new frame [3x3 matrix]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.mass.inertia_prime_point_transform">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.mass.</span></span><span class="sig-name descname"><span class="pre">inertia_prime_point_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inertia_prime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_dot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.mass.inertia_prime_point_transform" title="Link to this definition"></a></dt>
+<dd><p>Transform an InertiaPrime tensor from the center-of-mass frame to a new frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inertia_prime</strong> (<em>numpy.ndarray</em>) – The InertiaPrime tensor in the original frame [3x3 matrix]</p></li>
+<li><p><strong>dcm</strong> (<em>numpy.ndarray</em>) – The DCM of the transformation [-]</p></li>
+<li><p><strong>position</strong> (<em>numpy.ndarray</em>) – The position of the new frame relative to the original frame [m]</p></li>
+<li><p><strong>position_dot</strong> (<em>numpy.ndarray</em>) – The rate of change of the position of the center of mass [m/s]</p></li>
+<li><p><strong>mass</strong> (<em>float</em>) – The mass of the object [kg]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The transformed InertiaPrime tensor in the new frame [3x3 matrix]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.mass.moment_of_inertia_B_to_L">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.mass.</span></span><span class="sig-name descname"><span class="pre">moment_of_inertia_B_to_L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moi_B_B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcm_LB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">com_B_B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.mass.moment_of_inertia_B_to_L" title="Link to this definition"></a></dt>
+<dd><p>Converts a Moment of Inertia in the B frame to a Moment of
+Inertia in the L frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>moi_B_B</strong> (<em>numpy.ndarray</em>) – The moment of inertia in the B frame [kg m^2]</p></li>
+<li><p><strong>dcm_LB</strong> (<em>numpy.ndarray</em>) – The rotational matrix between the L frame and the B frame [-]</p></li>
+<li><p><strong>com_B_B</strong> (<em>numpy.ndarray</em>) – The center of mass in the B frame [m]</p></li>
+<li><p><strong>mass</strong> (<em>float</em>) – The mass of the object [kg]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The moment of inertia in the L frame [kg m^2]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.mass.moment_of_inertia_L_to_B">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.mass.</span></span><span class="sig-name descname"><span class="pre">moment_of_inertia_L_to_B</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moi_L_L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcm_LB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">com_B_B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.mass.moment_of_inertia_L_to_B" title="Link to this definition"></a></dt>
+<dd><p>Converts a Moment of Inertia in the L frame to a Moment of
+Inertia in the B frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>moi_L_L</strong> (<em>numpy.ndarray</em>) – The moment of inertia in the L frame [kg m^2]</p></li>
+<li><p><strong>dcm_LB</strong> (<em>numpy.ndarray</em>) – The rotational matrix between the L frame and the B frame [-]</p></li>
+<li><p><strong>com_B_B</strong> (<em>numpy.ndarray</em>) – The center of mass in the B frame [m]</p></li>
+<li><p><strong>mass</strong> (<em>float</em>) – The mass of the object [kg]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The moment of inertia in the B frame [kg m^2]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.mass.moment_of_inertia_prime_L_to_B">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.mass.</span></span><span class="sig-name descname"><span class="pre">moment_of_inertia_prime_L_to_B</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moiPrime_L_L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcm_LB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">com_B_B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comDot_B_B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.mass.moment_of_inertia_prime_L_to_B" title="Link to this definition"></a></dt>
+<dd><p>Converts a Moment of Inertia Prime (which is a derivative) from the L
+frame to a B frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>moiPrime_L_L</strong> (<em>numpy.ndarray</em>) – The moment of inertia in the L frame [kg m^2/s]</p></li>
+<li><p><strong>dcm_LB</strong> (<em>numpy.ndarray</em>) – The rotation matrix from the L to B frame [-]</p></li>
+<li><p><strong>com_B_B</strong> (<em>numpy.ndarray</em>) – The center of mass in the B frame [m]</p></li>
+<li><p><strong>comDot_B_B</strong> (<em>numpy.ndarray</em>) – The center of mass change in time in the B frame [m/s]</p></li>
+<li><p><strong>mass</strong> (<em>float</em>) – The mass of the object [kg]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The moment of inertia in the B frame [kg m^2/s]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.mass.skew_matrix">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.mass.</span></span><span class="sig-name descname"><span class="pre">skew_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.mass.skew_matrix" title="Link to this definition"></a></dt>
+<dd><p>Generates a skew-symmetric matrix from a 3-element vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vector</strong> (<em>numpy.ndarray</em>) – The input vector [m]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The skew-symmetric matrix [3x3 matrix]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.mass.tensor_matrix">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.mass.</span></span><span class="sig-name descname"><span class="pre">tensor_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.mass.tensor_matrix" title="Link to this definition"></a></dt>
+<dd><p>Transforms a given tensor using a directional cosine matrix (DCM).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensor</strong> (<em>numpy.ndarray</em>) – The input tensor to be transformed [3x3 matrix]</p></li>
+<li><p><strong>dcm</strong> (<em>numpy.ndarray</em>) – The directional cosine matrix used for the transformation [-]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The transformed tensor [3x3 matrix]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.mass.tensor_transform">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.mass.</span></span><span class="sig-name descname"><span class="pre">tensor_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.mass.tensor_transform" title="Link to this definition"></a></dt>
+<dd><p>Transform a rank-2 tensor to be represented in a new frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensor</strong> (<em>numpy.ndarray</em>) – A rank-2 tensor in the original frame [3x3 matrix]</p></li>
+<li><p><strong>dcm</strong> (<em>numpy.ndarray</em>) – The DCM for the frame transformation [-]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The transformed tensor in the new frame [3x3 matrix]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2344,175 +2882,35 @@ arccosine function and the quadrant check function.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.maths.utils.unit_vector_derivative">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.utils.</span></span><span class="sig-name descname"><span class="pre">unit_vector_derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">udot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.utils.unit_vector_derivative" title="Link to this definition"></a></dt>
+<dd><p>Calculate the time derivative of a unit vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>numpy.ndarray</em>) – The original vector.</p></li>
+<li><p><strong>udot</strong> (<em>numpy.ndarray</em>) – The time derivative of the original vector.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The time derivative of the unit vector derived from the original vector.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p>Computes the time derivative of a unit vector given a vector and its time derivative.
+If the magnitude of the original vector is zero, returns a zero vector to avoid division by zero.</p>
+<section id="example">
+<h3>Example:<a class="headerlink" href="#example" title="Link to this heading"></a></h3>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">udot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unit_vector_derivative</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">udot</span><span class="p">)</span>
+<span class="go">array([0., 1., 0.])</span>
+</pre></div>
+</div>
 </section>
-<section id="module-nominalpy.maths.value">
-<span id="nominalpy-maths-value-module"></span><h2>nominalpy.maths.value module<a class="headerlink" href="#module-nominalpy.maths.value" title="Link to this heading"></a></h2>
-<p>This module contains public static class methods that can be used to 
-convert standard types to the correct JSON format. It also includes
-methods that can filter JSON data by a particular parameter for use 
-of data analysis. This class should not be instantiated.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.value.datetime">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.datetime" title="Link to this definition"></a></dt>
-<dd><p>Defines a way of specifying a particular value based on
-a DateTime structure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>year</strong> (<em>int</em>) – The year parameter of the datetime</p></li>
-<li><p><strong>month</strong> (<em>int</em>) – The month parameter of the datetime</p></li>
-<li><p><strong>day</strong> (<em>int</em>) – The day parameter of the datetime</p></li>
-<li><p><strong>hour</strong> (<em>int</em>) – The hour parameter of the datetime</p></li>
-<li><p><strong>min</strong> (<em>int</em>) – The minute parameter of the datetime</p></li>
-<li><p><strong>sec</strong> (<em>int</em>) – The second parameter of the datetime</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A correctly formatted dictionary of JSON values with the data</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.value.get_array">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">get_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#nominalpy.maths.value.get_array" title="Link to this definition"></a></dt>
-<dd><p>Attempts to fetch a particular set of data from a returned
-set of data over time. This assumes the format is of the
-type [{ “data”: {} }] as JSON. The field parameter specifies a
-sub-parameter within the data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>list</em>) – A list of raw data containing all the data that needs to be formatted</p></li>
-<li><p><strong>param</strong> (<em>str</em>) – A specific parameter to search for in the data</p></li>
-<li><p><strong>field</strong> (<em>str</em>) – An optional field parameter within the parameter to search for</p></li>
-<li><p><strong>index</strong> (<em>int</em>) – The index of the data within the parameter to fetch</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of the data in the correct formatted type</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.value.matrix">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.maths.value.matrix" title="Link to this definition"></a></dt>
-<dd><p>Constructs a matrix from a particular set of rows. This is a 
-generic r x c matrix, where r is the number of rows and c is
-the number of columns.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>r</strong> (<em>int</em>) – The number of rows in the matrix</p></li>
-<li><p><strong>c</strong> (<em>int</em>) – The number of columns in the matrix</p></li>
-<li><p><strong>rows</strong> (<em>list</em>) – A list of tuples containing the values</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A matrix list of data in the correct format</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.value.matrix33">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">matrix33</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#nominalpy.maths.value.matrix33" title="Link to this definition"></a></dt>
-<dd><p>Defines a way for specifying a particular value based
-on a Matrix3x3 structure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>m1</strong> (<em>tuple</em>) – The first row of three elements to add to the matrix</p></li>
-<li><p><strong>m2</strong> (<em>tuple</em>) – The second row of three elements to add to the matrix</p></li>
-<li><p><strong>m3</strong> (<em>tuple</em>) – The third row of three elements to add to the matrix</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A matrix3x3 list of data in the correct format</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.value.timespan">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">timespan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">millis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.timespan" title="Link to this definition"></a></dt>
-<dd><p>Defines a way of specifying a particular value based on
-a TimeSpan structure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>days</strong> (<em>int</em>) – The number of days in the timespan</p></li>
-<li><p><strong>hours</strong> (<em>int</em>) – The number of hours in the timespan</p></li>
-<li><p><strong>mins</strong> (<em>int</em>) – The number of minutes in the timespan</p></li>
-<li><p><strong>secs</strong> (<em>int</em>) – The number of seconds in the timespan</p></li>
-<li><p><strong>millis</strong> (<em>int</em>) – The number of milliseconds in the timespan</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A correctly formatted dictionary of JSON values with the data</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.value.vector3">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">vector3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.vector3" title="Link to this definition"></a></dt>
-<dd><p>Defines a way for specifying a particular value based
-on a Vector3 structure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>float</em>) – The X value of the vector</p></li>
-<li><p><strong>y</strong> (<em>float</em>) – The Y value of the vector</p></li>
-<li><p><strong>z</strong> (<em>float</em>) – The Z value of the vector</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The JSON dictionary of the vector</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nominalpy.maths.value.vector4">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.maths.value.</span></span><span class="sig-name descname"><span class="pre">vector4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nominalpy.maths.value.vector4" title="Link to this definition"></a></dt>
-<dd><p>Defines a way for specifying a particular value based
-on a Vector4 structure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>float</em>) – The X value of the vector</p></li>
-<li><p><strong>y</strong> (<em>float</em>) – The Y value of the vector</p></li>
-<li><p><strong>z</strong> (<em>float</em>) – The Z value of the vector</p></li>
-<li><p><strong>w</strong> (<em>float</em>) – The W value of the vector</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The JSON dictionary of the vector</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -2525,7 +2923,7 @@ on a Vector4 structure.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="nominalpy.image.html" class="btn btn-neutral float-left" title="nominalpy.image package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nominalpy.data.html" class="btn btn-neutral float-left" title="nominalpy.data package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="nominalpy.mqtt.html" class="btn btn-neutral float-right" title="nominalpy.mqtt package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -55,13 +55,13 @@ pip install nominalpy --user --upgrade
 
 API Tokens are accessible via the [Nominal Website](https://www.nominalsys.com/account/sign-in). Create a free account and start a 14-day free trial of the software. This will give you access to unlimited sessions and requests during the trial period. The access token is available from the dashboard once the account is created and logged in.
 
-To enable your token, create a Credential object and pass into the Simulation class when constructing simulations. Alternatively, if using the example library, update the token in the `credential_helper.py` class for easier access to the token over multiple files. More information can be found in the [Public Documentation](https://docs.nominalsys.com/v0.8/articles/NominalSystems/guides/Python/GettingStarted/3_APIAccessKeys/index.html).
+To enable your token, create a Credential object and pass into the Simulation class when constructing simulations. Alternatively, if using the example library, update the token in the `credential_helper.py` class for easier access to the token over multiple files. More information can be found in the [Public Documentation](https://docs.nominalsys.com/).
 
 ---
 
 ### API Sessions
 
-Each token enables a single API session to be made. Multiple sessions cannot be created at once using the free-tier of the API. Each session is associated with a single cloud instance running the simulation that you have access to. This instance will run for 2 hours once connected. When first connected to the session, it may take between 3 and 5 minutes for the instance to start when you run a simulation for the first time. After that, the instance will be available without any load times for 2 hours. Upon the completion of the session, a new session can be started immediately after with a similar load-up time as before. There is no limit for the number of sessions available during a period of time, with the exception of having one session running concurrently.
+Each token enables a single API session to be made. Multiple sessions cannot be created at once using the free-tier of the API. Each session is associated with a single cloud instance running the simulation that you have access to. This instance will run for 2 hours once connected. When first connected to the session, it may take between 30 seconds and 2 minutes for the instance to start when you run a simulation for the first time. After that, the instance will be available without any load times for 2 hours. Upon the completion of the session, a new session can be started immediately after with a similar load-up time as before. There is no limit for the number of sessions available during a period of time, with the exception of having one session running concurrently.
 
 ---
 

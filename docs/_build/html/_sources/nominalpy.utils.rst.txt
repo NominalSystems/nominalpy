@@ -12,6 +12,14 @@ nominalpy.utils.exception module
    :undoc-members:
    :show-inheritance:
 
+nominalpy.utils.helper module
+-----------------------------
+
+.. automodule:: nominalpy.utils.helper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 nominalpy.utils.printer module
 ------------------------------
 
