@@ -12,6 +12,14 @@ nominalpy.maths.astro module
    :undoc-members:
    :show-inheritance:
 
+nominalpy.maths.computer\_library module
+----------------------------------------
+
+.. automodule:: nominalpy.maths.computer_library
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 nominalpy.maths.constants module
 --------------------------------
 
@@ -36,18 +44,26 @@ nominalpy.maths.data module
    :undoc-members:
    :show-inheritance:
 
-nominalpy.maths.utils module
-----------------------------
+nominalpy.maths.kinematics module
+---------------------------------
 
-.. automodule:: nominalpy.maths.utils
+.. automodule:: nominalpy.maths.kinematics
    :members:
    :undoc-members:
    :show-inheritance:
 
-nominalpy.maths.value module
+nominalpy.maths.mass module
+---------------------------
+
+.. automodule:: nominalpy.maths.mass
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+nominalpy.maths.utils module
 ----------------------------
 
-.. automodule:: nominalpy.maths.value
+.. automodule:: nominalpy.maths.utils
    :members:
    :undoc-members:
    :show-inheritance:

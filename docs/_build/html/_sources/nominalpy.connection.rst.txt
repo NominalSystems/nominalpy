@@ -12,14 +12,6 @@ nominalpy.connection.credentials module
    :undoc-members:
    :show-inheritance:
 
-nominalpy.connection.helper module
-----------------------------------
-
-.. automodule:: nominalpy.connection.helper
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 nominalpy.connection.http module
 --------------------------------
 

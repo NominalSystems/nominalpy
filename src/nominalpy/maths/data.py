@@ -10,7 +10,7 @@ and byte conversions.
 '''
 
 
-def bytes2bits (bytes: float) -> int:
+def bytes_to_bits (bytes: float) -> int:
     '''
     Convert a quantity from bytes to bits. This function calculates
     the number of bits that correspond to a given number of bytes.
@@ -30,10 +30,11 @@ def bytes2bits (bytes: float) -> int:
         raise TypeError("bytes must be a positive float")
     return int(bytes * 8)
 
-def kilobytes2bytes (kilobytes: float) -> int:
+
+def kilobytes_to_bytes (kilobytes: float) -> int:
     '''
     Convert a quantity from kilobytes to bytes. This function 
-    uses the `bytes2bytes` function for the conversion, considering
+    uses the `bytes_to_bytes` function for the conversion, considering
     that 1 kilobyte equals 1024 bytes.
 
     :param kilobytes:   The number of kilobytes to be converted.
@@ -50,10 +51,11 @@ def kilobytes2bytes (kilobytes: float) -> int:
         raise TypeError("kilobytes must be a positive float")
     return int(kilobytes * 1024)
 
-def megabytes2bytes (megabytes: float) -> int:
+
+def megabytes_to_bytes (megabytes: float) -> int:
     '''
     Convert a quantity from megabytes to bytes. This function uses the 
-    `kilobytes2bytes` function for the conversion, considering
+    `kilobytes_to_bytes` function for the conversion, considering
     that 1 megabyte equals 1024 kilobytes
 
     :param megabytes:   The number of megabytes to be converted.
@@ -62,12 +64,13 @@ def megabytes2bytes (megabytes: float) -> int:
     :return:            The equivalent number of bits.
     :rtype:             int
     '''
-    return kilobytes2bytes(megabytes * 1024)
+    return kilobytes_to_bytes(megabytes * 1024)
 
-def gigabytes2bytes (gigabytes: float) -> int:
+
+def gigabytes_to_bytes (gigabytes: float) -> int:
     '''
     Convert a quantity from gigabytes to bytes. This function uses 
-    the `megabytes2bytes` function for the conversion, considering
+    the `megabytes_to_bytes` function for the conversion, considering
     that 1 gigabyte equals 1024 megabytes.
 
     :param gigabytes:   The number of gigabytes to be converted.
@@ -76,12 +79,13 @@ def gigabytes2bytes (gigabytes: float) -> int:
     :return:            The equivalent number of bits.
     :rtype:             int
     '''
-    return megabytes2bytes(gigabytes * 1024)
+    return megabytes_to_bytes(gigabytes * 1024)
 
-def kilobytes2bits (kilobytes: float) -> int:
+
+def kilobytes_to_bits (kilobytes: float) -> int:
     '''
     Convert a quantity from kilobytes to bits.  This function 
-    uses the `bytes2bits` function for the conversion, considering
+    uses the `bytes_to_bits` function for the conversion, considering
     that 1 kilobyte equals 1024 bytes.
 
     :param kilobytes:   The number of kilobytes to be converted.
@@ -90,9 +94,10 @@ def kilobytes2bits (kilobytes: float) -> int:
     :return:            The equivalent number of bits.
     :rtype:             int
     '''
-    return bytes2bits(kilobytes2bytes(kilobytes))
+    return bytes_to_bits(kilobytes_to_bytes(kilobytes))
 
-def megabytes2bits (megabytes: float) -> int:
+
+def megabytes_to_bits (megabytes: float) -> int:
     '''
     Convert a quantity from megabytes to bits.
 
@@ -102,9 +107,10 @@ def megabytes2bits (megabytes: float) -> int:
     :return:            The equivalent number of bits.
     :rtype:             int
     '''
-    return bytes2bits(megabytes2bytes(megabytes))
+    return bytes_to_bits(megabytes_to_bytes(megabytes))
 
-def gigabytes2bits (gigabytes: float) -> int:
+
+def gigabytes_to_bits (gigabytes: float) -> int:
     '''
     Convert a quantity from gigabytes to bits.
 
@@ -114,4 +120,4 @@ def gigabytes2bits (gigabytes: float) -> int:
     :return:            The equivalent number of bits.
     :rtype:             int
     '''
-    return bytes2bits(gigabytes2bytes(gigabytes))
+    return bytes_to_bits(gigabytes_to_bytes(gigabytes))

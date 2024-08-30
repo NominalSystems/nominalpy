@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>nominalpy.utils package &mdash; nominalpy 2023 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -14,12 +16,12 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=a4664895"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="nominalpy.sensitivity package" href="nominalpy.sensitivity.html" /> 
+    <link rel="prev" title="nominalpy.simulation package" href="nominalpy.simulation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,14 +49,14 @@
 <li class="toctree-l2 current"><a class="reference internal" href="nominalpy.html">nominalpy package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="nominalpy.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.connection.html">nominalpy.connection package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.image.html">nominalpy.image package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.data.html">nominalpy.data package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.maths.html">nominalpy.maths package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nominalpy.mqtt.html">nominalpy.mqtt package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.objects.html">nominalpy.objects package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="nominalpy.sensitivity.html">nominalpy.sensitivity package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nominalpy.simulation.html">nominalpy.simulation package</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">nominalpy.utils package</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.utils.exception">nominalpy.utils.exception module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.utils.helper">nominalpy.utils.helper module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.utils.printer">nominalpy.utils.printer module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.utils.types">nominalpy.utils.types module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="#module-nominalpy.utils">Module contents</a></li>
@@ -110,6 +112,90 @@
 to track errors with the Nominal API. Any connection errors or issues 
 with the objects will throw an Nominal API if there are configuration 
 issues.</p>
+</dd></dl>
+
+</section>
+<section id="module-nominalpy.utils.helper">
+<span id="nominalpy-utils-helper-module"></span><h2>nominalpy.utils.helper module<a class="headerlink" href="#module-nominalpy.utils.helper" title="Link to this heading"></a></h2>
+<p>This modules assists with some helper functions for defining what values
+can be turned into JSON and whether GUID IDs are valid. This also includes
+some methods for serializing and deserializing JSON data to standard formats.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.utils.helper.deserialize">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.utils.helper.</span></span><span class="sig-name descname"><span class="pre">deserialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">any</span></span></span><a class="headerlink" href="#nominalpy.utils.helper.deserialize" title="Link to this definition"></a></dt>
+<dd><p>Deserializes the value from a JSON serializable format. This will
+convert the value into a numpy array if it is a list of numbers or
+a datetime string into a datetime object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>any</em>) – The value to deserialize</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The deserialized value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.utils.helper.is_valid_guid">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.utils.helper.</span></span><span class="sig-name descname"><span class="pre">is_valid_guid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#nominalpy.utils.helper.is_valid_guid" title="Link to this definition"></a></dt>
+<dd><p>Determines if a parsed GUID, as a string,
+is valid. This will ensure that it is of
+the correct format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>guid</strong> (<em>str</em>) – The unique GUID of the object, in the correct form</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A flag whether the GUID is valid</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.utils.helper.serialize">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.utils.helper.</span></span><span class="sig-name descname"><span class="pre">serialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">any</span></span></span><a class="headerlink" href="#nominalpy.utils.helper.serialize" title="Link to this definition"></a></dt>
+<dd><p>Serializes the value into a JSON serializable format. This will
+convert the value into a list if it is a numpy array or a datetime
+into a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>any</em>) – The value to serialize</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The serialized value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nominalpy.utils.helper.validate_type">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.utils.helper.</span></span><span class="sig-name descname"><span class="pre">validate_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Classes'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#nominalpy.utils.helper.validate_type" title="Link to this definition"></a></dt>
+<dd><p>Validates the type of the object and ensures that it is in the correct format.
+This will return the correct type with the namespace if it is not already present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – The type of the object to validate</p></li>
+<li><p><strong>namespace</strong> (<em>str</em>) – The namespace to use for the type</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The validated type with the namespace</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -259,21 +345,21 @@ the simulation, making it easier to instantiate these objects.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="nominalpy.utils.types.PHYSICAL_COMPONENT">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.utils.types.</span></span><span class="sig-name descname"><span class="pre">PHYSICAL_COMPONENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NominalSystems.Universe.PhysicalComponent'</span></em><a class="headerlink" href="#nominalpy.utils.types.PHYSICAL_COMPONENT" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="nominalpy.utils.types.PHYSICAL_OBJECT">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.utils.types.</span></span><span class="sig-name descname"><span class="pre">PHYSICAL_OBJECT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NominalSystems.Universe.PhysicalObject'</span></em><a class="headerlink" href="#nominalpy.utils.types.PHYSICAL_OBJECT" title="Link to this definition"></a></dt>
 <dd><p>This is a physical component that can be attached to other objects in a spacecraft or entity.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nominalpy.utils.types.SOLAR_SYSTEM">
+<span class="sig-prename descclassname"><span class="pre">nominalpy.utils.types.</span></span><span class="sig-name descname"><span class="pre">SOLAR_SYSTEM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NominalSystems.Universe.SolarSystem'</span></em><a class="headerlink" href="#nominalpy.utils.types.SOLAR_SYSTEM" title="Link to this definition"></a></dt>
+<dd><p>This defines the Universe System that is used to initialise all Universe conditions.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="nominalpy.utils.types.SPACECRAFT">
 <span class="sig-prename descclassname"><span class="pre">nominalpy.utils.types.</span></span><span class="sig-name descname"><span class="pre">SPACECRAFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NominalSystems.Universe.Spacecraft'</span></em><a class="headerlink" href="#nominalpy.utils.types.SPACECRAFT" title="Link to this definition"></a></dt>
 <dd><p>This is a spacecraft class that can be initialised at some location in space.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="nominalpy.utils.types.UNIVERSE">
-<span class="sig-prename descclassname"><span class="pre">nominalpy.utils.types.</span></span><span class="sig-name descname"><span class="pre">UNIVERSE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NominalSystems.Universe.UniverseSystem'</span></em><a class="headerlink" href="#nominalpy.utils.types.UNIVERSE" title="Link to this definition"></a></dt>
-<dd><p>This defines the Universe System that is used to initialise all Universe conditions.</p>
 </dd></dl>
 
 </section>
@@ -286,7 +372,7 @@ the simulation, making it easier to instantiate these objects.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="nominalpy.sensitivity.html" class="btn btn-neutral float-left" title="nominalpy.sensitivity package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nominalpy.simulation.html" class="btn btn-neutral float-left" title="nominalpy.simulation package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

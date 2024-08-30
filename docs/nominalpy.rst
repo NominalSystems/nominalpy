@@ -8,11 +8,10 @@ Subpackages
    :maxdepth: 4
 
    nominalpy.connection
-   nominalpy.image
+   nominalpy.data
    nominalpy.maths
    nominalpy.mqtt
-   nominalpy.objects
-   nominalpy.sensitivity
+   nominalpy.simulation
    nominalpy.utils
 
 Module contents

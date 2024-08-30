@@ -12,7 +12,6 @@ or return the position and velocity from an orbit.
 import numpy as np
 from typing import Tuple
 from . import constants
-from . import value
 from . import utils
 from ..utils import NominalException
 
@@ -1386,3 +1385,274 @@ def mean_motion(semi_major_axis: float, planet="earth") -> float:
     mu = get_planet_mu(planet)
     # calculate the mean motion
     return np.sqrt(mu / semi_major_axis ** 3)
+
+
+def t_lvlh_eci(r_bn_n_chief: np.ndarray, v_bn_n_chief: np.ndarray) -> np.ndarray:
+    """
+    Calculate the transformation matrix of the LVLH frame based on the chief spacecraft's state vector.
+
+    :param r_bn_n_chief: Position vector of the chief spacecraft in the ECI frame relative to the ECI frame
+    :type np.ndarray
+    :param v_bn_n_chief: Velocity vector of the chief spacecraft in the ECI frame relative to the ECI frame
+    :type np.ndarray
+
+    :returns the transformation matrix from ECI to LVLH centred on the chief spacecraft
+    [
+        i_r: Unit radial vector, numpy array (3,)
+        i_theta: Unit transverse vector, numpy array (3,)
+        i_h: Unit normal vector, numpy array (3,)
+    ]
+    :rtype np.ndarray
+    """
+    # Normalize the chief's position vector to get the radial direction (i_r)
+    i_r = r_bn_n_chief / np.linalg.norm(r_bn_n_chief)
+    # Compute the orbital angular momentum vector (h) and normalize it to get i_h
+    h = np.cross(r_bn_n_chief, v_bn_n_chief)
+    i_h = h / np.linalg.norm(h)
+    # Compute the transverse direction (i_theta) as the cross product of i_h and i_r
+    i_theta = np.cross(i_h, i_r)
+    # create the transformation matrix
+    return np.vstack((i_r, i_theta, i_h)).T  # Arrange the unit vectors as columns
+
+
+def t_dot_lvlh_eci(r_bn_n_chief: np.ndarray, v_bn_n_chief: np.ndarray, a_bn_n_chief: np.ndarray = None) -> np.ndarray:
+    """
+    Calculate the time derivative of the transformation matrix of the LVLH frame based on the chief spacecraft's state
+        vector.
+
+    :param r_bn_n_chief: Position vector of the chief spacecraft in the ECI frame relative to the ECI frame
+    :type np.ndarray
+    :param v_bn_n_chief: Velocity vector of the chief spacecraft in the ECI frame relative to the ECI frame
+    :type np.ndarray
+    :param a_bn_n_chief: Acceleration vector of the chief spacecraft in the ECI frame relative to the ECI frame
+    :type np.ndarray
+
+    :returns the time derivative of the transformation matrix from ECI to LVLH centred on the chief spacecraft
+    [
+        i_r_dot: Time derivative of the unit radial vector, numpy array (3,)
+        i_theta_dot: Time derivative of the unit transverse vector, numpy array (3,)
+        i_h_dot: Time derivative of the unit normal vector, numpy array (3,)
+    ]
+    :rtype np.ndarray
+    """
+    # set the acceleration to a default value of zero
+    if a_bn_n_chief is None:
+        a_bn_n_chief = np.zeros_like(r_bn_n_chief, dtype=np.float64)
+    # Calculate the transformation matrix
+    T = t_lvlh_eci(r_bn_n_chief=r_bn_n_chief, v_bn_n_chief=v_bn_n_chief)
+    ex_hat = T[:, 0]
+    ez_hat = T[:, 2]
+    # calculate the specific angular momentum vector
+    h = np.cross(r_bn_n_chief, v_bn_n_chief)
+    # calculate the time derivative of the specific angular momentum vector
+    h_dot = np.cross(r_bn_n_chief, a_bn_n_chief)
+    # calculate the time derivatives of each unit vector
+    ex_hat_dot = utils.unit_vector_derivative(r_bn_n_chief, v_bn_n_chief)
+    ez_hat_dot = utils.unit_vector_derivative(h, h_dot)
+    ey_hat_dot = np.cross(ez_hat_dot, ex_hat) + np.cross(ez_hat, ex_hat_dot)
+    return np.array([ex_hat_dot, ey_hat_dot, ez_hat_dot]).T
+
+
+def relative_state_lvlh(r_bn_n_chief: np.ndarray, v_bn_n_chief: np.ndarray, r_bn_n_deputy: np.ndarray, v_bn_n_deputy: np.ndarray) -> np.ndarray:
+    """
+    Calculate the relative position and velocity of a deputy spacecraft relative to a chief spacecraft
+
+    :param r_bn_n_chief: Position vector of the chief spacecraft in the ECI frame relative to the ECI frame
+    :type np.ndarray
+    :param v_bn_n_chief: Velocity vector of the chief spacecraft in the ECI frame relative to the ECI frame
+    :type np.ndarray
+    :param r_bn_n_deputy: Position vector of the deputy spacecraft in the ECI frame relative to the ECI frame
+    :type np.ndarray
+    :param v_bn_n_deputy: Velocity vector of the deputy spacecraft in the ECI frame relative to the ECI frame
+    :type np.ndarray
+    """
+    # calculate the transformation matrix for the transformation
+    T = t_lvlh_eci(r_bn_n_chief=r_bn_n_chief, v_bn_n_chief=v_bn_n_chief)
+    T_dot = t_dot_lvlh_eci(
+        r_bn_n_chief=r_bn_n_chief,
+        v_bn_n_chief=v_bn_n_chief,
+    )
+    # calculate the relative states of the deputy relative to the chief in ECI about ECI
+    r_rel_bn_n = r_bn_n_deputy - r_bn_n_chief
+    v_rel_bn_n = v_bn_n_deputy - v_bn_n_chief
+    # transform the inertial relative state into LVLH coordinates centred on the chief spacecraft
+    r_rel_lvlh = T.T @ r_rel_bn_n
+    v_rel_lvlh = T_dot.T @ r_rel_bn_n + T.T @ v_rel_bn_n
+    return np.hstack((r_rel_lvlh, v_rel_lvlh))
+
+
+def future_relative_state_cw(omega: float, initial_state: np.ndarray, accelerations: np.ndarray, t: float) -> np.ndarray:
+    """
+    Calculate the future relative positions and velocities (x, y, z, dot_x, dot_y, dot_z)
+    using the state transition matrix based on the analytical solutions to the Clohessy-Wiltshire
+    equations, considering an input of initial relative position and velocity.
+
+    :param omega: The orbital angular velocity of the reference orbit (rad/s).
+    :type omega: float
+
+    :param initial_state: The initial state vector containing the relative position
+                          and velocity [x0, y0, z0, dot_x0, dot_y0, dot_z0].
+    :type initial_state: numpy.ndarray
+
+    :param accelerations: The vector of constant accelerations in the x, y, and z directions [ax, ay, az].
+    :type accelerations: numpy.ndarray
+
+    :param t: The time at which the future state is sought (seconds).
+    :type t: float
+
+    :return: The future state vector containing relative positions and velocities [x, y, z, dot_x, dot_y, dot_z] at time t.
+    :rtype: numpy.ndarray
+
+    This function computes the future state by applying the state transition matrix to the
+    initial state and incorporating the effect of constant accelerations. The analytical
+    expressions for the state transition matrix and the effect of constant accelerations are
+    derived from the Clohessy-Wiltshire equations.
+
+    Example usage:
+    >>> omega = 0.001  # Example orbital angular velocity in rad/s
+    >>> initial_state = np.array([10, 0, 0, 0, 0, 0])  # Example initial state
+    >>> accelerations = np.array([0, 0, 0])  # Example: No acceleration
+    >>> t = 600  # Future state after 10 minutes
+    >>> future_state = calculate_future_state_with_matrix(omega, initial_state, accelerations, t)
+    >>> print(future_state)
+    """
+    # Pre-compute common terms
+    sin_omega_t = np.sin(omega * t)
+    cos_omega_t = np.cos(omega * t)
+    sin_2omega_t = np.sin(2 * omega * t)
+    cos_2omega_t = np.cos(2 * omega * t)
+
+    # Construct the state transition matrix for the CW equations
+    phi = np.array([
+        [4 - 3 * cos_omega_t, 0, 0, sin_omega_t / omega, (2 / omega) * (1 - cos_omega_t), 0],
+        [6 * (sin_omega_t - omega * t), 1, 0, -(2 / omega) * (1 - cos_omega_t),
+         (4 * sin_omega_t - 3 * omega * t) / omega, 0],
+        [0, 0, cos_omega_t, 0, 0, sin_omega_t / omega],
+        [3 * omega * sin_omega_t, 0, 0, cos_omega_t, 2 * sin_omega_t, 0],
+        [-6 * omega * (1 - cos_omega_t), 0, 0, -2 * sin_omega_t, 4 * cos_omega_t - 3, 0],
+        [0, 0, -omega * sin_omega_t, 0, 0, cos_omega_t]
+    ])
+
+    # Construct the acceleration effect matrix
+    acc_effect = np.array([
+        [
+            -1/omega**2*cos_omega_t + 1/omega**2,
+            2*t/omega - 2*sin_omega_t/omega**2,
+            0
+        ],
+        [
+            -2*t/omega + 2*sin_omega_t/omega**2,
+            -3*t**2/2.0 - 4*cos_omega_t/omega**2 + 4/omega**2,
+            0
+        ],
+        [0, 0, -1/omega**2*cos_omega_t + 1/omega**2],
+        [1/omega*sin_omega_t, 2/omega - 2*cos_omega_t/omega, 0],
+        [-2/omega + 2*cos_omega_t/omega, -3*t + 4/omega*sin_omega_t, 0],
+        [0, 0, 1/omega*sin_omega_t]
+    ])
+
+    # Compute the future state
+    future_state = phi @ initial_state + acc_effect @ accelerations
+
+    return future_state
+
+
+def get_sun_synchronous_inclination_estimate(
+        orbit_mean_motion: float,
+        semi_latus_rectum: float,
+        planet_radius: float,
+        planet_semi_major_axis: float,
+        planet_j2: float,
+        planet: str
+):
+    """
+    Calculates the sun synchronous inclination estimate based on the position
+    of the planet relative to the sun and the mean and perturbed motion of the
+    orbit.
+
+    :param orbit_mean_motion: [s^-2] The mean motion of the orbit
+    :type orbit_mean_motion: float
+    :param perturbed_motion: [s^-2] The perturbed motion of the orbit
+    :type perturbed_motion: float
+    :param planet_radius: [m] The radius of the orbiting body
+    :type planet_radius: float
+    :param planet_semi_major_axis: [m] The sun-body radius of the orbit of the orbiting body
+    :type planet_semi_major_axis: float
+    :param planet_j2: [-] The orbiting body J2 value
+    :type planet_j2: float
+    :param planet: [m^3 s^-2] The gravitational Mu parameter of the parent of the orbital body
+    :type planet: str
+    :return: [rad] The estimated inclination of the orbit
+    :rtype: float
+    """
+    mean_motion_body = mean_motion(planet=planet, semi_major_axis=planet_semi_major_axis)
+    value = -2.0 * (semi_latus_rectum / planet_radius)**2 * mean_motion_body / (3.0 * orbit_mean_motion * planet_j2)
+    value = max(0.0, min(np.fabs(value), np.pi)) * np.sign(value)
+    return np.arccos(value)
+
+
+def semi_lactus_rectum(semi_major_axis: float, eccentricity: float) -> float:
+    """
+    Calculates the cross section of the semi-major lactus of the orbit.
+
+    :param semi_major_axis: [m] The SMA of the orbit
+    :type semi_major_axis: float
+    :param eccentricity: [-] The eccentricity of the orbit
+    :type eccentricity: float
+    :return: [m] The Semi Lactus Rectum parameter
+    :rtype: float
+    """
+    return semi_major_axis * (1 - eccentricity * eccentricity)
+
+
+def sun_synchronous_inclination(planet: str, semi_major_axis: float, eccentricity: float = 0.0) -> float:
+    """
+    Returns the inclination in radians of a defined SSO orbit based on the semi major axis and desired
+    eccentricity of the orbit.
+
+    :param planet: [-] The orbiting planet to orbit around
+    :type planet: str
+    :param semi_major_axis: [m] The SMA of the orbit
+    :type semi_major_axis: float
+    :param eccentricity: [-] The eccentricity of the orbit
+    :type eccentricity: float
+    :return: [rad] The inclination angle of the orbit
+    :rtype: float
+    """
+    n = mean_motion(planet=planet, semi_major_axis=semi_major_axis)
+    p = semi_lactus_rectum(semi_major_axis, eccentricity)
+
+    mu = get_planet_mu(planet=planet)
+    req = get_planet_property(planet=planet, property="REQ")
+    j2 = get_planet_property(planet=planet, property="j2")
+    orbit_semi_major_axis = get_planet_property(planet=planet, property="orbit_sma")
+
+    i0 = get_sun_synchronous_inclination_estimate(
+        orbit_mean_motion=n,
+        semi_latus_rectum=p,
+        planet_radius=req,
+        planet_semi_major_axis=orbit_semi_major_axis,
+        planet_j2=j2,
+        planet=planet
+    )
+    inclination = 0.0
+
+    it = 0
+    error = 1.0
+    # Iterate to find the inclination
+    while error >= 1e-6 and it < 100:
+        mean_motion_j2 = n * (1 + 1.5 * j2 * (req / p)**2 * np.sqrt(1 - eccentricity * eccentricity) * (1 - 1.5 * np.sin(i0)**2))
+        inclination = get_sun_synchronous_inclination_estimate(
+            orbit_mean_motion=mean_motion_j2,
+            semi_latus_rectum=p,
+            planet_radius=req,
+            planet_semi_major_axis=orbit_semi_major_axis,
+            planet_j2=j2,
+            planet=planet
+        )
+
+        error = abs(inclination - i0)
+        i0 = inclination
+        it += 1
+
+    return inclination

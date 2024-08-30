@@ -11,9 +11,9 @@ sys.path.insert(0, os.path.abspath('../nominalpy/src/'))
 sys.path.insert(0, os.path.abspath('../nominalpy/src/nominalpy/'))
 
 project = 'nominalpy'
-copyright = '2023, Nominal Systems'
+copyright = '2024, Nominal Systems'
 author = 'Nominal Systems'
-release = '2023'
+release = '2024'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

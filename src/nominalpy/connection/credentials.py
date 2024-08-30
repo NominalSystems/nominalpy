@@ -3,10 +3,7 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
-import requests, time, json
-from ..utils import printer, NominalException
-import pkg_resources
-
+from importlib.metadata import version
 
 class Credentials:
     '''
@@ -27,10 +24,16 @@ class Credentials:
     is_local: bool = False
     '''Defines whether the URL is a localhost one or not; used to ensure that a connection is valid.'''
 
-    session_id: str = None
+    version: str = ""
+    '''Defines the version of the API that is being used.'''
+
+    __raw_url: str = ""
+    '''This defines the raw URL that is used for the API connection.'''
+
+    __session_id: str = None
     '''This defines the session ID for the current working session, stored for public API keys.'''
 
-    def __init__ (self, url: str = "https://api.nominalsys.com", port: int = None, access: str = "") -> None:
+    def __init__ (self, url: str = "https://api.nominalsys.com", port: int = 443, access: str = "") -> None:
         '''
         Initialises some credentials to access the API and will be called
         by the simulation when making requests. If using a public API
@@ -46,181 +49,76 @@ class Credentials:
         :type access:   str
         '''
 
+        # Fetch the version from the package information and only select the first two digits
+        package_version: str = version('nominalpy')
+        package_version = package_version[:package_version.rfind(".")]
+        self.version = "v" + package_version
+
+        # Configure the URL
         self.url = url
+        self.__raw_url = url
         if url == "" or url == None:
             self.url = "https://localhost"
-        
-        self.port = port
-        if port != 0 and port != None:
-            self.url += ":%d" % port
-
-        if not self.url.endswith("/"):
-            self.url += "/"
-
-        self.access_key = access
-
         if "localhost" in self.url:
             self.is_local = True
-
-        # Attempt to authenticate with the session
-        if "nominalsys" in self.url:
-            self.__connect()
-    
-    def __connect (self) -> None:
-        '''
-        Connects to a session or retrieves the current session and updates the
-        session ID to the new IP address of the session if it exists. This will 
-        also check to see if the health is valid
-        '''
-
-        # If this is a local-host, skip
+        
+        # Check if missing https
+        if not self.is_local:
+            if "http" not in self.url:
+                self.url = f"https://{self.url}"
+        
+        # Configure the port
+        self.port = port
+        if port == 0 or port is None:
+            port = 8080 if self.is_local else 443
         if self.is_local:
-            return
+            self.url += ":%d" % port
         
-        # A flag for whether this is the first attempt
-        first_attempt: bool = True
+        # Check if missing a slash at the end
+        if not self.url.endswith("/"):
+            self.url += "/"
         
-        # Attempt to create the session
-        # If there is no valid session, it will throw an execption at this point.
-        self.__create_session()
-        
-        # Loop until the health is valid
-        while True:
+        # Add in the version end-point
+        if not self.is_local:
+            self.url += f"{self.version}/"
 
-            # Fetch the health
-            if self.__is_healthy():
-                return
-            
-            # Print some information
-            if first_attempt:
-                printer.warning("New sessions may take up to 3 minutes to start up. Each session will last 2 hours once created. Please wait while your session is being configured...")
-                first_attempt = False
-            
-            # Wait some time before attempting again
-            time.sleep(3.0)
+        # Set the access key
+        self.access_key = access
 
-    def __create_session (self) -> None:
+    def set_session_id (self, session_id: str) -> None:
         '''
-        Attempts to create or fetch a new session from the AWS batch system. This
-        will call the API for a new session or load one that already exists.
+        Sets the session ID for the current session. This is used to track the
+        current session and to ensure that the session is valid.
+
+        :param session_id:  The session ID for the current session
+        :type session_id:   str
         '''
-
-        # Fetch the data
-        printer.log("Attempting to find or create a new user session. This may take a few seconds.")
-        response = requests.get(
-            self.url + "session", 
-            verify=False, 
-            params={},
-            headers = {'x-api-key': self.access_key, 'Content-Type': 'application/json'}
-        )
-
-        # Update the data and get the data
-        if response.status_code == 200:
-            data: dict = json.loads(response.text)
-            self.session_id = data['id']
-            printer.log("A session has been found. Continuing session...")
-
-            # Fetch the version
-            api_version: str = data['version']
-            pkg_version: str = pkg_resources.get_distribution('nominalpy').version
-
-            # Check if the package version is less than the api version
-            if not self.__compare_versions(api_version, pkg_version):
-                printer.warning("API Version Mismatch. You are on an older version of the API. " +
-                    f"\nPlease upgrade to version {api_version} via 'pip install nominalpy --upgrade'. Some features may not work as intended.")
-
-        # If there is a code, check the status
-        else:
-
-            # In the case of 402, then the account needs to purchase more credits
-            # In this case, stop the loop.
-            if response.status_code == 402:
-                data: dict = json.loads(response.text)
-                raise NominalException(data["error"])
-            
-            # Otherwise, check if there is an error message
-            else:
-
-                # Attempt to raise an exception with the custom error
-                try:
-                    data: dict = json.loads(response.text)
-                    error: str = data["error"]
-
-                # Otherwise, just raise the error manually
-                except:
-                    raise NominalException(f"ERROR {response.status_code}: {response.text}")
-                
-                # Raise the error with the data
-                raise NominalException(error)
-                
-    def __is_healthy (self) -> bool:
-        '''
-        Returns whether the current session with the instance that is available
-        is healthy as of right now. This will return a true or false flag.
-
-        :returns:   A healthy success flag
-        :rtype:     bool
-        '''
-
-        try:
-            response = requests.get(
-                self.url + "session/health", 
-                verify=False, 
-                params={'session_id': self.session_id}, 
-                headers = {'x-api-key': self.access_key, 'Content-Type': 'application/json'},
-                timeout=3
-            )
-
-            # If the session is valid, continue
-            if response and response.status_code == 200 and response.text == "true":
-                return True
-            return False
-
-        # Catch any exception
-        except:
-            return False
-        
-    def __compare_versions (self, api_version: str, pkg_version: str) -> bool:
-        '''
-        Compares two version numbers to see if the package version is less than
-        public API version. If so, then this method will return True and the
-        API will need to be updated.
-
-        :param api_version:     The API version number
-        :type api_version:      str
-        :param pkg_version:     The package version number
-        :type pkg_version:      str
-
-        :returns:   A version comparison flag if the version is valid
-        :rtype:     bool
-        '''
-        api_parts = list(map(int, api_version.split('.')))
-        pkg_parts = list(map(int, pkg_version.split('.')))
-
-        # Make the version parts equal in length by adding zeros to the shorter version
-        max_len = max(len(api_parts), len(pkg_parts))
-        api_parts.extend([0] * (max_len - len(api_parts)))
-        pkg_parts.extend([0] * (max_len - len(pkg_parts)))
-
-        # Compare each part of the version number
-        for part1, part2 in zip(api_parts, pkg_parts):
-            if part1 > part2:
-                return False
-
-        return True
+        self.__session_id = session_id
     
+    def get_session_id (self) -> str:
+        '''
+        Returns the session ID for the current session. This is used to track
+        
+        :returns:   The session ID for the current session
+        :rtype:     str
+        '''
+        return self.__session_id
+        
     def is_valid (self) -> bool:
         '''
-        Returns whether the credentials are valid. This does not check if the
-        credentials are valid to a connection, more that the information has
-        been added correctly.
+        Checks if the credentials are valid by checking if the URL is valid
+        and the access key is valid.
 
-        :returns:   A valid credential flag
+        :returns:   Whether the credentials are valid
         :rtype:     bool
         '''
+        return self.url != "" and (self.access_key != "" or self.is_local)
+    
+    def copy (self) -> "Credentials":
+        '''
+        Copies the current credentials to a new instance of the credentials.
 
-        if self.url == None: return False
-        if self.url == "": return False
-        if len(self.url) < 8: return False
-        if "http" not in self.url: return False
-        return True
+        :returns:   A new instance of the credentials
+        :rtype:     Credentials
+        '''
+        return Credentials(self.__raw_url, self.port, self.access_key)

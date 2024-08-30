@@ -158,3 +158,33 @@ def angle_between_vectors(v1: np.ndarray, v2: np.ndarray) -> float:
     angle: float = acos_quadrant_check(dot, denom, dot)
 
     return angle
+
+
+def unit_vector_derivative(u: np.ndarray, udot: np.ndarray) -> np.ndarray:
+    """
+    Calculate the time derivative of a unit vector.
+
+    :param u: The original vector.
+    :type u: numpy.ndarray
+    :param udot: The time derivative of the original vector.
+    :type udot: numpy.ndarray
+    :return: The time derivative of the unit vector derived from the original vector.
+    :rtype: numpy.ndarray
+
+    Computes the time derivative of a unit vector given a vector and its time derivative.
+    If the magnitude of the original vector is zero, returns a zero vector to avoid division by zero.
+
+    Example:
+    --------
+    >>> u = np.array([1, 0, 0])
+    >>> udot = np.array([0, 1, 0])
+    >>> unit_vector_derivative(u, udot)
+    array([0., 1., 0.])
+    """
+    umag: float = np.linalg.norm(u)
+    if umag == 0:
+        uhatd: np.ndarray = np.zeros(3)
+    else:
+        uhat: np.ndarray = u / umag
+        uhatd: np.ndarray = (udot - np.dot(uhat, udot) * uhat) / umag
+    return uhatd
