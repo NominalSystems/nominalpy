@@ -830,7 +830,7 @@ class Simulation ():
         else:
             active_sessions: str = [s for s in sessions.keys() if sessions[s]]
             if len(active_sessions) <= index:
-                session = sessions.keys()[index]
+                session = list(sessions.keys())[index]
             else:
                 session = active_sessions[index]
 
