@@ -18,7 +18,8 @@ from .credentials import Credentials
 # Disable the insecure request warning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def __http_request (credentials: Credentials, method: str, path: str, data: dict = {}) -> dict:
+
+def __http_request(credentials: Credentials, method: str, path: str, data: dict = {}) -> dict:
     '''
     Creates a generic HTTP request to the API with the specified type, path
     and some data in the form of a JSON dictionary. This will return the JSON
@@ -99,7 +100,8 @@ def __http_request (credentials: Credentials, method: str, path: str, data: dict
         return response.text
     return None
 
-def get (credentials: Credentials, path: str, data: dict = {}) -> dict:
+
+def get(credentials: Credentials, path: str, data: dict = {}) -> dict:
     '''
     Performs a GET request to the API with the specified path and data. This
     will return the JSON data from the response if the request was successful.
@@ -117,7 +119,8 @@ def get (credentials: Credentials, path: str, data: dict = {}) -> dict:
 
     return __http_request(credentials, 'GET', path, data)
 
-def post (credentials: Credentials, path: str, data: dict = {}) -> dict:
+
+def post(credentials: Credentials, path: str, data: dict = {}) -> dict:
     '''
     Performs a POST request to the API with the specified path and data. This
     will return the JSON data from the response if the request was successful.
@@ -135,7 +138,8 @@ def post (credentials: Credentials, path: str, data: dict = {}) -> dict:
 
     return __http_request(credentials, 'POST', path, data)
 
-def put (credentials: Credentials, path: str, data: dict = {}) -> dict:
+
+def put(credentials: Credentials, path: str, data: dict = {}) -> dict:
     '''
     Performs a PUT request to the API with the specified path and data. This
     will return the JSON data from the response if the request was successful.
@@ -153,7 +157,8 @@ def put (credentials: Credentials, path: str, data: dict = {}) -> dict:
 
     return __http_request(credentials, 'PUT', path, data)
 
-def patch (credentials: Credentials, path: str, data: dict = {}) -> dict:
+
+def patch(credentials: Credentials, path: str, data: dict = {}) -> dict:
     '''
     Performs a PATCH request to the API with the specified path and data. This
     will return the JSON data from the response if the request was successful.
@@ -171,7 +176,8 @@ def patch (credentials: Credentials, path: str, data: dict = {}) -> dict:
 
     return __http_request(credentials, 'PATCH', path, data)
 
-def delete (credentials: Credentials, path: str, data: dict = {}) -> dict:
+
+def delete(credentials: Credentials, path: str, data: dict = {}) -> dict:
     '''
     Performs a DELETE request to the API with the specified path and data. This
     will return the JSON data from the response if the request was successful.
