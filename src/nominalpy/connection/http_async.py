@@ -50,8 +50,7 @@ async def __http_request_async(credentials: Credentials, method: str, path: str,
         'Content-Type': 'application/json',
         'x-api-key': credentials.access_key
     }
-    # params = {'session': "" if credentials.get_session_id() is None else credentials.get_session_id()}
-    params = {'session':credentials.get_session_id()}
+    params = {'session': "" if credentials.get_session_id() is None else credentials.get_session_id()}
 
     # Log the request
     printer.log(f"Attempting a {method} request to '{url}' with data: {data}")

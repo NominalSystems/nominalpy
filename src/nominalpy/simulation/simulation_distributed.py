@@ -873,6 +873,26 @@ class DistributedSimulation:
         self.sessions: Dict[str, Simulation] = {}
         self.loop = asyncio.get_event_loop()
 
+    def connect(self, host="localhost", port=8080) -> Simulation:
+        """
+        Connects to a simulation session.
+
+        :returns: The `Simulation` instance.
+        :rtype: Simulation
+        """
+
+        # generate a unique session id
+        session_id = f"http://{host}:{port}"
+
+        # connect to a local simulation
+        simulation = Simulation(Credentials(f"http://{host}", port), session_id)
+
+        # register simulation to session map
+        self.sessions[session_id] = simulation
+
+        # return simulation instance
+        return simulation
+
     def _allocate_port(self) -> int:
         """
         Allocate a new port for a local simulation.
@@ -984,8 +1004,9 @@ class DistributedSimulation:
         :rtype: List[Object]
         """
         # Create a list of tasks for adding objects to sessions
-        tasks = [self.add_object_to_session(session_id, obj_type, **kwargs) for session_id in self.sessions.keys()]
-        # Run all object creation tasks until completion
+        tasks = [ self.sessions[key].add_object(obj_type, **kwargs) for key in self.sessions ]
+
+        # Run all object creation tasks until completion    
         return self.loop.run_until_complete(asyncio.gather(*tasks))
 
     # async def assign_objects(self, objects: List[Dict], strategy: str = 'round_robin'):
