@@ -21,10 +21,8 @@ class Session:
 
         # create a new HTTP(s) session connection
         if re.match(r"^http?:[\\\/]{2}[a-zA-Z0-9\\\.\/]*[^\\\/]$", host) is not None:
-            port = 80 if port is None else port
             self._client = http.client.HTTPConnection(host[7:], port)
         elif re.match(r"^https?:[\\\/]{2}[a-zA-Z0-9\\\.\/]*[^\\\/]$", host) is not None:
-            port = 443 if port is None else port
             self._client = http.client.HTTPSConnection(host[8:], port)
         else: raise Exception(f"invalid parameter 'host': {host}")
     # ------------------------------------------------------------------------------------------------------------------------ #
@@ -64,26 +62,26 @@ class Session:
         '''
 
         # check for invalid parameters
-        if re.match(r"^[\\\/][a-zA-Z0-9\\\.\/]*[^\\\/]$", endpoint) is None:
+        if re.match(r"^[a-zA-Z0-9-_]*$", endpoint) is None:
             raise Exception(f"invalid parameter 'endpoint': {endpoint}")
 
         # generate URL from method and endpoint
+        url = f"/{endpoint}"
         match method:
             case "GET":
-                url = f"/{endpoint}"
-                if not "x-api-key" in self._headers: url += "?op=get"; method = "POST"
+                if "x-api-key" in self._headers: url = f"/v1.0/{endpoint}?op=get"; method = "POST"
             case "PUT":
                 url = f"/{endpoint}"
-                if not "x-api-key" in self._headers: url += "?op=set"; method = "POST"
+                if "x-api-key" in self._headers: url = f"/v1.0/{endpoint}?op=set"; method = "POST"
             case "POST":
                 url = f"/{endpoint}"
-                if not "x-api-key" in self._headers: url += "?op=new"; method = "POST"
+                if "x-api-key" in self._headers: url = f"/v1.0/{endpoint}?op=new"; method = "POST"
             case "PATCH":
                 url = f"/{endpoint}"
-                if not "x-api-key" in self._headers: url += "?op=ivk"; method = "POST"
+                if "x-api-key" in self._headers: url = f"/v1.0/{endpoint}?op=ivk"; method = "POST"
             case "DELETE":
                 url = f"/{endpoint}"
-                if not "x-api-key" in self._headers: url += "?op=del"; method = "POST"
+                if "x-api-key" in self._headers: url = f"/v1.0/{endpoint}?op=del"; method = "POST"
             case _:
                 raise Exception(f"invalid parameter 'method': {method}")
 
@@ -95,11 +93,11 @@ class Session:
         self._client.request(method, url, body, self._headers)
         response = self._client.getresponse()
         response_body = response.read().decode("utf-8")
-        if response.status != 400: raise Exception(f"NominalSystems: {response_body}")
+        if response.status == 400: raise Exception(f"NominalSystems: {response_body}")
         if response.status == 402: raise Exception(f"NominalSystems: Invalid API Key")
         if response.status == 403: raise Exception(f"NominalSystems: Invalid API Key")
         if response.status == 500: raise Exception(f"NominalSystems: Unknown Error")
-        return json.loads(response_body) if len(body) > 0 else None
+        return json.loads(response_body) if len(response_body) > 0 else None
     # ------------------------------------------------------------------------------------------------------------------------ #
     @staticmethod
     def api_list(key: str) -> list["Session"]:
@@ -120,7 +118,7 @@ class Session:
         results = []
         for item in response_body:
             if item["status"] != "RUNNING": continue
-            result = Session("https://api.nominalsys.com/v1.0", None, item["guid"])
+            result = Session("https://api.nominalsys.com", None, item["guid"])
             result._headers["x-api-key"] = key
             results.append(result)
         return results
@@ -134,7 +132,7 @@ class Session:
         # create a new cloud session
         headers = { "Content-Type": "application/json", "x-api-key": key }
         response = requests.post("https://api.nominalsys.com/v1.0/session?op=new", headers=headers, json={
-            "version": version,
+            "version": "1.0" if version is None else version,
             "duration": duration
         })
         response_body = response.content.decode("utf-8")
@@ -153,7 +151,7 @@ class Session:
             response_body = json.loads(response.content.decode("utf-8"))
             if response.status_code != 200: raise Exception(f"NominalSystems: Pending")
             if response_body["guid"] == session and response_body["status"] == "RUNNING":
-                result = Session("https://api.nominalsys.com/v1.0", None, session)
+                result = Session("https://api.nominalsys.com", None, session)
                 result._headers["x-api-key"] = key
                 return result
             time.sleep(1)
