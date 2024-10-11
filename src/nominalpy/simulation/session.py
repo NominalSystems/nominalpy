@@ -20,11 +20,17 @@ class Session:
         self._headers = { "Content-Type": "application/json" }
 
         # create a new HTTP(s) session connection
-        if re.match(r"^http?:[\\\/]{2}[a-zA-Z0-9\\\.\/]*[^\\\/]$", host) is not None:
-            self._client = http.client.HTTPConnection(host[7:], port)
-        elif re.match(r"^https?:[\\\/]{2}[a-zA-Z0-9\\\.\/]*[^\\\/]$", host) is not None:
-            self._client = http.client.HTTPSConnection(host[8:], port)
-        else: raise Exception(f"invalid parameter 'host': {host}")
+        try:
+            if re.match(r"^http?:[\\\/]{2}[a-zA-Z0-9\\\.\/]*[^\\\/]$", host) is not None:
+                port = 80 if port is None else port
+                self._client = http.client.HTTPConnection(host[7:], port)
+                self._client.connect()
+            elif re.match(r"^https?:[\\\/]{2}[a-zA-Z0-9\\\.\/]*[^\\\/]$", host) is not None:
+                port = 443 if port is None else port
+                self._client = http.client.HTTPSConnection(host[8:], port)
+                self._client.connect()
+            else: raise Exception(f"invalid parameter 'host': {host}")
+        except: raise Exception(f"failed to connect to '{host}:{port}'")
     # ------------------------------------------------------------------------------------------------------------------------ #
     def get(self, endpoint: str, body: any = None) -> str:
         '''
@@ -90,14 +96,16 @@ class Session:
             url += f"&session={self._session}"
 
         # send HTTP request to server and return response
-        self._client.request(method, url, body, self._headers)
-        response = self._client.getresponse()
-        response_body = response.read().decode("utf-8")
-        if response.status == 400: raise Exception(f"NominalSystems: {response_body}")
-        if response.status == 402: raise Exception(f"NominalSystems: Invalid API Key")
-        if response.status == 403: raise Exception(f"NominalSystems: Invalid API Key")
-        if response.status == 500: raise Exception(f"NominalSystems: Unknown Error")
-        return json.loads(response_body) if len(response_body) > 0 else None
+        try:
+            self._client.request(method, url, body, self._headers)
+            response = self._client.getresponse()
+            response_body = response.read().decode("utf-8")
+            if response.status == 400: raise Exception(f"NominalSystems: {response_body}")
+            if response.status == 402: raise Exception(f"NominalSystems: Invalid API Key")
+            if response.status == 403: raise Exception(f"NominalSystems: Invalid API Key")
+            if response.status == 500: raise Exception(f"NominalSystems: Unknown Error")
+            return json.loads(response_body) if len(response_body) > 0 else None
+        except: raise Exception(f"NominalSystems: Request Timeout")
     # ------------------------------------------------------------------------------------------------------------------------ #
     @staticmethod
     def api_list(key: str) -> list["Session"]:
