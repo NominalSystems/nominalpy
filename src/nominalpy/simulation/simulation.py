@@ -12,7 +12,7 @@ from .message import Message
 from .object import Object
 from .behaviour import Behaviour
 from .system import System
-from ..connection import Credentials, http
+from ..connection import Credentials, http_requests
 from ..utils import NominalException, printer, helper
 from ..data import SimulationData
 
@@ -192,7 +192,7 @@ class Simulation ():
             request["data"] = kwargs
 
         # Create the object using a post request
-        result = http.post(self.__credentials, "object", request)
+        result = http_requests.post(self.__credentials, "object", request)
         if result == None:
             raise NominalException("Failed to create object of type '%s'." % type)
         
@@ -234,7 +234,7 @@ class Simulation ():
             request["data"] = kwargs
 
         # Create the behaviour using a post request
-        result = http.post(self.__credentials, "object", request)
+        result = http_requests.post(self.__credentials, "object", request)
         if result == None:
             raise NominalException("Failed to create behaviour of type '%s'." % type)
         
@@ -278,7 +278,7 @@ class Simulation ():
             return system
 
         # Otherwise, check if the system already exists
-        id: str = http.patch(self.__credentials, "simulation", {"name": "FindObject", "args": [type]})
+        id: str = http_requests.patch(self.__credentials, "simulation", {"name": "FindObject", "args": [type]})
         if not helper.is_valid_guid(id):
 
             # Create the request
@@ -287,7 +287,7 @@ class Simulation ():
                 request["data"] = kwargs
             
             # Attempt to create the system
-            response = http.post(self.__credentials, "object", request)
+            response = http_requests.post(self.__credentials, "object", request)
             if response == None:
                 raise NominalException("Failed to create system of type '%s'." % type)
             id = response["guid"]
@@ -330,7 +330,7 @@ class Simulation ():
             request["data"] = kwargs
 
         # Create the behaviour using a post request
-        result = http.post(self.__credentials, "object", request)
+        result = http_requests.post(self.__credentials, "object", request)
         if result == None:
             raise NominalException("Failed to create message of type '%s'." % type)
         
@@ -385,7 +385,7 @@ class Simulation ():
         type = helper.validate_type(type)
 
         # Create the request to the function
-        result = http.patch(self.__credentials, "simulation", {"name": "FindObject", "args": [type]})
+        result = http_requests.patch(self.__credentials, "simulation", {"name": "FindObject", "args": [type]})
 
         # If the result is not a valid GUID, return None
         if not helper.is_valid_guid(result):
@@ -417,7 +417,7 @@ class Simulation ():
         type = helper.validate_type(type)
 
         # Create the request to the function
-        result = http.patch(self.__credentials, "simulation", {"name": "FindObjects", "args": [type]})
+        result = http_requests.patch(self.__credentials, "simulation", {"name": "FindObjects", "args": [type]})
 
         # If the result is not a list or is empty, return a missing list
         if not isinstance(result, list) or len(result) == 0:
@@ -472,7 +472,7 @@ class Simulation ():
         self.__ticked = False
 
         # Ensure the simulation is reset
-        http.patch(self.__credentials, "simulation", {"name": "Dispose"})
+        http_requests.patch(self.__credentials, "simulation", {"name": "Dispose"})
     
     def tick (self, step: float = 1e-1) -> None:
         '''
@@ -491,7 +491,7 @@ class Simulation ():
             self.__ticked = True
 
         # Invoke the tick function on the simulation
-        http.patch(self.__credentials, "simulation", {"name": "TickSeconds", "args": [step]})
+        http_requests.patch(self.__credentials, "simulation", {"name": "TickSeconds", "args": [step]})
 
         # Update the time
         self.__time += step
@@ -744,7 +744,7 @@ class Simulation ():
         '''
 
         # Get the sessions from the API and throw an error if there are no sessions
-        result: list = http.get(credentials, "session")
+        result: list = http_requests.get(credentials, "session")
         sessions: dict = {}
         for r in result:
             sessions[r['guid']] = (r['status'] == "RUNNING")
@@ -776,7 +776,7 @@ class Simulation ():
             'version': package_version, 
             'duration': 7200
         }
-        response = http.post(credentials, "session", data=data)
+        response = http_requests.post(credentials, "session", data=data)
 
         # Check if there was no session, throw an error with the message
         if "guid" not in response:

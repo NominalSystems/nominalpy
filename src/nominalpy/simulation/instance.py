@@ -3,7 +3,7 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
-from ..connection import Credentials, http
+from ..connection import Credentials, http_requests
 from ..utils import NominalException, helper
 
 class Instance:
@@ -65,7 +65,7 @@ class Instance:
             return
         
         # Fetch all data and then set the cache to false
-        self.__data = http.get(self._credentials, "object", {'guid': self.id})
+        self.__data = http_requests.get(self._credentials, "object", {'guid': self.id})
         self._refresh_cache = False
 
     def _require_refresh (self) -> None:
@@ -88,7 +88,7 @@ class Instance:
 
         # If there is no type, find it
         if not self.__type:
-            self.__type = http.patch(self._credentials, "object", {"guid": self.id, "name": "GetType"})
+            self.__type = http_requests.patch(self._credentials, "object", {"guid": self.id, "name": "GetType"})
         return self.__type
 
     def get (self, param: str) -> any:
@@ -142,7 +142,7 @@ class Instance:
             kwargs[key] = helper.serialize(kwargs[key])
 
         # Add the put request to update the data
-        http.put(self._credentials, "object", {'guid': self.id, 'data': kwargs })
+        http_requests.put(self._credentials, "object", {'guid': self.id, 'data': kwargs })
 
         # Ensure that the cache is refreshed for the next get
         self._require_refresh()
@@ -178,7 +178,7 @@ class Instance:
             request['args'] = list(args)
 
         # Create the response from the PATCH request and get the IDs
-        response = http.patch(self._credentials, "object", request)
+        response = http_requests.patch(self._credentials, "object", request)
         
         # Update the flag for needing to get values
         self._require_refresh()
