@@ -10,16 +10,16 @@ class Session:
     This class represents a HTTP(s) connection that allows the user to make requests to the Nominal API.
     '''
     # ------------------------------------------------------------------------------------------------------------------------ #
-    def __init__ (self, host: str, port: int = None, session: str = None) -> None:
+    def __init__ (self, host: str, port: int = None, guid: str = None) -> None:
         '''
         Connects to a Nominal API session.
         '''
 
-        # configure default HTTP settings
-        self._session = session
-        self._headers = { "Content-Type": "application/json" }
+        # set the default HTTP settings
+        self.guid = guid
+        self.headers = { "Content-Type": "application/json" }
 
-        # create a new HTTP(s) session connection
+        # create a new HTTP(s) connection
         try:
             if re.match(r"^http?:[\\\/]{2}[a-zA-Z0-9\\\.\/]*[^\\\/]$", host) is not None:
                 port = 80 if port is None else port
@@ -29,8 +29,10 @@ class Session:
                 port = 443 if port is None else port
                 self._client = http.client.HTTPSConnection(host[8:], port)
                 self._client.connect()
-            else: raise Exception(f"invalid parameter 'host': {host}")
-        except: raise Exception(f"failed to connect to '{host}:{port}'")
+            else:
+                raise Exception(f"NominalSystems: Invalid parameter host '{host}'")
+        except:
+            raise Exception(f"NominalSystems: Failed to connect to '{host}:{port}'")
     # ------------------------------------------------------------------------------------------------------------------------ #
     def get(self, endpoint: str, body: any = None) -> str:
         '''
@@ -67,48 +69,91 @@ class Session:
         Sends a HTTP request to the session.
         '''
 
-        # check for invalid parameters
+        # check if session is running
+        if not self.is_running:
+            raise Exception(f"NominalSystems: Already disconnected")
+
+        # check for invalid request endpoint
         if re.match(r"^[a-zA-Z0-9-_]*$", endpoint) is None:
-            raise Exception(f"invalid parameter 'endpoint': {endpoint}")
+            raise Exception(f"NominalSystems: Invalid parameter endpoint '{endpoint}'")
 
         # generate URL from method and endpoint
         url = f"/{endpoint}"
         match method:
             case "GET":
-                if "x-api-key" in self._headers: url = f"/v1.0/{endpoint}?op=get"; method = "POST"
+                if "x-api-key" in self.headers:
+                    url = f"/v1.0/{endpoint}?op=get"
+                    method = "POST"
             case "PUT":
-                url = f"/{endpoint}"
-                if "x-api-key" in self._headers: url = f"/v1.0/{endpoint}?op=set"; method = "POST"
+                if "x-api-key" in self.headers:
+                    url = f"/v1.0/{endpoint}?op=set"
+                    method = "POST"
             case "POST":
-                url = f"/{endpoint}"
-                if "x-api-key" in self._headers: url = f"/v1.0/{endpoint}?op=new"; method = "POST"
+                if "x-api-key" in self.headers:
+                    url = f"/v1.0/{endpoint}?op=new"
+                    method = "POST"
             case "PATCH":
-                url = f"/{endpoint}"
-                if "x-api-key" in self._headers: url = f"/v1.0/{endpoint}?op=ivk"; method = "POST"
+                if "x-api-key" in self.headers:
+                    url = f"/v1.0/{endpoint}?op=ivk"
+                    method = "POST"
             case "DELETE":
-                url = f"/{endpoint}"
-                if "x-api-key" in self._headers: url = f"/v1.0/{endpoint}?op=del"; method = "POST"
+                if "x-api-key" in self.headers:
+                    url = f"/v1.0/{endpoint}?op=del"
+                    method = "POST"
             case _:
-                raise Exception(f"invalid parameter 'method': {method}")
+                raise Exception(f"NominalSystems: Invalid parameter method '{method}'")
 
-        # add session id to URL as a query parameter
-        if self._session is not None:
-            url += f"&session={self._session}"
+        # add session guid to URL as a query parameter
+        if self.guid is not None:
+            url += f"&session={self.guid}"
 
         # send HTTP request to server and return response
         try:
-            self._client.request(method, url, body, self._headers)
+            self._client.request(method, url, body, self.headers)
             response = self._client.getresponse()
             response_body = response.read().decode("utf-8")
-            if response.status == 400: raise Exception(f"NominalSystems: {response_body}")
-            if response.status == 402: raise Exception(f"NominalSystems: Invalid API Key")
-            if response.status == 403: raise Exception(f"NominalSystems: Invalid API Key")
-            if response.status == 500: raise Exception(f"NominalSystems: Unknown Error")
+            if response.status == 400:
+                raise Exception(f"NominalSystems: {response_body}")
+            if response.status == 402:
+                raise Exception(f"NominalSystems: Invalid api key")
+            if response.status == 403:
+                raise Exception(f"NominalSystems: Invalid api key")
+            if response.status == 500:
+                raise Exception(f"NominalSystems: Unknown error")
             return json.loads(response_body) if len(response_body) > 0 else None
-        except: raise Exception(f"NominalSystems: Request Timeout")
+        except:
+            raise Exception(f"NominalSystems: Request timeout")
+    # ------------------------------------------------------------------------------------------------------------------------ #
+    @property
+    def is_running(self):
+        '''
+        Is 'True' if the session is running.
+        '''
+
+        # check if session has ended
+        if self._client is None:
+            return False
+
+        # check if session is a local session
+        if not "x-api-key" in self.headers:
+            return True
+
+        # query if cloud session is still running
+        self._client.request("POST", "/v1.0/session?op=get", json.dumps({ "guid": self.guid }), self.headers)
+        response = self._client.getresponse()
+        response_body = response.read().decode("utf-8")
+        if response.status == 400:
+            raise Exception(f"NominalSystems: {response_body}")
+        if response.status == 402:
+            raise Exception(f"NominalSystems: Invalid api key")
+        if response.status == 403:
+            raise Exception(f"NominalSystems: Invalid api key")
+        if response.status == 500:
+            raise Exception(f"NominalSystems: Unknown error")
+        return json.loads(response_body)["status"] == "RUNNING"
     # ------------------------------------------------------------------------------------------------------------------------ #
     @staticmethod
-    def api_list(key: str) -> list["Session"]:
+    def list_sessions(key: str) -> list["Session"]:
         '''
         [STATIC] Returns all running cloud sessions.
         '''
@@ -117,75 +162,81 @@ class Session:
         headers = { "Content-Type": "application/json", "x-api-key": key }
         response = requests.post("https://api.nominalsys.com/v1.0/session?op=get", headers=headers)
         response_body = json.loads(response.content.decode("utf-8"))
-        if response.status_code == 400: raise Exception(f"NominalSystems: {response_body}")
-        if response.status_code == 402: raise Exception(f"NominalSystems: Invalid API Key")
-        if response.status_code == 403: raise Exception(f"NominalSystems: Invalid API Key")
-        if response.status_code != 200: raise Exception(f"NominalSystems: Unknown Error")
+        if response.status_code == 400:
+            raise Exception(f"NominalSystems: {response_body}")
+        if response.status_code == 402:
+            raise Exception(f"NominalSystems: Invalid api key")
+        if response.status_code == 403:
+            raise Exception(f"NominalSystems: Invalid api key")
+        if response.status_code == 500:
+            raise Exception(f"NominalSystems: Unknown error")
 
         # return all currently running sessions
         results = []
         for item in response_body:
-            if item["status"] != "RUNNING": continue
-            result = Session("https://api.nominalsys.com", None, item["guid"])
-            result._headers["x-api-key"] = key
-            results.append(result)
+            if item["status"] == "RUNNING":
+                result = Session("https://api.nominalsys.com", None, item["guid"])
+                result.headers["x-api-key"] = key
+                results.append(result)
         return results
     # ------------------------------------------------------------------------------------------------------------------------ #
     @staticmethod
-    def api_create(key: str, version: str = None, duration: int = 900) -> "Session":
+    def create_session(key: str, version: str = None, duration: int = None) -> "Session":
         '''
         [STATIC] Creates a new cloud session.
         '''
 
         # create a new cloud session
-        headers = { "Content-Type": "application/json", "x-api-key": key }
-        response = requests.post("https://api.nominalsys.com/v1.0/session?op=new", headers=headers, json={
+        session = Session("https://api.nominalsys.com")
+        session.headers["x-api-key"] = key
+        session.guid = json.loads(session.post("/v1.0/session", json.dumps({
             "version": "1.0" if version is None else version,
-            "duration": duration
-        })
-        response_body = response.content.decode("utf-8")
-        if response.status_code == 400: raise Exception(f"NominalSystems: {response_body}")
-        if response.status_code == 402: raise Exception(f"NominalSystems: Invalid API Key")
-        if response.status_code == 403: raise Exception(f"NominalSystems: Invalid API Key")
-        if response.status_code != 200: raise Exception(f"NominalSystems: Unknown Error")
-        session = json.loads(response_body)["guid"]
+            "duration": 900 if duration is None else duration
+        })))["guid"]
 
         # wait for session to start running
         start_time = datetime.datetime.now()
         while (datetime.datetime.now() - start_time).total_seconds() < 300:
-            response = requests.post("https://api.nominalsys.com/v1.0/session?op=get", headers=headers, json={
-                "guid": session
-            })
-            response_body = json.loads(response.content.decode("utf-8"))
-            if response.status_code != 200: raise Exception(f"NominalSystems: Pending")
-            if response_body["guid"] == session and response_body["status"] == "RUNNING":
-                result = Session("https://api.nominalsys.com", None, session)
-                result._headers["x-api-key"] = key
-                return result
+            if (session.is_running):
+                return session
             time.sleep(1)
         raise Exception("NominalSystems: Pending")
     # ------------------------------------------------------------------------------------------------------------------------ #
     @staticmethod
-    def api_destroy(session: "Session") -> None:
+    def destroy_session(session: "Session") -> None:
         '''
         [STATIC] Destroys a cloud session.
         '''
 
         # check for invalid parameters
         if session is None:
-            raise Exception("invalid parameter 'session': None")
+            raise Exception("NominalSystems: Invalid parameter session 'None'")
 
-        # check if session is a cloud session
-        if not "x-api-key" in session._headers: return
-        if not session._client.host.startswith("api.nominalsys.com/v1.0"): return
+        # check if session is still running
+        if not session.is_running:
+            return
 
-        # destroy a cloud session with session id
-        key = session._headers["x-api-key"]
-        headers = { "Content-Type": "application/json", "x-api-key": key }
-        response = requests.post("https://api.nominalsys.com/v1.0/session?op=get", headers=headers)
-        response_body = json.loads(response.content.decode("utf-8"))
-        if response.status_code == 400: raise Exception(f"NominalSystems: {response_body}")
-        if response.status_code == 402: raise Exception(f"NominalSystems: Invalid API Key")
-        if response.status_code == 403: raise Exception(f"NominalSystems: Invalid API Key")
-        if response.status_code != 200: raise Exception(f"NominalSystems: Unknown Error")
+        # check if session is a local session
+        if not "x-api-key" in session.headers:
+            session.delete("")
+            session._client.close()
+            session._client = None
+            return
+
+        # destroy a cloud session with session guid
+        session._client.request("POST", "/v1.0/session?op=del", json.dumps({
+            "guid": session.guid
+        }), session.headers)
+        response = session._client.getresponse()
+        response_body = json.loads(response.read().decode("utf-8"))
+        if response.status == 400:
+            raise Exception(f"NominalSystems: {response_body}")
+        if response.status == 402:
+            raise Exception(f"NominalSystems: Invalid api key")
+        if response.status == 403:
+            raise Exception(f"NominalSystems: Invalid api key")
+        if response.status == 500:
+            raise Exception(f"NominalSystems: Unknown error")
+        session._client.close()
+        session._client = None
     # ------------------------------------------------------------------------------------------------------------------------ #
