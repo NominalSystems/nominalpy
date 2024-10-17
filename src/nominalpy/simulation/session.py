@@ -108,21 +108,18 @@ class Session:
             url += f"&session={self.guid}"
 
         # send HTTP request to server and return response
-        try:
-            self._client.request(method, url, body, self.headers)
-            response = self._client.getresponse()
-            response_body = response.read().decode("utf-8")
-            if response.status == 400:
-                raise Exception(f"NominalSystems: {response_body}")
-            if response.status == 402:
-                raise Exception(f"NominalSystems: Invalid api key")
-            if response.status == 403:
-                raise Exception(f"NominalSystems: Invalid api key")
-            if response.status == 500:
-                raise Exception(f"NominalSystems: Unknown error")
-            return json.loads(response_body) if len(response_body) > 0 else None
-        except:
-            raise Exception(f"NominalSystems: Request timeout")
+        self._client.request(method, url, json.dumps(body), self.headers)
+        response = self._client.getresponse()
+        response_body = response.read().decode("utf-8")
+        if response.status == 400:
+            raise Exception(f"NominalSystems: {response_body}")
+        if response.status == 402:
+            raise Exception(f"NominalSystems: Invalid api key")
+        if response.status == 403:
+            raise Exception(f"NominalSystems: Invalid api key")
+        if response.status == 500:
+            raise Exception(f"NominalSystems: Unknown error")
+        return json.loads(response_body) if len(response_body) > 0 else None
     # ------------------------------------------------------------------------------------------------------------------------ #
     @property
     def is_running(self):
