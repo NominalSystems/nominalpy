@@ -2,7 +2,7 @@
 # Copyright 2024 (c) Nominal Systems, Pty Ltd. All Rights Reserved
 # See the 'LICENSE' file at the root of this git repository
 # ---------------------------------------------------------------------------------------------------------------------------- #
-import re, json, time, datetime, requests, http.client
+import re, json, time, datetime, requests
 # ---------------------------------------------------------------------------------------------------------------------------- #
 
 class Session:
@@ -22,13 +22,11 @@ class Session:
         # create a new HTTP(s) connection
         try:
             if re.match(r"^http?:[\\\/]{2}[a-zA-Z0-9\\\.\/]*[^\\\/]$", host) is not None:
-                port = 80 if port is None else port
-                self._client = http.client.HTTPConnection(host[7:], port)
-                self._client.connect()
+                self.port = 80 if port is None else port
+                self.host = host
             elif re.match(r"^https?:[\\\/]{2}[a-zA-Z0-9\\\.\/]*[^\\\/]$", host) is not None:
-                port = 443 if port is None else port
-                self._client = http.client.HTTPSConnection(host[8:], port)
-                self._client.connect()
+                self.port = 443 if port is None else port
+                self.host = host
             else:
                 raise Exception(f"NominalSystems: Invalid parameter host '{host}'")
         except:
@@ -108,16 +106,18 @@ class Session:
             url += f"&session={self.guid}"
 
         # send HTTP request to server and return response
-        self._client.request(method, url, json.dumps(body), self.headers)
-        response = self._client.getresponse()
-        response_body = response.read().decode("utf-8")
-        if response.status == 400:
+        response = requests.request(method, f"{self.host}:{self.port}{url}",
+            data    = json.dumps(body),
+            headers = self.headers
+        )
+        response_body = response.content.decode("utf-8")
+        if response.status_code == 400:
             raise Exception(f"NominalSystems: {response_body}")
-        if response.status == 402:
+        if response.status_code == 402:
             raise Exception(f"NominalSystems: Invalid api key")
-        if response.status == 403:
+        if response.status_code == 403:
             raise Exception(f"NominalSystems: Invalid api key")
-        if response.status == 500:
+        if response.status_code == 500:
             raise Exception(f"NominalSystems: Unknown error")
         return json.loads(response_body) if len(response_body) > 0 else None
     # ------------------------------------------------------------------------------------------------------------------------ #
@@ -128,7 +128,7 @@ class Session:
         '''
 
         # check if session has ended
-        if self._client is None:
+        if self.host is None:
             return False
 
         # check if session is a local session
@@ -136,16 +136,18 @@ class Session:
             return True
 
         # query if cloud session is still running
-        self._client.request("POST", "/v1.0/session?op=get", json.dumps({ "guid": self.guid }), self.headers)
-        response = self._client.getresponse()
-        response_body = response.read().decode("utf-8")
-        if response.status == 400:
+        response = requests.post(f"{self.host}:{self.port}/v1.0/session?op=get",
+            data    = json.dumps({ "guid": self.guid }),
+            headers = self.headers
+        )
+        response_body = response.content.decode("utf-8")
+        if response.status_code == 400:
             raise Exception(f"NominalSystems: {response_body}")
-        if response.status == 402:
+        if response.status_code == 402:
             raise Exception(f"NominalSystems: Invalid api key")
-        if response.status == 403:
+        if response.status_code == 403:
             raise Exception(f"NominalSystems: Invalid api key")
-        if response.status == 500:
+        if response.status_code == 500:
             raise Exception(f"NominalSystems: Unknown error")
         return json.loads(response_body)["status"] == "RUNNING"
     # ------------------------------------------------------------------------------------------------------------------------ #
@@ -216,24 +218,28 @@ class Session:
         # check if session is a local session
         if not "x-api-key" in session.headers:
             session.delete("")
-            session._client.close()
-            session._client = None
+            session.host = None
+            session.port = None
+            session.guid = None
+            session.headers = {}
             return
 
         # destroy a cloud session with session guid
-        session._client.request("POST", "/v1.0/session?op=del", json.dumps({
-            "guid": session.guid
-        }), session.headers)
-        response = session._client.getresponse()
-        response_body = json.loads(response.read().decode("utf-8"))
-        if response.status == 400:
+        response = requests.post(f"{session.host}:{session.port}/v1.0/session?op=del",
+            data    = json.dumps({ "guid": session.guid }),
+            headers = session.headers
+        )
+        response_body = json.loads(response.content.decode("utf-8"))
+        if response.status_code == 400:
             raise Exception(f"NominalSystems: {response_body}")
-        if response.status == 402:
+        if response.status_code == 402:
             raise Exception(f"NominalSystems: Invalid api key")
-        if response.status == 403:
+        if response.status_code == 403:
             raise Exception(f"NominalSystems: Invalid api key")
-        if response.status == 500:
+        if response.status_code == 500:
             raise Exception(f"NominalSystems: Unknown error")
-        session._client.close()
-        session._client = None
+        session.host = None
+        session.port = None
+        session.guid = None
+        session.headers = {}
     # ------------------------------------------------------------------------------------------------------------------------ #
