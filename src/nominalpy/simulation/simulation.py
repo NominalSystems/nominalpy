@@ -767,9 +767,8 @@ class Simulation ():
         # Output information about creating a sessiojn
         printer.warning("Attempting to create a new session with your API key. This may take up to a minute.")
 
-        # Fetch the version from the package information and only select the first two digits
+        # Fetch the version from the package information
         package_version = version('nominalpy')
-        package_version = package_version[:package_version.rfind(".")]
 
         # Create a new session from the API
         data = {
