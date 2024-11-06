@@ -7,4 +7,3 @@ from .utils import NominalException, printer, types, helper
 # Import the standard classes that are commonly used
 from .connection import Credentials
 from .simulation import *
-from .simulation.session import Session
