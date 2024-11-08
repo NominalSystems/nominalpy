@@ -51,7 +51,6 @@ class Credentials:
 
         # Fetch the version from the package information and only select the first two digits
         package_version: str = version('nominalpy')
-        package_version = package_version[:package_version.rfind(".")]
         self.version = "v" + package_version
 
         # Configure the URL
