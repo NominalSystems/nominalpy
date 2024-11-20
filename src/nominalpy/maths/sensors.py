@@ -15,6 +15,8 @@ def calculate_focal_length(area_mm2: float | np.ndarray, fov_degrees: float | np
     # Sanitise the inputs
     if np.isnan(area_mm2) or np.isnan(fov_degrees):
         raise ValueError("Input values cannot be NaN")
+    if np.isinf(area_mm2) or np.isinf(fov_degrees):
+        raise ValueError("Input values cannot be infinite")
     if area_mm2 <= 0:
         raise ValueError("Sensor area must be positive")
     if fov_degrees <= 0 or fov_degrees >= 180:
