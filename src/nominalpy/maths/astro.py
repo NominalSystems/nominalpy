@@ -13,6 +13,7 @@ import numpy as np
 from typing import Tuple
 from . import constants
 from . import utils
+from .kinematics import euler2, euler3
 from ..utils import NominalException
 
 
@@ -526,7 +527,7 @@ def geodetic_lla_to_pcpf (lla: np.ndarray, planet="Earth") -> np.ndarray:
     return np.array([X, Y, Z], dtype=np.float64)
 
 
-def geodetic_lla_to_pcpf_deg (lla: np.ndarray, planet="Earth") -> np.ndarray:
+def geodetic_lla_to_pcpf_deg(lla: np.ndarray, planet="Earth") -> np.ndarray:
     """
     Converts from Latitude/Longitude/Altitude (LLA) coordinates to Planet-Centered,
     Planet-Fixed (PCPF) coordinates given a planet radius.
@@ -544,6 +545,55 @@ def geodetic_lla_to_pcpf_deg (lla: np.ndarray, planet="Earth") -> np.ndarray:
     lat: float = np.radians(lla[0])  # Latitude in radians
     lon: float = np.radians(lla[1])  # Longitude in radians
     return geodetic_lla_to_pcpf(np.array([lat, lon, lla[2]], dtype=np.float64), planet=planet)
+
+
+def geodetic_lla_to_sez_deg(latitude: float, longitude: float) -> np.ndarray:
+    """
+    Convert geodetic coordinates (latitude and longitude) to the SEZ (South, East, Zenith) rotation matrix.
+
+    :param latitude: Latitude in degrees.
+    :type latitude: float
+    :param longitude: Longitude in degrees.
+    :type longitude: float
+    :return: 3x3 SEZ rotation matrix.
+    :rtype: numpy.ndarray
+    """
+    # Convert degrees to radians
+    lat_rad = np.deg2rad(latitude)
+    lon_rad = np.deg2rad(longitude)
+
+    # Correct rotation angle: -(90° - latitude)
+    rot_y_angle = -(np.pi / 2 - lat_rad)  # Rotation about Y-axis
+
+    # Create rotation matrices
+    rot2 = euler2(rot_y_angle)  # Rotation about Y-axis
+    rot3 = euler3(lon_rad)      # Rotation about Z-axis
+
+    # Apply rotations: First rotate about Z, then about Y
+    sez_rotation_matrix = rot2 @ rot3
+    return sez_rotation_matrix
+
+
+def geodetic_lla_to_enu_deg(latitude: float, longitude: float) -> np.ndarray:
+    """
+    Convert geodetic coordinates (latitude and longitude) to the ENU (East, North, Up) rotation matrix.
+
+    :param latitude: Latitude in degrees.
+    :type latitude: float
+    :param longitude: Longitude in degrees.
+    :type longitude: float
+    :return: 3x3 ENU rotation matrix.
+    :rtype: numpy.ndarray
+    """
+    # First, convert to SEZ frame using the corrected LLAToSEZ function
+    sez_rotation_matrix = geodetic_lla_to_sez_deg(latitude, longitude)
+
+    # Define rotation matrix: Rotate SEZ by +90 degrees about Up (Z) to get ENU
+    rot_z_90 = euler3(np.deg2rad(90.0))  # Rotation about Z-axis by +90 degrees
+
+    # Apply rotation to convert SEZ to ENU
+    enu_rotation_matrix = rot_z_90 @ sez_rotation_matrix
+    return enu_rotation_matrix
 
 
 def calculate_orbital_velocity(r_bn_n_mag: float, semi_major_axis: float, gm: float = constants.EARTH_MU) -> float:
