@@ -14,6 +14,7 @@ from typing import Tuple
 from . import constants
 from . import utils
 from .kinematics import euler2, euler3
+from .utils import normalize_angle
 from ..utils import NominalException
 
 
@@ -547,7 +548,7 @@ def geodetic_lla_to_pcpf_deg(lla: np.ndarray, planet="Earth") -> np.ndarray:
     return geodetic_lla_to_pcpf(np.array([lat, lon, lla[2]], dtype=np.float64), planet=planet)
 
 
-def geodetic_lla_to_sez_deg(latitude: float, longitude: float) -> np.ndarray:
+def t_pcpf_to_sez_using_geodetic_lla_deg(latitude: float, longitude: float) -> np.ndarray:
     """
     Convert geodetic coordinates (latitude and longitude) to the SEZ (South, East, Zenith) rotation matrix.
 
@@ -559,22 +560,17 @@ def geodetic_lla_to_sez_deg(latitude: float, longitude: float) -> np.ndarray:
     :rtype: numpy.ndarray
     """
     # Convert degrees to radians
-    lat_rad = np.deg2rad(latitude)
-    lon_rad = np.deg2rad(longitude)
-
-    # Correct rotation angle: -(90° - latitude)
-    rot_y_angle = -(np.pi / 2 - lat_rad)  # Rotation about Y-axis
-
-    # Create rotation matrices
-    rot2 = euler2(rot_y_angle)  # Rotation about Y-axis
-    rot3 = euler3(lon_rad)      # Rotation about Z-axis
-
-    # Apply rotations: First rotate about Z, then about Y
-    sez_rotation_matrix = rot2 @ rot3
-    return sez_rotation_matrix
+    t_pcpf_to_enu = t_pcpf_to_enu_using_geodetic_lla_deg(latitude, longitude)
+    # Convert ENU to SEZ
+    t_enu_to_sez = np.array([
+        [0, -1, 0],
+        [1, 0, 0],
+        [0, 0, 1]
+    ])
+    return t_enu_to_sez @ t_pcpf_to_enu
 
 
-def geodetic_lla_to_enu_deg(latitude: float, longitude: float) -> np.ndarray:
+def t_pcpf_to_enu_using_geodetic_lla_deg(latitude: float, longitude: float) -> np.ndarray:
     """
     Convert geodetic coordinates (latitude and longitude) to the ENU (East, North, Up) rotation matrix.
 
@@ -585,15 +581,37 @@ def geodetic_lla_to_enu_deg(latitude: float, longitude: float) -> np.ndarray:
     :return: 3x3 ENU rotation matrix.
     :rtype: numpy.ndarray
     """
-    # First, convert to SEZ frame using the corrected LLAToSEZ function
-    sez_rotation_matrix = geodetic_lla_to_sez_deg(latitude, longitude)
+    # Convert the latitude and longitude into radians
+    lat_rad = np.deg2rad(latitude)
+    lon_rad = np.deg2rad(longitude)
+    # Create the transformation matrix for pcpf into enu
+    t_pcpf_to_enu = np.array([
+        [-np.sin(lon_rad), np.cos(lon_rad), 0],
+        [-np.cos(lon_rad) * np.sin(lat_rad), -np.sin(lon_rad) * np.sin(lat_rad), np.cos(lat_rad)],
+        [np.cos(lon_rad) * np.cos(lat_rad), np.sin(lon_rad) * np.cos(lat_rad), np.sin(lat_rad)]
+    ])
+    return t_pcpf_to_enu
 
-    # Define rotation matrix: Rotate SEZ by +90 degrees about Up (Z) to get ENU
-    rot_z_90 = euler3(np.deg2rad(90.0))  # Rotation about Z-axis by +90 degrees
 
-    # Apply rotation to convert SEZ to ENU
-    enu_rotation_matrix = rot_z_90 @ sez_rotation_matrix
-    return enu_rotation_matrix
+def enu_to_azimuth_elevation(enu_vector: np.ndarray) -> Tuple[float, float]:
+    """
+    Convert an ENU vector to azimuth and elevation angles.
+
+    :param enu_vector: ENU vector.
+    :type enu_vector: numpy.ndarray
+    :return: Azimuth and elevation angles.
+    :rtype: tuple
+    """
+    # Calculate azimuth angle
+    azimuth = np.arctan2(enu_vector[0], enu_vector[1])
+    azimuth = normalize_angle(azimuth, angle_max=2 * np.pi)
+    # Handle devision by zero
+    norm = np.linalg.norm(enu_vector)
+    if norm == 0:
+        raise ValueError("The input vector is a zero vector.")
+    # Calculate elevation angle
+    elevation = np.arcsin(enu_vector[2] / norm)
+    return azimuth, elevation
 
 
 def calculate_orbital_velocity(r_bn_n_mag: float, semi_major_axis: float, gm: float = constants.EARTH_MU) -> float:
