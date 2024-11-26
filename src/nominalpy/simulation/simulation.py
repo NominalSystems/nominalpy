@@ -628,8 +628,14 @@ class Simulation ():
         # Get the tracking system
         system: System = self.get_system(TRACKING_SYSTEM)
 
-        # Invoke the track object
-        system.invoke("TrackObject", instance.id, isAdvanced)
+        # Check if the ID is a string and a valid GUID, as the GUID could be passed in
+        # to the function instead.
+        if type(instance) is str and helper.is_valid_guid(instance):
+            system.invoke("TrackObject", instance, isAdvanced)
+        elif isinstance(instance, Instance):
+            system.invoke("TrackObject", instance.id, isAdvanced)
+        else:
+            raise NominalException("Failed to track object as the instance was not a valid type.")
 
     def set_tracking_interval (self, interval: float) -> None:
         '''
@@ -673,8 +679,11 @@ class Simulation ():
         # Loop through all pages (which is at least 1)
         while page < page_count:
 
+            # Get the instance ID, based on whether it is an instance or a string
+            id: str = instance.id if isinstance(instance, Instance) else instance
+
             # Invoke the query object on the API, with the current page
-            page_data: dict = system.invoke("ExportToAPI", instance.id, page)
+            page_data: dict = system.invoke("ExportToAPI", id, page)
             if page_data == None:
                 return None
             

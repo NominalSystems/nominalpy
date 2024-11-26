@@ -20,3 +20,6 @@ PHYSICAL_OBJECT     = "NominalSystems.Universe.PhysicalObject"
 
 SPACECRAFT          = "NominalSystems.Universe.Spacecraft"
 '''This is a spacecraft class that can be initialised at some location in space.'''
+
+TELEMETRY_SYSTEM    = "NominalSystems.Classes.TelemetrySystem"
+'''This is the telemetry system that tracks the links between antennae.'''
