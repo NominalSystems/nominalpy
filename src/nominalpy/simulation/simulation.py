@@ -12,7 +12,7 @@ from .message import Message
 from .object import Object
 from .behaviour import Behaviour
 from .system import System
-from ..connection import Credentials, http
+from ..connection import Credentials, http_requests
 from ..utils import NominalException, printer, helper
 from ..data import SimulationData
 
@@ -192,7 +192,7 @@ class Simulation ():
             request["data"] = kwargs
 
         # Create the object using a post request
-        result = http.post(self.__credentials, "object", request)
+        result = http_requests.post(self.__credentials, "object", request)
         if result == None:
             raise NominalException("Failed to create object of type '%s'." % type)
         
@@ -234,7 +234,7 @@ class Simulation ():
             request["data"] = kwargs
 
         # Create the behaviour using a post request
-        result = http.post(self.__credentials, "object", request)
+        result = http_requests.post(self.__credentials, "object", request)
         if result == None:
             raise NominalException("Failed to create behaviour of type '%s'." % type)
         
@@ -278,7 +278,7 @@ class Simulation ():
             return system
 
         # Otherwise, check if the system already exists
-        id: str = http.patch(self.__credentials, "simulation", {"name": "FindObject", "args": [type]})
+        id: str = http_requests.patch(self.__credentials, "simulation", {"name": "FindObject", "args": [type]})
         if not helper.is_valid_guid(id):
 
             # Create the request
@@ -287,7 +287,7 @@ class Simulation ():
                 request["data"] = kwargs
             
             # Attempt to create the system
-            response = http.post(self.__credentials, "object", request)
+            response = http_requests.post(self.__credentials, "object", request)
             if response == None:
                 raise NominalException("Failed to create system of type '%s'." % type)
             id = response["guid"]
@@ -330,7 +330,7 @@ class Simulation ():
             request["data"] = kwargs
 
         # Create the behaviour using a post request
-        result = http.post(self.__credentials, "object", request)
+        result = http_requests.post(self.__credentials, "object", request)
         if result == None:
             raise NominalException("Failed to create message of type '%s'." % type)
         
@@ -385,7 +385,7 @@ class Simulation ():
         type = helper.validate_type(type)
 
         # Create the request to the function
-        result = http.patch(self.__credentials, "simulation", {"name": "FindObject", "args": [type]})
+        result = http_requests.patch(self.__credentials, "simulation", {"name": "FindObject", "args": [type]})
 
         # If the result is not a valid GUID, return None
         if not helper.is_valid_guid(result):
@@ -417,7 +417,7 @@ class Simulation ():
         type = helper.validate_type(type)
 
         # Create the request to the function
-        result = http.patch(self.__credentials, "simulation", {"name": "FindObjects", "args": [type]})
+        result = http_requests.patch(self.__credentials, "simulation", {"name": "FindObjects", "args": [type]})
 
         # If the result is not a list or is empty, return a missing list
         if not isinstance(result, list) or len(result) == 0:
@@ -472,7 +472,7 @@ class Simulation ():
         self.__ticked = False
 
         # Ensure the simulation is reset
-        http.patch(self.__credentials, "simulation", {"name": "Dispose"})
+        http_requests.patch(self.__credentials, "simulation", {"name": "Dispose"})
     
     def tick (self, step: float = 1e-1) -> None:
         '''
@@ -491,7 +491,7 @@ class Simulation ():
             self.__ticked = True
 
         # Invoke the tick function on the simulation
-        http.patch(self.__credentials, "simulation", {"name": "TickSeconds", "args": [step]})
+        http_requests.patch(self.__credentials, "simulation", {"name": "TickSeconds", "args": [step]})
 
         # Update the time
         self.__time += step
@@ -628,8 +628,14 @@ class Simulation ():
         # Get the tracking system
         system: System = self.get_system(TRACKING_SYSTEM)
 
-        # Invoke the track object
-        system.invoke("TrackObject", instance.id, isAdvanced)
+        # Check if the ID is a string and a valid GUID, as the GUID could be passed in
+        # to the function instead.
+        if type(instance) is str and helper.is_valid_guid(instance):
+            system.invoke("TrackObject", instance, isAdvanced)
+        elif isinstance(instance, Instance):
+            system.invoke("TrackObject", instance.id, isAdvanced)
+        else:
+            raise NominalException("Failed to track object as the instance was not a valid type.")
 
     def set_tracking_interval (self, interval: float) -> None:
         '''
@@ -652,7 +658,8 @@ class Simulation ():
         Queries the object within the simulation. This will query the object and return the data
         that has been stored for the object. This will return the data as a data frame. If there
         is no data for the object, or if the object has not yet been tracked, an empty data frame 
-        will be returned.
+        will be returned. Due to the API having a maximum limit of data, this will also fetch the
+        data in pages before pre-compiling the data into a single data frame.
 
         :param instance:    The instance to query within the simulation
         :type instance:     Instance
@@ -664,8 +671,37 @@ class Simulation ():
         # Get the tracking system
         system: System = self.get_system(TRACKING_SYSTEM)
 
-        # Invoke the query object
-        data = system.invoke("ExportToJSON", instance.id)
+        # Store the total data and the current page being called
+        data: dict = {}
+        page_count: int = 1
+        page: int = 0
+
+        # Loop through all pages (which is at least 1)
+        while page < page_count:
+
+            # Get the instance ID, based on whether it is an instance or a string
+            id: str = instance.id if isinstance(instance, Instance) else instance
+
+            # Invoke the query object on the API, with the current page
+            page_data: dict = system.invoke("ExportToAPI", id, page)
+            if page_data == None:
+                return None
+            
+            # If the first page, then store the page data including the metadata
+            if page == 0:
+                data = page_data
+
+            # Otherwise, simply extend the data from the next pages
+            else:
+                data["Data"].extend(page_data["Data"])
+
+            # Update the page count
+            page_count = page_data["Count"]
+            page += 1
+
+        # Remove the page information as it is not needed
+        del data["Page"]
+        del data["Count"]
 
         # Create and return the data frame
         return SimulationData(data)
@@ -744,7 +780,7 @@ class Simulation ():
         '''
 
         # Get the sessions from the API and throw an error if there are no sessions
-        result: list = http.get(credentials, "session")
+        result: list = http_requests.get(credentials, "session")
         sessions: dict = {}
         for r in result:
             sessions[r['guid']] = (r['status'] == "RUNNING")
@@ -767,16 +803,15 @@ class Simulation ():
         # Output information about creating a sessiojn
         printer.warning("Attempting to create a new session with your API key. This may take up to a minute.")
 
-        # Fetch the version from the package information and only select the first two digits
+        # Fetch the version from the package information
         package_version = version('nominalpy')
-        package_version = package_version[:package_version.rfind(".")]
 
         # Create a new session from the API
         data = {
             'version': package_version, 
             'duration': 7200
         }
-        response = http.post(credentials, "session", data=data)
+        response = http_requests.post(credentials, "session", data=data)
 
         # Check if there was no session, throw an error with the message
         if "guid" not in response:
@@ -830,7 +865,7 @@ class Simulation ():
         else:
             active_sessions: str = [s for s in sessions.keys() if sessions[s]]
             if len(active_sessions) <= index:
-                session = sessions.keys()[index]
+                session = list(sessions.keys())[index]
             else:
                 session = active_sessions[index]
 

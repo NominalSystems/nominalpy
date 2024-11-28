@@ -96,3 +96,40 @@ def mrp_to_dcm(mrp: np.ndarray) -> np.ndarray:
     c *= 1/d
 
     return c
+
+
+def euler2(angle_rad: float) -> np.ndarray:
+    """
+    Create a rotation matrix for a rotation about the Y-axis.
+
+    :param angle_rad: Rotation angle in radians.
+    :type angle_rad: float
+    :return: 3x3 rotation matrix about the Y-axis.
+    :rtype: numpy.ndarray
+    """
+    cos_x = np.cos(angle_rad)
+    sin_x = np.sin(angle_rad)
+    rotation_matrix = np.array([
+        [cos_x, 0.0, sin_x],
+        [0.0,   1.0, 0.0],
+        [-sin_x, 0.0, cos_x]
+    ])
+    return rotation_matrix
+
+def euler3(angle_rad: float) -> np.ndarray:
+    """
+    Create a rotation matrix for a rotation about the Z-axis.
+
+    :param angle_rad: Rotation angle in radians.
+    :type angle_rad: float
+    :return: 3x3 rotation matrix about the Z-axis.
+    :rtype: numpy.ndarray
+    """
+    cos_x = np.cos(angle_rad)
+    sin_x = np.sin(angle_rad)
+    rotation_matrix = np.array([
+        [cos_x, -sin_x, 0.0],
+        [sin_x,  cos_x, 0.0],
+        [0.0,    0.0,   1.0]
+    ])
+    return rotation_matrix
