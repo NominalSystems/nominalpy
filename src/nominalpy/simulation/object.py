@@ -4,7 +4,7 @@
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 from __future__ import annotations
-from ..connection import Credentials, http
+from ..connection import Credentials, http_requests
 from ..utils import printer, NominalException, helper
 from .instance import Instance
 from .behaviour import Behaviour
@@ -163,7 +163,7 @@ class Object (Instance):
             request["data"] = kwargs
 
         # Create the object using a post request
-        result = http.post(self._credentials, "object", request)
+        result = http_requests.post(self._credentials, "object", request)
         if not result:
             raise NominalException("Failed to create object of type '%s'." % type)
         id: str = result["guid"]
@@ -250,7 +250,7 @@ class Object (Instance):
             request["data"] = kwargs
 
         # Create the behaviour using a post request
-        result = http.post(self._credentials, "object", request)
+        result = http_requests.post(self._credentials, "object", request)
         if not result:
             raise NominalException("Failed to create behaviour of type '%s'." % type)
         id: str = result["guid"]
@@ -340,7 +340,7 @@ class Object (Instance):
             return model
         
         # Attempt to find or create the model
-        id: str = http.patch(self._credentials, "object", {"guid": self.id, "name": "GetModel", "args": [type]})
+        id: str = http_requests.patch(self._credentials, "object", {"guid": self.id, "name": "GetModel", "args": [type]})
         if not helper.is_valid_guid(id):
             raise NominalException("Failed to create model of type '%s'." % type)
         

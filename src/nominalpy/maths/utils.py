@@ -41,21 +41,31 @@ def acos_quadrant_check(adjacent: float, hypotenuse: float, test: float) -> floa
     return 2*np.pi - np.arccos(rat) if test < 0 else np.arccos(rat)
 
 
-def normalize_angle(angle: float, angle_max: float = 2*np.pi) -> float:
+def normalize_angle(angle: float | np.ndarray, angle_max: float = 2*np.pi) -> float | np.ndarray:
     """
-    normalize an angle between 0 <= theta < max, where max is an arbitrary angle
+    Normalize an angle or array of angles between 0 <= theta < angle_max, where angle_max is an arbitrary angle.
 
-    :param angle:   The angle to be normalized
-    :type angle:    float
-    :param angle_max:     The maximum value for the angle
-    :type angle_max:      float
+    :param angle: The angle (float) or array of angles (numpy.ndarray) to be normalized.
+    :type angle: float or numpy.ndarray
+    :param angle_max: The maximum value for the angle range (default: 2*pi for radians).
+    :type angle_max: float
 
-    :returns:       The normalized angle
-    :rtype:         float
+    :returns: The normalized angle (float) or array of angles (numpy.ndarray).
+    :rtype: float or numpy.ndarray
+
+    :example:
+    >>> normalize_angle(-3.0, angle_max=360)
+    357.0
+    >>> normalize_angle(np.array([-3.0, 0.0, 6.5, 12.0, -9.0]), angle_max=360)
+    array([357. ,   0. ,   6.5,  12. , 351. ])
     """
     angle = np.fmod(angle, angle_max)
-    if angle < 0:
-        angle += angle_max
+    # Add the angle max if the angle is negative. Handle for both scalar and array angles
+    if np.isscalar(angle):
+        if angle < 0:
+            angle += angle_max
+    else:
+        angle[angle < 0] += angle_max
     return angle
 
 
