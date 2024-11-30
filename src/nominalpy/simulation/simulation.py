@@ -628,8 +628,14 @@ class Simulation ():
         # Get the tracking system
         system: System = self.get_system(TRACKING_SYSTEM)
 
-        # Invoke the track object
-        system.invoke("TrackObject", instance.id, isAdvanced)
+        # Check if the ID is a string and a valid GUID, as the GUID could be passed in
+        # to the function instead.
+        if type(instance) is str and helper.is_valid_guid(instance):
+            system.invoke("TrackObject", instance, isAdvanced)
+        elif isinstance(instance, Instance):
+            system.invoke("TrackObject", instance.id, isAdvanced)
+        else:
+            raise NominalException("Failed to track object as the instance was not a valid type.")
 
     def set_tracking_interval (self, interval: float) -> None:
         '''
@@ -652,7 +658,8 @@ class Simulation ():
         Queries the object within the simulation. This will query the object and return the data
         that has been stored for the object. This will return the data as a data frame. If there
         is no data for the object, or if the object has not yet been tracked, an empty data frame 
-        will be returned.
+        will be returned. Due to the API having a maximum limit of data, this will also fetch the
+        data in pages before pre-compiling the data into a single data frame.
 
         :param instance:    The instance to query within the simulation
         :type instance:     Instance
@@ -664,8 +671,37 @@ class Simulation ():
         # Get the tracking system
         system: System = self.get_system(TRACKING_SYSTEM)
 
-        # Invoke the query object
-        data = system.invoke("ExportToJSON", instance.id)
+        # Store the total data and the current page being called
+        data: dict = {}
+        page_count: int = 1
+        page: int = 0
+
+        # Loop through all pages (which is at least 1)
+        while page < page_count:
+
+            # Get the instance ID, based on whether it is an instance or a string
+            id: str = instance.id if isinstance(instance, Instance) else instance
+
+            # Invoke the query object on the API, with the current page
+            page_data: dict = system.invoke("ExportToAPI", id, page)
+            if page_data == None:
+                return None
+            
+            # If the first page, then store the page data including the metadata
+            if page == 0:
+                data = page_data
+
+            # Otherwise, simply extend the data from the next pages
+            else:
+                data["Data"].extend(page_data["Data"])
+
+            # Update the page count
+            page_count = page_data["Count"]
+            page += 1
+
+        # Remove the page information as it is not needed
+        del data["Page"]
+        del data["Count"]
 
         # Create and return the data frame
         return SimulationData(data)
