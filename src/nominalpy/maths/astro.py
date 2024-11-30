@@ -593,7 +593,7 @@ def t_pcpf_to_enu_using_geodetic_lla_deg(latitude: float, longitude: float) -> n
     return t_pcpf_to_enu
 
 
-def enu_to_azimuth_elevation(enu_vector: np.ndarray) -> Tuple[float, float]:
+def enu_to_azimuth_elevation(enu_vectors: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Convert an ENU vector to azimuth and elevation angles.
 
@@ -602,16 +602,50 @@ def enu_to_azimuth_elevation(enu_vector: np.ndarray) -> Tuple[float, float]:
     :return: Azimuth and elevation angles.
     :rtype: tuple
     """
+    # Check if the input is a 1D array and convert it to 2D if necessary
+    if enu_vectors.ndim == 1:
+        enu_vectors = enu_vectors[np.newaxis, :]
     # Calculate azimuth angle
-    azimuth = np.arctan2(enu_vector[0], enu_vector[1])
+    azimuth = np.arctan2(enu_vectors[:, 0], enu_vectors[:, 1])
     azimuth = normalize_angle(azimuth, angle_max=2 * np.pi)
     # Handle devision by zero
-    norm = np.linalg.norm(enu_vector)
-    if norm == 0:
+    norm = np.linalg.norm(enu_vectors, axis=1)
+    if np.any(norm == 0):
         raise ValueError("The input vector is a zero vector.")
     # Calculate elevation angle
-    elevation = np.arcsin(enu_vector[2] / norm)
+    elevation = np.arcsin(enu_vectors[:, 2] / norm)
     return azimuth, elevation
+
+
+def pcpf_to_azimuth_elevation(latitude_deg: float | np.ndarray, longitude_deg: float | np.ndarray,
+                              pcpf_vectors: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Convert a PCPF vector to azimuth and elevation angles.
+
+    :param latitude_deg: Latitude in degrees.
+    :type latitude_deg: float | np.ndarray
+    :param longitude_deg: Longitude in degrees.
+    :type longitude_deg: float | np.ndarray
+    :param pcpf_vector: PCPF vector.
+    :type pcpf_vector: np.ndarray
+    :return: Azimuth and elevation angles.
+    :rtype: tuple
+    """
+    if isinstance(latitude_deg, float):
+        latitude_deg = np.array([latitude_deg])
+    if isinstance(longitude_deg, float):
+        longitude_deg = np.array([longitude_deg])
+    # Convert PCPF to ENU
+    t_pcpf_to_enus = [t_pcpf_to_enu_using_geodetic_lla_deg(lat, lon) for lat, lon in zip(latitude_deg, longitude_deg)]
+    t_pcpf_to_enus = np.array(t_pcpf_to_enus)
+    # Make sure that the dimensions of the input vectors are compatible with the einsum operation
+    if pcpf_vectors.ndim == 1:
+        pcpf_vectors = pcpf_vectors[np.newaxis, :]
+
+    # Apply rotation to convert LoS vectors to ENU
+    enu_vectors = np.matmul(t_pcpf_to_enus, pcpf_vectors[..., np.newaxis]).squeeze(-1)
+    # Convert ENU to azimuth and elevation
+    return enu_to_azimuth_elevation(enu_vectors)
 
 
 def calculate_orbital_velocity(r_bn_n_mag: float, semi_major_axis: float, gm: float = constants.EARTH_MU) -> float:
