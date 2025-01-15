@@ -696,6 +696,9 @@ class Simulation ():
                 data["Data"].extend(page_data["Data"])
 
             # Update the page count
+            # Handle the case where the page count is not present in the page data
+            if "Count" not in page_data:
+                raise NominalException("No data can be retrieved for this query. Make sure the data was subscribed to.")
             page_count = page_data["Count"]
             page += 1
 
