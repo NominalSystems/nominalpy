@@ -593,6 +593,63 @@ def t_pcpf_to_enu_using_geodetic_lla_deg(latitude: float, longitude: float) -> n
     return t_pcpf_to_enu
 
 
+def azimuth_elevation_to_enu(azimuth: np.ndarray | float,
+                             elevation: np.ndarray | float,
+                             slant_range: np.ndarray | float) -> np.ndarray:
+    """
+    Convert azimuth/elevation angles and range into a local ENU (East, North, Up) vector.
+    The function is vectorized, so scalar or array inputs are both supported.
+
+    This assumes:
+      - Azimuth (az) is measured clockwise from North (0° = North, 90° = East),
+        or some consistent convention where sin/cos usage lines up with East and North.
+      - Elevation (el) is the angle above the local horizon.
+      - Range (r) is the slant distance from the sensor to the target.
+
+    :param azimuth:
+        Azimuth angle(s) in radians. If array, shape can be broadcastable with `elevation` and `slant_range`.
+    :type azimuth: numpy.ndarray | float
+    :param elevation:
+        Elevation angle(s) in radians above the local horizon. If array, shape can be broadcastable.
+    :type elevation: numpy.ndarray | float
+    :param slant_range:
+        Slant range(s) in the same units you want the ENU result (e.g. meters).
+        If array, shape must be broadcastable with azimuth/elevation.
+    :type slant_range: numpy.ndarray | float
+    :return:
+        ENU coordinates as a NumPy array of shape (..., 3).
+        If inputs are scalar, returns shape (3,).
+        The order is [East, North, Up].
+    :rtype: numpy.ndarray
+
+    Example usage:
+    >>> enu_vec = azimuth_elevation_to_enu(azimuth=0.0, elevation=np.pi/4, slant_range=1000.0)
+    >>> print(enu_vec)  # e.g. [ 0.   707.10678119 707.10678119 ]
+    """
+
+    # Convert all inputs to numpy arrays for vectorized operations,
+    # preserving scalar inputs as 0D arrays (NumPy will broadcast).
+    az = np.asarray(azimuth, dtype=float)
+    el = np.asarray(elevation, dtype=float)
+    r  = np.asarray(slant_range, dtype=float)
+
+    # Compute horizontal distance (the ground projection) = r * cos(el)
+    # This is the distance in the local horizontal plane from the sensor to target.
+    horizontal_dist = r * np.cos(el)
+
+    # "East" component = horizontal_dist * sin(az)
+    # "North" component = horizontal_dist * cos(az)
+    # "Up" component = r * sin(el)
+    east  = horizontal_dist * np.sin(az)
+    north = horizontal_dist * np.cos(az)
+    up    = r * np.sin(el)
+
+    # Stack results along the last axis => shape (..., 3)
+    enu = np.stack([east, north, up], axis=-1)
+
+    return enu
+
+
 def enu_to_azimuth_elevation(enu_vectors: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Convert an ENU vector to azimuth and elevation angles.
