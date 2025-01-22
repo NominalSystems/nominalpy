@@ -142,10 +142,27 @@ class Instance:
             kwargs[key] = helper.serialize(kwargs[key])
 
         # Add the put request to update the data
-        http_requests.put(self._credentials, "object", {'guid': self.id, 'data': kwargs })
+        http_requests.put(self._credentials, "object", { 'guid': self.id, 'data': kwargs })
 
         # Ensure that the cache is refreshed for the next get
         self._require_refresh()
+
+    def set_metadata(self, **kwargs) -> None:
+        '''
+        Sets the metadata of the object that is stored in the API. This will
+        take in a dictionary of parameters and values and will update the object
+        with the new metadata values. This will raise an exception if the data is invalid.
+
+        :param kwargs:  The parameters and values to set on the object
+        :type kwargs:   dict
+        '''
+
+        # For each of the key values, serialize the metadata
+        for key in kwargs:
+            kwargs[key] = helper.serialize(kwargs[key])
+
+        # Add the put request to update the metadata
+        http_requests.put(self._credentials, "object", { 'guid': self.id, 'meta': kwargs })
 
     def invoke (self, function: str, *args) -> any:
         '''
