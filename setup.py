@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 # Setup the project
 setup(
     name='nominalpy',
-    version='1.0.2',
+    version='1.1.0',
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     install_requires=["aiohttp", "urllib3", "paho-mqtt", "numpy", "pandas", "matplotlib", "setuptools", "pytest-asyncio"],
