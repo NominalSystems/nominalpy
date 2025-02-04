@@ -8,7 +8,7 @@ Example simulation scripts and usage of the NominalPy library can be found in th
 
 Additional tutorials and functionality for the library can be found on the public documentation at [docs.nominalsys.com](https://docs.nominalsys.com) under the Guides page.
 
-![Sun Pointing Simulation](https://docs.nominalsys.com/v1.0/articles/NominalSystems/guides/Python/GettingStarted/images/image.png)
+![Sun Pointing Simulation](https://docs.nominalsys.com/v1.1/articles/NominalSystems/guides/Python/GettingStarted/images/image.png)
 
 ---
 
@@ -52,7 +52,7 @@ pip install nominalpy --user --upgrade
 
 API Tokens are accessible via the [Nominal Website](https://www.nominalsys.com/account/log-in). Create a free account and start a 14-day trial of the software. This will give you access to unlimited sessions and requests during the trial period. The access token is available from the dashboard once the account is created and logged in.
 
-To enable your token, create a Credential object and pass into the Simulation class when constructing simulations. Alternatively, if using the example library, update the token in the `credential_helper.py` class for easier access to the token over multiple files. More information can be found in the [API Access Keys](https://docs.nominalsys.com/v1.0/articles/NominalSystems/guides/Python/GettingStarted/3_APIAccessKeys/index.html).
+To enable your token, create a Credential object and pass into the Simulation class when constructing simulations. Alternatively, if using the example library, update the token in the `credential_helper.py` class for easier access to the token over multiple files. More information can be found in the [API Access Keys](https://docs.nominalsys.com/v1.1/articles/NominalSystems/guides/Python/GettingStarted/3_APIAccessKeys/index.html).
 
 ---
 

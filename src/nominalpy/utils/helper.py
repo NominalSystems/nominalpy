@@ -9,6 +9,7 @@ can be turned into JSON and whether GUID IDs are valid. This also includes
 some methods for serializing and deserializing JSON data to standard formats.
 '''
 
+import re
 import numpy as np
 from datetime import datetime
 from ..utils import NominalException
@@ -104,7 +105,7 @@ def serialize (value: any) -> any:
         
     # Check if the value is a datetime
     if isinstance(value, datetime):
-        return value.strftime('%Y/%m/%d %H:%M:%S.%f')
+        return value.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
     
     # Check if the value is a simulation instance
     if hasattr(value, 'id') and hasattr(value, 'get_type'):
@@ -142,17 +143,18 @@ def deserialize (value: any) -> any:
     
     # Check if the value is a datetime string
     if isinstance(value, str):
-        try:
-            # Handle datetime string with variable microseconds length
-            date_part, time_part = value.split(" ")
-            if '.' in time_part:
-                time_main, microseconds = time_part.split(".")
-                if len(microseconds) > 6:
-                    microseconds = microseconds[:6]  # Truncate to 6 digits
-                value = f"{date_part} {time_main}.{microseconds}"
-            return datetime.strptime(value, '%Y/%m/%d %H:%M:%S.%f')
-        except ValueError:
-            return value
+
+        # Regular expression to match the expected datetime format
+        datetime_regex = r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{7}Z$"
+
+        # Check if the value matches the expected format
+        if re.match(datetime_regex, value):
+            # Attempt to parse the datetime
+            try:
+                # Attempt to parse the datetime
+                return datetime.strptime(value[:-2], "%Y-%m-%dT%H:%M:%S.%f")
+            except ValueError:
+                pass  # If parsing fails, return the original string
         
     # Return the value as is for other types
     return value
