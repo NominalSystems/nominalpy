@@ -10,6 +10,7 @@ from .instance import Instance
 from .message import Message
 from .object import Object
 from .behaviour import Behaviour
+from .model import Model
 from .system import System
 from ..connection import Credentials, http_requests
 from ..utils import NominalException, printer, helper
@@ -621,39 +622,118 @@ class Simulation:
         with open(path, "w") as file:
             json.dump(state, file)
 
-    def set_state(self, state: dict) -> bool:
+    def set_state(self, state: dict, cache_all: bool = False) -> bool:
         """
         Sets the state of the simulation to the specified state. This will set the state of the
         simulation to the state provided and return whether the state was set successfully. This
-        must be in a valid JSON dictionary form.
+        must be in a valid JSON dictionary form. If the cache_all flag is set to true, all objects
+        in the simulation will be cached and pulled from the API, which may take some time.
 
-        :param state:   The state to set the simulation to
-        :type state:    dict
+        :param state:       The state to set the simulation to
+        :type state:        dict
+        :param cache_all:   Whether to cache all objects in the simulation.
+        :type cache_all:    bool
 
         :returns:       Whether the state was set successfully
         :rtype:         bool
         """
+
+        # Clear the current state
+        self.reset()
 
         # Get the extension system
         system: System = self.get_system(EXTENSION_SYSTEM)
 
         # Load the state of the simulation
         success: bool = system.invoke("SetState", state)
+        if not success:
+            return False
+
+        # Only do the following if the cache is required
+        if cache_all:
+
+            # Get the extension system
+            system: System = self.get_system(EXTENSION_SYSTEM)
+
+            # Fetch all root objects using 'GetRootObjects'
+            objects: list = system.invoke("GetRootObjects", helper.empty_guid())
+            for id in objects:
+                if helper.is_valid_guid(id):
+
+                    # Create the root object
+                    obj: Object = Object(self.__credentials, id)
+                    self.__objects.append(obj)
+
+                    # Register it properly
+                    self.__load_object(obj)
+
+            # Fetch all root behaviours
+            behaviours: list = system.invoke("GetRootBehaviours", helper.empty_guid())
+            for id in behaviours:
+                if helper.is_valid_guid(id):
+
+                    # Create the root behaviour
+                    beh: Behaviour = Behaviour(self.__credentials, id)
+                    beh.get_messages()
+                    self.__behaviours.append(beh)
 
         # Ensure the refresh is required
         self.__require_refresh()
 
         # Return the success
-        return success
+        return True
 
-    def load_state(self, path: str) -> bool:
+    def __load_object(self, parent: Object) -> None:
+        """
+        Loads the object and its children from the API. This will load the object,
+        all its children, and all behaviours in the simulation.
+
+        :param parent:  The parent object to load the children from
+        :type parent:   Object
+        """
+
+        # If the object is missing, skip
+        if parent == None:
+            return
+
+        # Get the extension system
+        system: System = self.get_system(EXTENSION_SYSTEM)
+
+        # Fetch all children objects using 'GetRootObjects'
+        children: list = system.invoke("GetRootObjects", parent.id)
+        for id in children:
+            if helper.is_valid_guid(id):
+                obj: Object = parent._Object__register_child_with_id(id)
+                self.__load_object(obj)
+
+        # Fetch all behaviours
+        behaviours: list = system.invoke("GetRootBehaviours", parent.id)
+        for id in behaviours:
+            if helper.is_valid_guid(id):
+                behaviour: Behaviour = parent._Object__register_behaviour_with_id(id)
+                behaviour.get_messages()
+
+        # Fetch all models
+        models: list = parent.invoke("GetModels")
+        for id in models:
+            if helper.is_valid_guid(id):
+                model: Model = parent._Object__register_model_with_id(id)
+                model.get_messages()
+
+        # Cache all messages and load them into memory
+        parent.get_messages()
+
+    def load_state(self, path: str, cache_all: bool = False) -> bool:
         """
         Loads the state of the simulation from the specified path. This will load the state of the
         simulation from the path as a JSON file and return whether the state was loaded successfully.
-        If the path does not exist, an exception will be raised.
+        If the path does not exist, an exception will be raised. If the cache_all flag is set to true,
+        all objects in the simulation will be cached and pulled from the API, which may take some time.
 
-        :param path:    The path to load the state of the simulation from
-        :type path:     str
+        :param path:        The path to load the state of the simulation from
+        :type path:         str
+        :param cache_all:   Whether to cache all objects in the simulation.
+        :type cache_all:    bool
 
         :returns:       Whether the state was loaded successfully
         :rtype:         bool
@@ -666,7 +746,7 @@ class Simulation:
         # Load the state from the path
         with open(path, "r") as file:
             state: dict = json.load(file)
-            return self.set_state(state)
+            return self.set_state(state, cache_all)
 
     def track_object(self, instance: Instance, isAdvanced: bool = False) -> None:
         """

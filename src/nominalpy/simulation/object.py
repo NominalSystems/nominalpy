@@ -174,14 +174,34 @@ class Object(Instance):
             raise NominalException("Failed to create object of type '%s'." % type)
         id: str = result["guid"]
 
+        # Regsiter the child object with the ID
+        return self.__register_child_with_id(id, type)
+
+    def __register_child_with_id(self, id: str, type: str = "") -> Object:
+        """
+        Registers a child object to the object with the specified ID. The child object will
+        be created and attached to the object and will be returned to the user.
+
+        :param id:  The ID of the child object to create
+        :type id:   str
+        :param type:    The type of the child object to create
+        :type type:     str
+
+        :returns:   The child object that was created
+        :rtype:     Object
+        """
+
         # Create the object
         object = Object(self._credentials, id)
         object.__parent = self
+        object.__type = type
         self.__children.append(object)
         self.__instances[id] = object
 
         # Print the success message
-        printer.success(f"Child object of type '{type}' created successfully.")
+        printer.success(
+            f"Child object of type '{object.get_type()}' created successfully on object of type '{self.get_type()}'."
+        )
         return object
 
     def get_child(self, index: int) -> Object:
@@ -261,14 +281,34 @@ class Object(Instance):
             raise NominalException("Failed to create behaviour of type '%s'." % type)
         id: str = result["guid"]
 
+        # Register the behaviour with the ID
+        return self.__register_behaviour_with_id(id, type)
+
+    def __register_behaviour_with_id(self, id: str, type: str = "") -> Behaviour:
+        """
+        Registers a child behaviour to the object with the specified ID. The child behaviour will
+        be created and attached to the behaviour and will be returned to the user.
+
+        :param id:  The ID of the child behaviour to create
+        :type id:   str
+        :param type:    The type of the child behaviour to create
+        :type type:     str
+
+        :returns:   The child behaviour that was created
+        :rtype:     Object
+        """
+
         # Create the behaviour
         behaviour = Behaviour(self._credentials, id)
         behaviour.__parent = self
+        behaviour.__type = type
         self.__behaviours.append(behaviour)
         self.__instances[id] = behaviour
 
         # Print the success message
-        printer.success(f"Behaviour of type '{type}' created successfully.")
+        printer.success(
+            f"Behaviour of type '{behaviour.get_type()}' created successfully on object of type '{self.get_type()}'."
+        )
         return behaviour
 
     def get_behaviour(self, index: int) -> Behaviour:
@@ -357,17 +397,38 @@ class Object(Instance):
             raise NominalException("Failed to create model of type '%s'." % type)
 
         # Create the model with the ID
-        model = Model(self._credentials, id)
-        model.__target = self
-        self.__models[type] = model
-        self.__instances[id] = model
+        model = self.__register_model_with_id(id, type)
 
         # Set the data if it exists
         if len(kwargs) > 0:
             model.set(**kwargs)
+        return model
+
+    def __register_model_with_id(self, id: str, type: str = "") -> Model:
+        """
+        Registers a model to the object with the specified ID. The modelr will
+        be created and attached to the object and will be returned to the user.
+
+        :param id:      The ID of the model to create
+        :type id:       str
+        :param type:    The type of the model to create
+        :type type:     str
+
+        :returns:   The model that was created
+        :rtype:     Object
+        """
+
+        # Create the model with the ID
+        model = Model(self._credentials, id)
+        model.__target = self
+        model.__type = type
+        self.__models[type] = model
+        self.__instances[id] = model
 
         # Print the success message
-        printer.success(f"Model of type '{type}' created successfully.")
+        printer.success(
+            f"Model of type '{model.get_type()}' created successfully on object of type '{self.get_type()}'."
+        )
         return model
 
     def get_models(self) -> list:
