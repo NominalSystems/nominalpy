@@ -34,19 +34,19 @@ class Simulation:
     __credentials: Credentials = None
     """Specifies the credentials for accessing the API correctly."""
 
-    __objects: list = []
+    __objects: list[Object] = []
     """Defines all objects that are created within the simulation, with the simulation root."""
 
-    __behaviours: list = []
+    __behaviours: list[Behaviour] = []
     """Defines all behaviours that are created within the simulation, with the simulation root."""
 
-    __systems: dict = {}
+    __systems: dict[str:System] = {}
     """Defines all systems that are created within the simulation, with the simulation root."""
 
-    __messages: list = []
+    __messages: list[Message] = []
     """Defines all messages that are created within the simulation, with the simulation root."""
 
-    __planets: dict = {}
+    __planets: dict[str:Object] = {}
     """Defines all planets that are created within the simulation, with the simulation root."""
 
     __time: float = 0.0
@@ -451,6 +451,42 @@ class Simulation:
 
         # Return the list
         return instances
+
+    def get_root_objects(self) -> list[Object]:
+        """
+        Returns all the root objects that have been created within the simulation. This will
+        return all the objects that have been created directly within the simulation and not
+        part of any other object. This will return the objects as a list.
+
+        :returns:   The root objects that have been created within the simulation
+        :rtype:     list
+        """
+
+        return self.__objects
+
+    def get_root_behaviours(self) -> list[Behaviour]:
+        """
+        Returns all the root behaviours that have been created within the simulation. This will
+        return all the behaviours that have been created directly within the simulation and not
+        part of any other object. This will return the behaviours as a list.
+
+        :returns:   The root behaviours that have been created within the simulation
+        :rtype:     list
+        """
+
+        return self.__behaviours
+
+    def get_systems(self) -> list[System]:
+        """
+        Returns all the systems that have been created within the simulation. This will return
+        all the systems that have been created within the simulation. This will return the systems
+        as a list.
+
+        :returns:   The systems that have been created within the simulation
+        :rtype:     list
+        """
+
+        return list(self.__systems.values())
 
     def get_time(self) -> float:
         """
