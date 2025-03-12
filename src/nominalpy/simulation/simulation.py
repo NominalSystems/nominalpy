@@ -108,7 +108,7 @@ class Simulation:
                 if first:
                     first = False
                     printer.warning(
-                        "API session is in a pending state as the instance is starting. This may take up to 1 minute."
+                        "API session is in a pending state as the instance is starting. Please wait."
                     )
                 else:
                     printer.log("Waiting for session to be active...")
@@ -159,7 +159,7 @@ class Simulation:
         for object in self.__objects:
             if object.id == id:
                 return object
-            find: Instance = object.get_instance_with_id(id)
+            find: Instance = object.get_instance_by_id(id)
             if find != None:
                 return find
         for behaviour in self.__behaviours:
@@ -214,6 +214,69 @@ class Simulation:
         # Print the success message
         printer.success(f"Object of type '{type}' created successfully.")
         return object
+
+    def get_object_by_id(self, id: str) -> Object:
+        """
+        Attempts to find an object in the simulation with a specified ID. This will look through all objects
+        that exist and will attempt to find one that has been created. If the object does not exist, it will
+        create a Python object with the ID and, provided it exists in the simulation already, the data will
+        be fetched when used.
+
+        :param id:  The ID of the object to create
+        :type id:   str
+
+        :returns:   The object that has been found or newly created.
+        :rtype:     Object
+        """
+
+        # If the ID is not valid, raise an exception
+        if not helper.is_valid_guid(id):
+            raise NominalException(
+                "Failed to create a object from an ID as the guid was incorrect."
+            )
+
+        # Validate if any of the current objects have the same ID
+        for obj in self.__objects:
+            if obj.id == id:
+                return obj
+
+            # Check children
+            obj: Object = obj.get_child_by_id(id)
+            if obj != None:
+                return obj
+
+        # Create the object and add it to the array
+        obj = Object(self.__credentials, id)
+        self.__objects.append(obj)
+
+        # Print the success message
+        printer.success(f"Object with ID '{id}' created successfully.")
+        return obj
+
+    def get_objects(self, recurse: bool = True) -> list[Object]:
+        """
+        Returns all the objects that have been created within the simulation. This will return
+        all the objects that have been created within the simulation. This will return the objects
+        as a list. If the recurse flag is set to true, all children of the objects will be returned
+        as well.
+
+        :param recurse:     Whether to return all children of the objects
+        :type recurse:      bool
+
+        :returns:           The objects that have been created within the simulation
+        :rtype:             list
+        """
+
+        # If the recurse flag is set to true, return all objects
+        if recurse:
+            objects: list = []
+            for obj in self.__objects:
+                objects.append(obj)
+                objects.extend(obj.get_children())
+            return objects
+
+        # Otherwise, return the objects
+        return self.__objects
 
     def add_behaviour(self, type: str, **kwargs) -> Behaviour:
         """

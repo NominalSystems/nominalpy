@@ -59,6 +59,28 @@ class Object(Instance):
         self.__messages = {}
         self.__parent = None
 
+    @classmethod
+    def from_instance(instance: Instance) -> Object:
+        """
+        Converts the instance object to an object object.
+
+        :param instance:    The instance object to convert
+        :type instance:     Instance
+
+        :returns:           The object object that was created
+        :rtype:             Object
+        """
+
+        # Create the object and set the data
+        object = Object(instance._credentials, instance.id)
+        object.__dict__ = instance.__dict__
+        object.__data = instance.__data
+        object.__type = instance.__type
+        object._refresh_cache = instance._refresh_cache
+
+        # Return the object
+        return object
+
     def _get_data(self) -> None:
         """
         Overrides the base class method to fetch the data from the API and store it in the
@@ -126,7 +148,7 @@ class Object(Instance):
 
         return self.__parent
 
-    def get_instance_with_id(self, id: str) -> Instance:
+    def get_instance_by_id(self, id: str) -> Instance:
         """
         Returns the instance that is attached to the object with the specified ID. If the
         instance does not exist, None will be returned.
@@ -248,6 +270,36 @@ class Object(Instance):
 
         # Filter the children by type
         return [child for child in self.__children if child.get_type() == type]
+
+    def get_child_by_id(self, id: str, recurse: bool = True) -> Object:
+        """
+        Returns the child object that is attached to the object with the specified ID. If the
+        child object does not exist, None will be returned. This will also look down the chain
+        of instances to find the child object, if specified.
+
+        :param id:  The ID of the child object to fetch
+        :type id:   str
+        :param recurse:  Whether to look down the chain of instances to find the child object
+        :type recurse:   bool
+
+        :returns:   The child object that is attached to the object with the specified ID
+        :rtype:     Object
+        """
+
+        # Start by looking at the children for the ID
+        for child in self.__children:
+            if child.id == id:
+                return child
+
+        # If recurse is enabled, look down the chain of instances
+        if recurse:
+            for child in self.__children:
+                result = child.get_child_by_id(id, recurse)
+                if result:
+                    return result
+
+        # Return None if the child object is not found
+        return None
 
     def add_behaviour(self, type: str, **kwargs) -> Behaviour:
         """
