@@ -43,14 +43,21 @@ class Client:
         :type max_total_concurrent_requests: int
         """
 
-        # Start by ensuring the base_url is valid and ends with a slash
-        if not url.endswith("/"):
-            url += "/"
-        self.base_url = url
+        # Remove the trailing slash from the URL if it exists
+        if url.endswith("/"):
+            url = url[:-1]
 
         # Set the token and port
         self.token = token
         self.port = port
+
+        # Make the base url include the port
+        if "https://" in url and port == 443:
+            self.base_url = url + "/"
+        elif "http://" in url and port == 80:
+            self.base_url = url + "/"
+        else:
+            self.base_url = f"{url}:{port}/"
 
         # Set the maximum requests per client and total concurrent requests
         if max_requests_per_client < 1:
