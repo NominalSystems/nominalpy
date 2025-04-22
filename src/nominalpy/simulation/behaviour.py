@@ -4,7 +4,6 @@
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 from ..utils import printer, NominalException, helper
-from ..connection import Client
 from .instance import Instance
 from .message import Message
 from .context import Context
@@ -25,23 +24,19 @@ class Behaviour(Instance):
     __messages: dict = {}
     """Defines all messages that are attached to the object, by name."""
 
-    def __init__(
-        self, context: Context, client: Client, id: str, type: str = None
-    ) -> None:
+    def __init__(self, context: Context, id: str, type: str = None) -> None:
         """
-        Initialises the behaviour with the client and the ID of the behaviour.
+        Initialises the behaviour with the context and the ID of the behaviour.
 
         :param context:         The context of the simulation
         :type context:          Context
-        :param client:          The client to access the API
-        :type client:           Client
         :param id:              The GUID ID of the behaviour
         :type id:               str
         :param type:            The type of the system, if applicable
         :type type:             str
         """
 
-        super().__init__(context, client, id, type)
+        super().__init__(context, id, type)
 
         # Clear and reset any data
         self.__parent = None
@@ -91,7 +86,7 @@ class Behaviour(Instance):
             raise NominalException(f"Failed to find message with name '{name}'.")
 
         # Create the message object with the ID
-        message = Message(self._context, self._client, message_id)
+        message = Message(self._context, message_id)
         self.__messages[name] = message
 
         # Return the message of that name

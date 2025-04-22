@@ -209,7 +209,7 @@ class Simulation(Context):
             raise NominalException(f"Failed to create object of type '{type}'.")
 
         # Create the object and add it to the array
-        object: Object = Object(self, self.__client, object_id, type=type)
+        object: Object = Object(self, object_id, type=type)
         self.__objects.append(object)
 
         # Set the data if the kwargs exist
@@ -253,7 +253,7 @@ class Simulation(Context):
                 return obj
 
         # Create the object and add it to the array
-        obj = Object(self, self.__client, id)
+        obj = Object(self, id)
         self.__objects.append(obj)
 
         # Print the success message
@@ -315,7 +315,7 @@ class Simulation(Context):
             raise NominalException(f"Failed to create behaviour of type '{type}'.")
 
         # Create the behaviour and add it to the array
-        behaviour: Behaviour = Behaviour(self, self.__client, behaviour_id, type=type)
+        behaviour: Behaviour = Behaviour(self, behaviour_id, type=type)
         self.__behaviours.append(behaviour)
 
         # Set the data if the kwargs exist
@@ -367,7 +367,7 @@ class Simulation(Context):
                 raise NominalException(f"Failed to create system of type '{type}'.")
 
         # Create the system object from the ID
-        system: System = System(self, self.__client, id, type=type)
+        system: System = System(self, id, type=type)
         self.__systems[type] = system
 
         # Print the success message
@@ -404,7 +404,7 @@ class Simulation(Context):
             raise NominalException(f"Failed to create message of type '{type}'.")
 
         # Create the message and add it to the array
-        message: Message = Message(self, self.__client, message_id, type=type)
+        message: Message = Message(self, message_id, type=type)
         self.__messages.append(message)
 
         # Set the data if the kwargs exist
@@ -474,7 +474,7 @@ class Simulation(Context):
             return instance
 
         # Otherwise, create the instance and return it
-        return Instance(self, self.__client, result, type)
+        return Instance(self, id, type)
 
     async def find_instances_of_type(self, type: str) -> list:
         """
@@ -506,7 +506,7 @@ class Simulation(Context):
             if instance != None:
                 instances.append(instance)
             else:
-                instances.append(Instance(self, self.__client, result[i], type))
+                instances.append(Instance(self, result[i], type))
 
         # Return the list
         return instances
@@ -705,7 +705,7 @@ class Simulation(Context):
                 if helper.is_valid_guid(id):
 
                     # Create the root object
-                    obj: Object = Object(self, self.__client, id)
+                    obj: Object = Object(self, id)
                     self.__objects.append(obj)
 
                     # Register it properly
@@ -719,7 +719,7 @@ class Simulation(Context):
                 if helper.is_valid_guid(id):
 
                     # Create the root behaviour
-                    beh: Behaviour = Behaviour(self, self.__client, id)
+                    beh: Behaviour = Behaviour(self, id)
                     beh.get_messages()
                     self.__behaviours.append(beh)
 
@@ -920,7 +920,7 @@ class Simulation(Context):
             return None
 
         # Construct the object
-        object: Object = Object(self, self.__client, id, types.CELESTIAL_BODY)
+        object: Object = Object(self, id, types.CELESTIAL_BODY)
         self.__planets[name.lower()] = object
         self.__objects.append(object)
 
@@ -943,16 +943,6 @@ class Simulation(Context):
         # Create and return the data frame
         return (await self.query_object(instance=instance)).to_dataframe()
 
-    def get_client(self) -> Client:
-        """
-        Returns the client for the simulation. This will return the client that are
-        used to access the API and authenticate the user.
-
-        :returns:   The client for the simulation
-        :rtype:     Client
-        """
-        return self.__client
-
     async def get_function_library(self) -> Instance:
         """
         Returns the function library for the simulation. This will return the function library
@@ -962,6 +952,16 @@ class Simulation(Context):
         :rtype:     Instance
         """
         return await self.get_system(EXTENSION_SYSTEM)
+
+    def get_client(self) -> Client:
+        """
+        Returns the client for the simulation. This will return the client that are
+        used to access the API and authenticate the user.
+
+        :returns:   The client for the simulation
+        :rtype:     Client
+        """
+        return self.__client
 
     '''
     @classmethod

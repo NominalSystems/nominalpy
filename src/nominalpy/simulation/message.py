@@ -3,7 +3,6 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
-from ..connection import Client
 from .instance import Instance
 from .context import Context
 
@@ -15,21 +14,17 @@ class Message(Instance):
     data class and is not able to invoke any methods.
     """
 
-    def __init__(
-        self, context: Context, client: Client, id: str, type: str = None
-    ) -> None:
+    def __init__(self, context: Context, id: str, type: str = None) -> None:
         """
-        Initialises the message with a client and a
+        Initialises the message with a context and a
         unique GUID identifier for the message.
 
         :param context:     The context object that is used for the API
         :type context:      Context
-        :param client:      The client object that is used for the API
-        :type client:       Client
         :param id:          The unique identifier for the Entity in a GUID format
         :type id:           str
         :param type:        The type of the system, if applicable
         :type type:         str
         """
 
-        super().__init__(context, client, id, type)
+        super().__init__(context, id, type)

@@ -4,7 +4,6 @@
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 from __future__ import annotations
-from ..connection import Client
 from ..utils import printer, NominalException, helper
 from .instance import Instance
 from .behaviour import Behaviour
@@ -40,23 +39,19 @@ class Object(Instance):
     __parent: Object = None
     """Defines the parent object that the object is attached to."""
 
-    def __init__(
-        self, context: Context, client: Client, id: str, type: str = None
-    ) -> None:
+    def __init__(self, context: Context, id: str, type: str = None) -> None:
         """
-        Initialises the object with the credentials and the ID of the object.
+        Initialises the object with the context and the ID of the object.
 
         :param context:         The context of the object
         :type context:          Context
-        :param client:          The client to access the API
-        :type client:           Client
         :param id:              The GUID ID of the object
         :type id:               str
         :param type:            The type of the system, if applicable
         :type type:             str
         """
 
-        super().__init__(context, client, id, type)
+        super().__init__(context, id, type)
 
         # Clear and reset the data
         self.__instances = {}
@@ -79,9 +74,7 @@ class Object(Instance):
         """
 
         # Create the object and set the data
-        object = Object(
-            instance._context, instance._client, instance.id, instance.__type
-        )
+        object = Object(instance._context, instance.id, instance.__type)
         object.__dict__ = instance.__dict__
         object.__data = instance.__data
         object._refresh_cache = instance._refresh_cache
@@ -105,7 +98,7 @@ class Object(Instance):
         # Loop through the behaviours
         for id in await self.get("Behaviours"):
             if id not in self.__instances:
-                behaviour = Behaviour(self._context, self._client, id)
+                behaviour = Behaviour(self._context, id)
                 behaviour.__parent = self
                 self.__instances[id] = behaviour
                 self.__behaviours.append(behaviour)
@@ -116,7 +109,7 @@ class Object(Instance):
         # Loop through the children
         for id in await self.get("Children"):
             if id not in self.__instances:
-                child = Object(self._context, self._client, id)
+                child = Object(self._context, id)
                 child.__parent = self
                 self.__instances[id] = child
                 self.__children.append(child)
@@ -127,7 +120,7 @@ class Object(Instance):
         # Loop through the models
         for id in await self.get("Models"):
             if id not in self.__instances:
-                model = Model(self._context, self._client, id)
+                model = Model(self._context, id)
                 model.__target = self
                 self.__instances[id] = model
                 self.__models[model.get_type()] = model
@@ -228,7 +221,7 @@ class Object(Instance):
         """
 
         # Create the object
-        object = Object(self._context, self._client, id, type)
+        object = Object(self._context, id, type)
         object.__parent = self
         object.__type = type
         self.__children.append(object)
@@ -373,7 +366,7 @@ class Object(Instance):
         """
 
         # Create the behaviour
-        behaviour = Behaviour(self._context, self._client, id, type)
+        behaviour = Behaviour(self._context, id, type)
         behaviour.__parent = self
         behaviour.__type = type
         self.__behaviours.append(behaviour)
@@ -460,7 +453,9 @@ class Object(Instance):
             return model
 
         # Attempt to find or create the model
-        id: str = await self._client.post(f"{self.id}/ivk", ["GetModel", type])
+        id: str = await self._context.get_client().post(
+            f"{self.id}/ivk", ["GetModel", type]
+        )
         if not helper.is_valid_guid(id):
             raise NominalException(f"Failed to create model of type '{type}'.")
 
@@ -487,7 +482,7 @@ class Object(Instance):
         """
 
         # Create the model with the ID
-        model = Model(self._context, self._client, id, type)
+        model = Model(self._context, id, type)
         model.__target = self
         model.__type = type
         self.__models[type] = model
@@ -530,7 +525,7 @@ class Object(Instance):
             raise NominalException(f"Failed to find message with name '{name}'.")
 
         # Create the message object with the ID
-        message = Message(self._context, self._client, message_id)
+        message = Message(self._context, message_id)
         self.__messages[name] = message
         self.__instances[id] = message
 
@@ -552,7 +547,7 @@ class Object(Instance):
 
         # If any data starts with 'Out_', then it is a message
         for key in data.keys():
-            if key.startswith("Out_"):
+            if str(key).startswith("Out_"):
                 self.get_message(key)
 
         # Return all the messages

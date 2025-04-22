@@ -3,7 +3,6 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2025.
 
-from ..connection import Client
 from ..utils import NominalException, helper
 from .context import Context
 
@@ -26,36 +25,29 @@ class Instance:
     _refresh_cache: bool = True
     """Defines whether the cache needs to be refreshed or not."""
 
-    _client: Client = None
-    """Defines the client that is used to access the API."""
-
     _context: Context = None
     """Defines the context that is used to access the API."""
 
     id: str = None
     """Defines the unique GUID identifier of the object. This needs to be in the correct GUID format."""
 
-    def __init__(
-        self, context: Context, client: Client, id: str, type: str = None
-    ) -> None:
+    def __init__(self, context: Context, id: str, type: str = None) -> None:
         """
-        Initialises the instance with the client and the ID of the object.
+        Initialises the instance with the context and the ID of the object.
 
         :param context:         The context used to access the API
         :type context:          Context
-        :param client:          The client used to access the API
-        :type client:           Client
         :param id:              The GUID ID of the object
         :type id:               str
         :param type:            The type of the object, if known
         :type type:             str
         """
 
-        # Check if the client and ID are valid
-        if not client:
-            raise NominalException("Failed to create instance due to invalid client.")
+        # Check if the context and ID are valid
         if not context:
             raise NominalException("Failed to create instance due to invalid context.")
+        if not context.get_client():
+            raise NominalException("Failed to create instance due to invalid client.")
         if not helper.is_valid_guid(id):
             raise NominalException(
                 f"Failed to create instance with an invalid ID '{id}'."
@@ -64,7 +56,6 @@ class Instance:
         # Set the values and default data
         self.id = id
         self._context = context
-        self._client = client
         self.__data = None
         self.__type = type
         self._refresh_cache = True
@@ -81,7 +72,7 @@ class Instance:
             return
 
         # Fetch all data and then set the cache to false
-        self.__data = await self._client.post(f"{self.id}/get")
+        self.__data = await self._context.get_client().post(f"{self.id}/get")
         self._refresh_cache = False
 
     def _require_refresh(self) -> None:
@@ -158,7 +149,7 @@ class Instance:
             kwargs[key] = helper.serialize(kwargs[key])
 
         # Call the method on the client
-        await self._client.post(
+        await self._context.get_client().post(
             f"{self.id}/set",
             data=kwargs,
         )
@@ -190,7 +181,7 @@ class Instance:
         args.insert(0, function)
 
         # Create the response from the invoke request and get the return data
-        response = await self._client.post(f"{self.id}/ivk", args)
+        response = await self._context.get_client().post(f"{self.id}/ivk", args)
         response = helper.deserialize(response)
 
         # Update the flag for needing to get values
