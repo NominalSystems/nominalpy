@@ -210,5 +210,11 @@ def deserialize(value: any) -> any:
             except ValueError:
                 pass  # If parsing fails, return the original string
 
+    # Check if the value is a dictionary and then deserialize all values
+    if isinstance(value, dict):
+        for key, val in value.items():
+            value[key] = deserialize(val)
+        return value
+
     # Return the value as is for other types
     return value

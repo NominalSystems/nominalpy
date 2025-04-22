@@ -233,33 +233,28 @@ class Simulation:
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
 
-        # For each of the kwargs, serialize the data
-        for key in kwargs:
-            kwargs[key] = helper.serialize(kwargs[key])
-
+        # Create the Object ID
         object_id: str = await self.__client.post(
             f"{self.__id}/ivk", ["AddObject", type]
         )
-        printer.debug(f"Object ID: {object_id}")
 
-        ## Create the request
-        # request: dict = {"type": type}
-        # if len(kwargs) > 0:
-        #    request["data"] = kwargs
+        # If the ID is not valid, raise an exception
+        if not helper.is_valid_guid(object_id):
+            raise NominalException(f"Failed to create object of type '{type}'.")
 
-    #
-    ## Create the object using a post request
-    # result = http_requests.post(self.__credentials, "object", request)
-    # if result == None:
-    #    raise NominalException("Failed to create object of type '%s'." % type)
-    #
-    ## Create the object and add it to the array
-    # object = Object(self.__credentials, result["guid"])
-    # self.__objects.append(object)
-    #
-    ## Print the success message
-    # printer.success(f"Object of type '{type}' created successfully.")
-    # return object
+        # Create the object and add it to the array
+        object: Object = Object(self.__client, object_id, type=type)
+        self.__objects.append(object)
+
+        # Set the data if the kwargs exist
+        if len(kwargs) > 0:
+            await object.set(**kwargs)
+
+        # Print the success message
+        printer.success(f"Object of type '{type}' created successfully.")
+
+        # Return the object
+        return object
 
     def get_object_by_id(self, id: str) -> Object:
         """

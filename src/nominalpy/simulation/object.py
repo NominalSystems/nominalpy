@@ -4,7 +4,7 @@
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 from __future__ import annotations
-from ..connection import Credentials, http_requests
+from ..connection import Client, http_requests
 from ..utils import printer, NominalException, helper
 from .instance import Instance
 from .behaviour import Behaviour
@@ -39,17 +39,19 @@ class Object(Instance):
     __parent: Object = None
     """Defines the parent object that the object is attached to."""
 
-    def __init__(self, credentials: Credentials, id: str) -> None:
+    def __init__(self, client: Client, id: str, type: str = None) -> None:
         """
         Initialises the object with the credentials and the ID of the object.
 
-        :param credentials:     The credentials to access the API
-        :type credentials:      Credentials
+        :param client:          The client to access the API
+        :type client:           Client
         :param id:              The GUID ID of the object
         :type id:               str
+        :param type:            The type of the system, if applicable
+        :type type:             str
         """
 
-        super().__init__(credentials, id)
+        super().__init__(client, id, type)
 
         # Clear and reset the data
         self.__instances = {}
@@ -72,10 +74,9 @@ class Object(Instance):
         """
 
         # Create the object and set the data
-        object = Object(instance._credentials, instance.id)
+        object = Object(instance._client, instance.id, instance.__type)
         object.__dict__ = instance.__dict__
         object.__data = instance.__data
-        object.__type = instance.__type
         object._refresh_cache = instance._refresh_cache
 
         # Return the object
