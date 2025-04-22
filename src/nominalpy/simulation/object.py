@@ -4,7 +4,7 @@
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 from __future__ import annotations
-from ..connection import Client, http_requests
+from ..connection import Client
 from ..utils import printer, NominalException, helper
 from .instance import Instance
 from .behaviour import Behaviour
@@ -507,7 +507,7 @@ class Object(Instance):
 
         return self.__models.values()
 
-    def get_message(self, name: str) -> Message:
+    async def get_message(self, name: str) -> Message:
         """
         Attempts to get the message with the specified name that is attached to the object. If the
         message does not exist, it will be created and attached to the object. If the message cannot
@@ -525,17 +525,17 @@ class Object(Instance):
             return self.__messages[name]
 
         # Fetch the data
-        id = self.get(name)
-        if not helper.is_valid_guid(id):
-            raise NominalException("Failed to find message '%s'." % name)
+        message_id: str = await self.get(name)
+        if not helper.is_valid_guid(message_id):
+            raise NominalException(f"Failed to find message with name '{name}'.")
 
         # Create the message object with the ID
-        message = Message(self._context, self._client, id)
+        message = Message(self._context, self._client, message_id)
         self.__messages[name] = message
         self.__instances[id] = message
 
         # Return the message of that name
-        printer.success(f"Message with name '{name}' created successfully.")
+        printer.success(f"Successfully created message with name '{name}'.")
         return message
 
     def get_messages(self) -> list:

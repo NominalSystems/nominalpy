@@ -4,7 +4,7 @@
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 from __future__ import annotations
-import os, json, time
+import os, json
 import pandas as pd
 from .instance import Instance
 from .message import Message
@@ -769,7 +769,7 @@ class Simulation(Context):
         # Cache all messages and load them into memory
         parent.get_messages()
 
-    def load_state(self, path: str, cache_all: bool = False) -> bool:
+    async def load_state(self, path: str, cache_all: bool = False) -> bool:
         """
         Loads the state of the simulation from the specified path. This will load the state of the
         simulation from the path as a JSON file and return whether the state was loaded successfully.
@@ -792,9 +792,9 @@ class Simulation(Context):
         # Load the state from the path
         with open(path, "r") as file:
             state: dict = json.load(file)
-            return self.set_state(state, cache_all)
+            return await self.set_state(state, cache_all)
 
-    def track_object(self, instance: Instance, isAdvanced: bool = False) -> None:
+    async def track_object(self, instance: Instance, isAdvanced: bool = False) -> None:
         """
         Starts tracking the object within the simulation. This will start tracking the object
         which will store the object's data and state every specified tick in a local database.
@@ -807,20 +807,20 @@ class Simulation(Context):
         """
 
         # Get the tracking system
-        system: System = self.get_system(TRACKING_SYSTEM)
+        system: System = await self.get_system(TRACKING_SYSTEM)
 
         # Check if the ID is a string and a valid GUID, as the GUID could be passed in
         # to the function instead.
         if type(instance) is str and helper.is_valid_guid(instance):
-            system.invoke("TrackObject", instance, isAdvanced)
+            await system.invoke("TrackObject", instance, isAdvanced)
         elif isinstance(instance, Instance):
-            system.invoke("TrackObject", instance.id, isAdvanced)
+            await system.invoke("TrackObject", instance.id, isAdvanced)
         else:
             raise NominalException(
                 "Failed to track object as the instance was not a valid type."
             )
 
-    def set_tracking_interval(self, interval: float) -> None:
+    async def set_tracking_interval(self, interval: float) -> None:
         """
         Updates the tracking interval for all the objects that have been tracked. This will
         be an interval in simulation seconds and will be the same across all objects. The
@@ -831,10 +831,10 @@ class Simulation(Context):
         """
 
         # Get the tracking system
-        system: System = self.get_system(TRACKING_SYSTEM)
+        system: System = await self.get_system(TRACKING_SYSTEM)
 
         # Invoke the set track interval
-        system.set(Interval=interval)
+        await system.set(Interval=interval)
 
     async def query_object(self, instance: Instance) -> SimulationData:
         """
@@ -941,7 +941,7 @@ class Simulation(Context):
         :rtype:             DataFrame
         """
         # Create and return the data frame
-        return await self.query_object(instance=instance).to_dataframe()
+        return (await self.query_object(instance=instance)).to_dataframe()
 
     def get_client(self) -> Client:
         """
