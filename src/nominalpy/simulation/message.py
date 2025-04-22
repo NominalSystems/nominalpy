@@ -5,6 +5,7 @@
 
 from ..connection import Client
 from .instance import Instance
+from .context import Context
 
 
 class Message(Instance):
@@ -14,11 +15,15 @@ class Message(Instance):
     data class and is not able to invoke any methods.
     """
 
-    def __init__(self, client: Client, id: str, type: str = None) -> None:
+    def __init__(
+        self, context: Context, client: Client, id: str, type: str = None
+    ) -> None:
         """
         Initialises the message with a client and a
         unique GUID identifier for the message.
 
+        :param context:     The context object that is used for the API
+        :type context:      Context
         :param client:      The client object that is used for the API
         :type client:       Client
         :param id:          The unique identifier for the Entity in a GUID format
@@ -27,4 +32,4 @@ class Message(Instance):
         :type type:         str
         """
 
-        super().__init__(client, id, type)
+        super().__init__(context, client, id, type)

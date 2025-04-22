@@ -7,6 +7,7 @@ from ..utils import printer, NominalException, helper
 from ..connection import Client
 from .instance import Instance
 from .message import Message
+from .context import Context
 
 
 class Model(Instance):
@@ -22,10 +23,14 @@ class Model(Instance):
     __messages: dict = {}
     """Defines all messages that are attached to the object, by name."""
 
-    def __init__(self, client: Client, id: str, type: str = None) -> None:
+    def __init__(
+        self, context: Context, client: Client, id: str, type: str = None
+    ) -> None:
         """
         Initialises the model with the client and the ID of the model.
 
+        :param context:         The context of the simulation
+        :type context:          Context
         :param credentials:     The credentials to access the API
         :type credentials:      Credentials
         :param id:              The GUID ID of the model
@@ -34,7 +39,7 @@ class Model(Instance):
         :type type:             str
         """
 
-        super().__init__(client, id)
+        super().__init__(context, client, id, type)
 
         # Clear and reset the data
         self.__target = None
@@ -84,11 +89,11 @@ class Model(Instance):
             raise NominalException("Failed to find message '%s'." % name)
 
         # Create the message object with the ID
-        message = Message(self._credentials, id)
+        message = Message(self._context, self._credentials, id)
         self.__messages[name] = message
 
         # Return the message of that name
-        printer.success(f"Message with name '{name}' created successfully.")
+        printer.success(f"Successfully created message '{name}' with ID '{id}'.")
         return message
 
     def get_messages(self) -> list:

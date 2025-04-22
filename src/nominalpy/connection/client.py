@@ -158,6 +158,13 @@ class Client:
         else:
             raise ValueError("Data must be a string, list, dictionary, or None")
 
+        # Ensure the body is sent as a single packet by encoding it explicitly if needed
+        if isinstance(body, (list, dict)):
+            headers["Content-Type"] = "application/json"
+            headers["Content-Length"] = str(
+                len(json.dumps(body))
+            )  # Set Content-Length header
+
         # Create the URL
         url: str = f"{self.base_url}{endpoint}"
 
@@ -175,8 +182,12 @@ class Client:
                 async with client.request(
                     method,
                     url,
-                    json=body if isinstance(body, (list, dict)) else None,
-                    data=body if isinstance(body, bytes) else None,
+                    json=(
+                        body if isinstance(body, (list, dict)) else None
+                    ),  # Use json parameter for serializable data
+                    data=(
+                        body if not isinstance(body, (list, dict)) else None
+                    ),  # Use data for non-serializable data
                     headers=headers,
                     timeout=timeout,
                 ) as response:

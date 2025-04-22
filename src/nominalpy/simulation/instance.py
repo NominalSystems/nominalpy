@@ -5,6 +5,7 @@
 
 from ..connection import Client
 from ..utils import NominalException, helper
+from .context import Context
 
 
 class Instance:
@@ -28,13 +29,20 @@ class Instance:
     _client: Client = None
     """Defines the client that is used to access the API."""
 
+    _context: Context = None
+    """Defines the context that is used to access the API."""
+
     id: str = None
     """Defines the unique GUID identifier of the object. This needs to be in the correct GUID format."""
 
-    def __init__(self, client: Client, id: str, type: str = None) -> None:
+    def __init__(
+        self, context: Context, client: Client, id: str, type: str = None
+    ) -> None:
         """
         Initialises the instance with the client and the ID of the object.
 
+        :param context:         The context used to access the API
+        :type context:          Context
         :param client:          The client used to access the API
         :type client:           Client
         :param id:              The GUID ID of the object
@@ -45,12 +53,17 @@ class Instance:
 
         # Check if the client and ID are valid
         if not client:
-            raise NominalException("Missing client when constructing an instance.")
+            raise NominalException("Failed to create instance due to invalid client.")
+        if not context:
+            raise NominalException("Failed to create instance due to invalid context.")
         if not helper.is_valid_guid(id):
-            raise NominalException(f"Invalid instance ID '{id}' provided.")
+            raise NominalException(
+                f"Failed to create instance with an invalid ID '{id}'."
+            )
 
         # Set the values and default data
         self.id = id
+        self._context = context
         self._client = client
         self.__data = None
         self.__type = type
@@ -112,7 +125,7 @@ class Instance:
         # Check if the param is in the data
         if param not in self.__data:
             raise NominalException(
-                f"Parameter '{param}' not found in object '{self.id}' of type '{self.get_type()}'."
+                f"Failed to get parameter '{param}' in object '{self.id}' of type '{self.get_type()}'."
             )
         return helper.deserialize(self.__data[param])
 
@@ -146,7 +159,7 @@ class Instance:
 
         # Call the method on the client
         await self._client.post(
-            "{self.id}/set",
+            f"{self.id}/set",
             data=kwargs,
         )
 

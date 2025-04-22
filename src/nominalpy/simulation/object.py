@@ -10,6 +10,7 @@ from .instance import Instance
 from .behaviour import Behaviour
 from .model import Model
 from .message import Message
+from .context import Context
 
 
 class Object(Instance):
@@ -39,10 +40,14 @@ class Object(Instance):
     __parent: Object = None
     """Defines the parent object that the object is attached to."""
 
-    def __init__(self, client: Client, id: str, type: str = None) -> None:
+    def __init__(
+        self, context: Context, client: Client, id: str, type: str = None
+    ) -> None:
         """
         Initialises the object with the credentials and the ID of the object.
 
+        :param context:         The context of the object
+        :type context:          Context
         :param client:          The client to access the API
         :type client:           Client
         :param id:              The GUID ID of the object
@@ -51,7 +56,7 @@ class Object(Instance):
         :type type:             str
         """
 
-        super().__init__(client, id, type)
+        super().__init__(context, client, id, type)
 
         # Clear and reset the data
         self.__instances = {}
@@ -74,7 +79,9 @@ class Object(Instance):
         """
 
         # Create the object and set the data
-        object = Object(instance._client, instance.id, instance.__type)
+        object = Object(
+            instance._context, instance._client, instance.id, instance.__type
+        )
         object.__dict__ = instance.__dict__
         object.__data = instance.__data
         object._refresh_cache = instance._refresh_cache
@@ -82,7 +89,7 @@ class Object(Instance):
         # Return the object
         return object
 
-    def _get_data(self) -> None:
+    async def _get_data(self) -> None:
         """
         Overrides the base class method to fetch the data from the API and store it in the
         object. This is used to ensure that the data is fetched correctly and is up to date.
@@ -93,12 +100,12 @@ class Object(Instance):
         # Fetch the base data
         if not self._refresh_cache:
             return
-        super()._get_data()
+        await super()._get_data()
 
         # Loop through the behaviours
-        for id in self.get("Behaviours"):
+        for id in await self.get("Behaviours"):
             if id not in self.__instances:
-                behaviour = Behaviour(self._credentials, id)
+                behaviour = Behaviour(self._context, self._client, id)
                 behaviour.__parent = self
                 self.__instances[id] = behaviour
                 self.__behaviours.append(behaviour)
@@ -107,9 +114,9 @@ class Object(Instance):
                 )
 
         # Loop through the children
-        for id in self.get("Children"):
+        for id in await self.get("Children"):
             if id not in self.__instances:
-                child = Object(self._credentials, id)
+                child = Object(self._context, self._client, id)
                 child.__parent = self
                 self.__instances[id] = child
                 self.__children.append(child)
@@ -118,9 +125,9 @@ class Object(Instance):
                 )
 
         # Loop through the models
-        for id in self.get("Models"):
+        for id in await self.get("Models"):
             if id not in self.__instances:
-                model = Model(self._credentials, id)
+                model = Model(self._context, self._client, id)
                 model.__target = self
                 self.__instances[id] = model
                 self.__models[model.get_type()] = model
@@ -165,7 +172,7 @@ class Object(Instance):
             return None
         return self.__instances[id]
 
-    def add_child(self, type: str, **kwargs) -> Object:
+    async def add_child(self, type: str, **kwargs) -> Object:
         """
         Adds a child object to the object with the specified type. The child object will
         be created and attached to the object and will be returned to the user.
@@ -182,23 +189,29 @@ class Object(Instance):
         # Check the type and validate it
         type = helper.validate_type(type)
 
-        # For each of the kwargs, serialize the data
-        for key in kwargs:
-            kwargs[key] = helper.serialize(kwargs[key])
+        # Get the function library
+        function_library = await self._context.get_function_library()
+        if function_library is None:
+            raise NominalException("Failed to get function library for the simulation.")
 
-        # Create the request
-        request: dict = {"type": type, "meta": {"owner": self.id}}
+        # Invoke the function library to create the object
+        child_id: str = await function_library.invoke("AddObject", type, self.id)
+
+        # If the ID is not valid, raise an exception
+        if not helper.is_valid_guid(child_id):
+            raise NominalException(f"Failed to create child object of type '{type}'.")
+
+        # Create the object and add it to the array
+        child: Object = self.__register_child_with_id(child_id, type)
+        if child is None:
+            raise NominalException(f"Failed to create child object of type '{type}'.")
+
+        # If there are any kwargs, set them on the child object
         if len(kwargs) > 0:
-            request["data"] = kwargs
-
-        # Create the object using a post request
-        result = http_requests.post(self._credentials, "object", request)
-        if not result:
-            raise NominalException("Failed to create object of type '%s'." % type)
-        id: str = result["guid"]
+            await child.set(**kwargs)
 
         # Regsiter the child object with the ID
-        return self.__register_child_with_id(id, type)
+        return child
 
     def __register_child_with_id(self, id: str, type: str = "") -> Object:
         """
@@ -215,16 +228,14 @@ class Object(Instance):
         """
 
         # Create the object
-        object = Object(self._credentials, id)
+        object = Object(self._context, self._client, id, type)
         object.__parent = self
         object.__type = type
         self.__children.append(object)
         self.__instances[id] = object
 
         # Print the success message
-        printer.success(
-            f"Child object of type '{object.get_type()}' created successfully on object of type '{self.get_type()}'."
-        )
+        printer.success(f"Successfully created child object of type '{type}'.")
         return object
 
     def get_child(self, index: int) -> Object:
@@ -302,7 +313,7 @@ class Object(Instance):
         # Return None if the child object is not found
         return None
 
-    def add_behaviour(self, type: str, **kwargs) -> Behaviour:
+    async def add_behaviour(self, type: str, **kwargs) -> Behaviour:
         """
         Adds a behaviour to the object with the specified type. The behaviour will be created
         and attached to the object and will be returned to the user.
@@ -319,23 +330,33 @@ class Object(Instance):
         # Check the type and validate it
         type = helper.validate_type(type)
 
-        # For each of the kwargs, serialize the data
-        for key in kwargs:
-            kwargs[key] = helper.serialize(kwargs[key])
+        # Get the function library
+        function_library = await self._context.get_function_library()
+        if function_library is None:
+            raise NominalException("Failed to get function library for the simulation.")
 
-        # Create the request
-        request: dict = {"type": type, "meta": {"owner": self.id}}
+        # Invoke the function library to create the behaviour
+        behaviour_id: str = await function_library.invoke("AddBehaviour", type, self.id)
+
+        # If the ID is not valid, raise an exception
+        if not helper.is_valid_guid(behaviour_id):
+            raise NominalException(
+                f"Failed to create child behaviour of type '{type}'."
+            )
+
+        # Create the behaviour and add it to the array
+        behaviour: Behaviour = self.__register_behaviour_with_id(behaviour_id, type)
+        if behaviour is None:
+            raise NominalException(
+                f"Failed to create child behaviour of type '{type}'."
+            )
+
+        # If there are any kwargs, set them on the child behaviour
         if len(kwargs) > 0:
-            request["data"] = kwargs
+            await behaviour.set(**kwargs)
 
-        # Create the behaviour using a post request
-        result = http_requests.post(self._credentials, "object", request)
-        if not result:
-            raise NominalException("Failed to create behaviour of type '%s'." % type)
-        id: str = result["guid"]
-
-        # Register the behaviour with the ID
-        return self.__register_behaviour_with_id(id, type)
+        # Regsiter the child behaviour with the ID
+        return behaviour
 
     def __register_behaviour_with_id(self, id: str, type: str = "") -> Behaviour:
         """
@@ -352,16 +373,14 @@ class Object(Instance):
         """
 
         # Create the behaviour
-        behaviour = Behaviour(self._credentials, id)
+        behaviour = Behaviour(self._context, self._client, id, type)
         behaviour.__parent = self
         behaviour.__type = type
         self.__behaviours.append(behaviour)
         self.__instances[id] = behaviour
 
         # Print the success message
-        printer.success(
-            f"Behaviour of type '{behaviour.get_type()}' created successfully on object of type '{self.get_type()}'."
-        )
+        printer.success(f"Successfully created child behaviour of type '{type}'.")
         return behaviour
 
     def get_behaviour(self, index: int) -> Behaviour:
@@ -411,7 +430,7 @@ class Object(Instance):
             behaviour for behaviour in self.__behaviours if behaviour.get_type() == type
         ]
 
-    def get_model(self, type: str, **kwargs) -> Model:
+    async def get_model(self, type: str, **kwargs) -> Model:
         """
         Attempts to get the model of the specified type that is attached to the object. If the
         model does not exist, it will be created and attached to the object. If the model cannot
@@ -437,24 +456,20 @@ class Object(Instance):
         if type in self.__models.keys():
             model: Model = self.__models[type]
             if len(kwargs) > 0:
-                model.set(**kwargs)
+                await model.set(**kwargs)
             return model
 
         # Attempt to find or create the model
-        id: str = http_requests.patch(
-            self._credentials,
-            "object",
-            {"guid": self.id, "name": "GetModel", "args": [type]},
-        )
+        id: str = await self._client.post(f"{self.id}/ivk", ["GetModel", type])
         if not helper.is_valid_guid(id):
-            raise NominalException("Failed to create model of type '%s'." % type)
+            raise NominalException(f"Failed to create model of type '{type}'.")
 
         # Create the model with the ID
         model = self.__register_model_with_id(id, type)
 
         # Set the data if it exists
         if len(kwargs) > 0:
-            model.set(**kwargs)
+            await model.set(**kwargs)
         return model
 
     def __register_model_with_id(self, id: str, type: str = "") -> Model:
@@ -472,16 +487,14 @@ class Object(Instance):
         """
 
         # Create the model with the ID
-        model = Model(self._credentials, id)
+        model = Model(self._context, self._client, id, type)
         model.__target = self
         model.__type = type
         self.__models[type] = model
         self.__instances[id] = model
 
         # Print the success message
-        printer.success(
-            f"Model of type '{model.get_type()}' created successfully on object of type '{self.get_type()}'."
-        )
+        printer.success(f"Successfully created model of type '{type}'.")
         return model
 
     def get_models(self) -> list:
@@ -517,7 +530,7 @@ class Object(Instance):
             raise NominalException("Failed to find message '%s'." % name)
 
         # Create the message object with the ID
-        message = Message(self._credentials, id)
+        message = Message(self._context, self._client, id)
         self.__messages[name] = message
         self.__instances[id] = message
 

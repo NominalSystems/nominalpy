@@ -7,6 +7,7 @@ from ..utils import printer, NominalException, helper
 from ..connection import Client
 from .instance import Instance
 from .message import Message
+from .context import Context
 
 
 class System(Instance):
@@ -18,10 +19,14 @@ class System(Instance):
     __messages: dict = {}
     """Defines all messages that are attached to the object, by name."""
 
-    def __init__(self, client: Client, id: str, type: str = None) -> None:
+    def __init__(
+        self, context: Context, client: Client, id: str, type: str = None
+    ) -> None:
         """
         Initialises the system with the client and the ID of the system.
 
+        :param context:         The context of the simulation
+        :type context:          Context
         :param client:          The client to access the API
         :type client:           Client
         :param id:              The GUID ID of the system
@@ -30,7 +35,7 @@ class System(Instance):
         :type type:             str
         """
 
-        super().__init__(client, id, type)
+        super().__init__(context, client, id, type)
 
         # Initialised the base data
         self.__messages = {}
@@ -69,7 +74,7 @@ class System(Instance):
             raise NominalException("Failed to find message '%s'." % name)
 
         # Create the message object with the ID
-        message = Message(self._credentials, id)
+        message = Message(self._context, self._client, id)
         self.__messages[name] = message
 
         # Return the message of that name
