@@ -6,7 +6,7 @@ with the 'nominalpy' module. Copyright Nominal Systems, 2025.
 """
 
 import aiohttp, asyncio, json
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Union
 from functools import wraps
 from collections import defaultdict
 from nominalpy.utils import printer, NominalException
@@ -118,7 +118,7 @@ class Client:
                 del self.client_requests[client]
 
     async def _request(
-        self, method: str, endpoint: str, data: Optional[dict] = None
+        self, method: str, endpoint: str, data: Optional[Union[str, list, dict]] = None
     ) -> dict:
         """
         Perform the core async request function with multi-client support. This can
@@ -140,11 +140,26 @@ class Client:
         client = await self._get_client()
         self.client_requests[client] += 1
 
-        # Add in the token as the 'x-api-key' header
-        if self.token:
-            if not data:
-                data = {}
-            data["x-api-key"] = self.token
+        # Create the header
+        headers = {"Accept": "application/json"}
+        timeout = aiohttp.ClientTimeout(total=10)
+
+        # Convert data based on type
+        body = None
+        if isinstance(data, str):
+            headers["Content-Type"] = "text/plain"
+            body = data.encode("utf-8") if data else None
+        elif isinstance(data, (list, dict)):
+            headers["Content-Type"] = "application/json"
+            body = data
+        elif data is None:
+            headers["Content-Type"] = "application/json"
+            body = None
+        else:
+            raise ValueError("Data must be a string, list, dictionary, or None")
+
+        # Create the URL
+        url: str = f"{self.base_url}{endpoint}"
 
         # Make the request
         async with self.semaphore:
@@ -153,12 +168,17 @@ class Client:
             try:
                 # Log the request
                 printer.log(
-                    f"Attempting a {method} request to '{endpoint}' with data: {data}"
+                    f"Attempting a {method} request to '{url}' with data: '{body if body else "None"}'."
                 )
 
                 # Prepare the request data and result
                 async with client.request(
-                    method, f"{self.base_url}{endpoint}", json=data
+                    method,
+                    url,
+                    json=body if isinstance(body, (list, dict)) else None,
+                    data=body if isinstance(body, bytes) else None,
+                    headers=headers,
+                    timeout=timeout,
                 ) as response:
 
                     # Return the result, which is just the content from the response
@@ -170,29 +190,40 @@ class Client:
                         "reason": response.reason,
                         "method": response.method,
                         "status": response.status,
-                        "content": content,
+                        "content": len(content) > 0,
                         "headers": dict(response.headers),
                     }
 
                     # Print the status
                     printer.log(f"Request response: {status}")
 
+                    # If the status is not 200, raise an exception
+                    if response.status != 200:
+                        raise NominalException(
+                            f"Request failed with status {response.status}: {response.reason}"
+                        )
+
                     # Try to parse the content as JSON
                     try:
                         if content != None and content != "":
                             result = json.loads(content)
                     except:
-                        result = content
+                        result = content.decode("utf-8")
 
             # Handle client errors
             except aiohttp.ClientError as e:
                 raise NominalException(f"Request failed: {str(e)}")
+
+            # Handle Nominal Exceptions
+            except NominalException as e:
+                raise e
 
             # Cleanup the clients and decrement the requests
             finally:
                 self.client_requests[client] -= 1
                 asyncio.create_task(self._cleanup_clients())
 
+            # Return the result at the end of the function
             return result
 
     async def get(self, endpoint: str, data: Optional[dict] = None) -> dict:
@@ -253,54 +284,6 @@ class Client:
 
         return wrapper
 
-    @_sync_wrapper
-    async def get_sync(self, endpoint: str, data: Optional[dict] = None) -> dict:
-        """
-        Create a synchronous GET request to the specified endpoint. This will
-        return the result of the request as a dictionary.
-
-        :param endpoint: The endpoint to use for the request.
-        :type endpoint: str
-        :param data: The data to send with the request.
-        :type data: Optional[dict]
-
-        :return: The result of the request.
-        :rtype: dict
-        """
-        return await self.get(endpoint, data)
-
-    @_sync_wrapper
-    async def post_sync(self, endpoint: str, data: Optional[dict] = None) -> dict:
-        """
-        Create a synchronous POST request to the specified endpoint. This will
-        return the result of the request as a dictionary.
-
-        :param endpoint: The endpoint to use for the request.
-        :type endpoint: str
-        :param data: The data to send with the request.
-        :type data: Optional[dict]
-
-        :return: The result of the request.
-        :rtype: dict
-        """
-        return await self.post(endpoint, data)
-
-    @_sync_wrapper
-    async def delete_sync(self, endpoint: str, data: Optional[dict] = None) -> dict:
-        """
-        Create a synchronous DELETE request to the specified endpoint. This will
-        return the result of the request as a dictionary.
-
-        :param endpoint: The endpoint to use for the request.
-        :type endpoint: str
-        :param data: The data to send with the request.
-        :type data: Optional[dict]
-
-        :return: The result of the request.
-        :rtype: dict
-        """
-        return await self.delete(endpoint, data)
-
     @classmethod
     def create_local(
         cls,
@@ -322,7 +305,7 @@ class Client:
         :rtype: Client
         """
         return Client(
-            url="localhost/",
+            url="http://localhost/",
             port=port,
             max_requests_per_client=max_requests_per_client,
             max_total_concurrent_requests=max_total_concurrent_requests,

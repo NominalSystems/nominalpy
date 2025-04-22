@@ -12,7 +12,7 @@ from .object import Object
 from .behaviour import Behaviour
 from .model import Model
 from .system import System
-from ..connection import Credentials, http_requests
+from ..connection import Credentials, http_requests, Client
 from ..utils import NominalException, printer, helper
 from ..data import SimulationData
 
@@ -31,6 +31,12 @@ class Simulation:
     of the simulation. A simulation requires credentials to be able to access the API. These
     credentials are used to authenticate the user and ensure that the simulation is accessible.
     """
+
+    __client: Client = None
+
+    __id: str = None
+
+    __url: str = None
 
     __credentials: Credentials = None
     """Specifies the credentials for accessing the API correctly."""
@@ -59,7 +65,7 @@ class Simulation:
     __session_id: str = None
     """Defines the session ID for the current working session, stored for public API keys."""
 
-    def __init__(self, credentials: Credentials, session_id: str = "") -> None:
+    def __init__(self, client: Client, session_id: str = "") -> None:
         """
         Initialises the simulation with the credentials and the ID of the simulation. If the ID is
         not provided, a new simulation will be created. If the reset flag is set to true, the simulation
@@ -71,50 +77,53 @@ class Simulation:
         :type session_id:       str
         """
 
+        # Store a reference to the client
+        self.__client: Client = client
+
         # Configure the root object
-        self.__credentials = credentials.copy()
+        # self.__credentials = credentials.copy()
         self.__session_id = session_id
 
         # If the credentials are bad, throw an exception
-        if not self.__credentials:
+        if not self.__client:
             raise NominalException(
                 "Invalid Credentials: No credentials passed into the Simulation."
             )
-        if not self.__credentials.is_valid():
-            raise NominalException(
-                "Invalid Credentials: The credentials are missing information."
-            )
+        # if not self.__credentials.is_valid():
+        #    raise NominalException(
+        #        "Invalid Credentials: The credentials are missing information."
+        #    )
 
         # If the API is not local, then start creating a session
-        if not self.__credentials.is_local:
-            if self.__session_id == "" or self.__session_id is None:
-                raise NominalException(
-                    "Invalid Session: No session ID passed into the Simulation."
-                )
-
-            # Fetch if the session is active
-            first: bool = True
-            while True:
-                sessions: dict = Simulation.get_sessions(self.__credentials)
-                if self.__session_id not in sessions:
-                    raise NominalException(
-                        "Invalid Session: The session ID is not valid."
-                    )
-                if sessions[self.__session_id]:
-                    break
-
-                # Repeat until the session is ready
-                time.sleep(3.0)
-                if first:
-                    first = False
-                    printer.warning(
-                        "API session is in a pending state as the instance is starting. Please wait."
-                    )
-                else:
-                    printer.log("Waiting for session to be active...")
-
-            # Set the session ID in the credentials
-            self.__credentials.set_session_id(self.__session_id)
+        # if not self.__credentials.is_local:
+        #    if self.__session_id == "" or self.__session_id is None:
+        #        raise NominalException(
+        #            "Invalid Session: No session ID passed into the Simulation."
+        #        )
+        #
+        #    # Fetch if the session is active
+        #    first: bool = True
+        #    while True:
+        #        sessions: dict = Simulation.get_sessions(self.__credentials)
+        #        if self.__session_id not in sessions:
+        #            raise NominalException(
+        #                "Invalid Session: The session ID is not valid."
+        #            )
+        #        if sessions[self.__session_id]:
+        #            break
+        #
+        #        # Repeat until the session is ready
+        #        time.sleep(3.0)
+        #        if first:
+        #            first = False
+        #            printer.warning(
+        #                "API session is in a pending state as the instance is starting. Please wait."
+        #            )
+        #        else:
+        #            printer.log("Waiting for session to be active...")
+        #
+        #    # Set the session ID in the credentials
+        #    self.__credentials.set_session_id(self.__session_id)
 
         # Reset the objects and systems
         self.__objects = []
@@ -124,6 +133,37 @@ class Simulation:
         self.__planets = {}
         self.__time = 0.0
         self.__ticked = False
+
+    @classmethod
+    async def create(cls, client: Client, session_id: str = "") -> Simulation:
+        """
+        Creates a new simulation with the specified credentials. This will create a new simulation
+        session with the API and return the simulation that has been created. If the credentials are
+        invalid, an exception will be raised.
+
+        :param client:       The client to access the API
+        :type client:        Client
+        :param session_id:   The session ID for the current working session
+        :type session_id:    str
+
+        :returns:           The simulation that has been created
+        :rtype:             Simulation
+        """
+
+        # Create a new simulation and return it
+        sim: Simulation = Simulation(client, session_id=session_id)
+        sim.__id = await sim.__client.post("new", "NominalSystems.Simulation")
+        return sim
+
+    def get_id(self) -> str:
+        """
+        Returns the ID of the simulation. This is used to identify the simulation within the API.
+
+        :returns:   The ID of the simulation
+        :rtype:     str
+        """
+
+        return self.__id
 
     def __require_refresh(self) -> None:
         """
@@ -173,7 +213,7 @@ class Simulation:
                 return message
         return None
 
-    def add_object(self, type: str, **kwargs) -> Object:
+    async def add_object(self, type: str, **kwargs) -> Object:
         """
         Adds an object to the simulation with the specified type and data. This will create
         an object within the simulation and return the object that has been created. If the
@@ -197,23 +237,29 @@ class Simulation:
         for key in kwargs:
             kwargs[key] = helper.serialize(kwargs[key])
 
-        # Create the request
-        request: dict = {"type": type}
-        if len(kwargs) > 0:
-            request["data"] = kwargs
+        object_id: str = await self.__client.post(
+            f"{self.__id}/ivk", ["AddObject", type]
+        )
+        printer.debug(f"Object ID: {object_id}")
 
-        # Create the object using a post request
-        result = http_requests.post(self.__credentials, "object", request)
-        if result == None:
-            raise NominalException("Failed to create object of type '%s'." % type)
+        ## Create the request
+        # request: dict = {"type": type}
+        # if len(kwargs) > 0:
+        #    request["data"] = kwargs
 
-        # Create the object and add it to the array
-        object = Object(self.__credentials, result["guid"])
-        self.__objects.append(object)
-
-        # Print the success message
-        printer.success(f"Object of type '{type}' created successfully.")
-        return object
+    #
+    ## Create the object using a post request
+    # result = http_requests.post(self.__credentials, "object", request)
+    # if result == None:
+    #    raise NominalException("Failed to create object of type '%s'." % type)
+    #
+    ## Create the object and add it to the array
+    # object = Object(self.__credentials, result["guid"])
+    # self.__objects.append(object)
+    #
+    ## Print the success message
+    # printer.success(f"Object of type '{type}' created successfully.")
+    # return object
 
     def get_object_by_id(self, id: str) -> Object:
         """
@@ -1084,30 +1130,32 @@ class Simulation:
                 simulation.reset()
             return simulation
 
-    @classmethod
-    def create(cls, credentials: Credentials) -> Simulation:
-        """
-        Creates a new simulation with the specified credentials. This will create a new simulation
-        session with the API and return the simulation that has been created. If the credentials are
-        invalid, an exception will be raised.
+    # @classmethod
+    # def create(cls, credentials: Credentials) -> Simulation:
+    #    """
+    #    Creates a new simulation with the specified credentials. This will create a new simulation
+    #    session with the API and return the simulation that has been created. If the credentials are
+    #    invalid, an exception will be raised.
 
-        :param credentials:     The credentials to access the API
-        :type credentials:      Credentials
 
-        :returns:   The simulation that has been created
-        :rtype:     Simulation
-        """
-
-        # If the credentials are bad, throw an exception
-        if not credentials:
-            raise NominalException(
-                "Invalid Credentials: No credentials passed into the Simulation."
-            )
-        if not credentials.is_valid():
-            raise NominalException(
-                "Invalid Credentials: The credentials are missing information."
-            )
-
-        # Create a new session and return it
-        session: str = Simulation.create_session(credentials)
-        return Simulation(credentials, session_id=session)
+#
+#    :param credentials:     The credentials to access the API
+#    :type credentials:      Credentials
+#
+#    :returns:   The simulation that has been created
+#    :rtype:     Simulation
+#    """
+#
+#    # If the credentials are bad, throw an exception
+#    if not credentials:
+#        raise NominalException(
+#            "Invalid Credentials: No credentials passed into the Simulation."
+#        )
+#    if not credentials.is_valid():
+#        raise NominalException(
+#            "Invalid Credentials: The credentials are missing information."
+#        )
+#
+#    # Create a new session and return it
+#    session: str = Simulation.create_session(credentials)
+#    return Simulation(credentials, session_id=session)
