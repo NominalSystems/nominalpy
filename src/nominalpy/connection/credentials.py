@@ -35,7 +35,11 @@ class Credentials:
     """This defines the session ID for the current working session, stored for public API keys."""
 
     def __init__(
-        self, url: str = "https://api.nominalsys.com", port: int = 443, access: str = ""
+        self,
+        url: str = "https://api.nominalsys.com",
+        port: int = 443,
+        access: str = "",
+        version: str = None,
     ) -> None:
         """
         Initialises some credentials to access the API and will be called
@@ -52,12 +56,18 @@ class Credentials:
         :type access:   str
         """
 
-        # Fetch the version from the package information and only select the first two digits
-        package_version: str = version("nominalpy")
+        # Handle the version of the package
+        if version is not None:
+            self.version = version
 
-        # Assume only the first three digits are the version
-        package_version = package_version.split(".")[0:3]
-        self.version = ".".join(package_version)
+        # If the version is not set, then we will assume that the package is installed
+        else:
+            # Fetch the version from the package information and only select the first two digits
+            package_version: str = version("nominalpy")
+
+            # Assume only the first three digits are the version
+            package_version = str(package_version).split(".")[0:3]
+            self.version = ".".join(package_version)
 
         # Configure the URL
         self.url = url
