@@ -186,7 +186,7 @@ class Object(Instance):
             kwargs[key] = helper.serialize(kwargs[key])
 
         # Create the request
-        request: dict = {"type": type, "meta": {"owner": self.id}}
+        request: dict = {"type": type, "meta": self.id}
         if len(kwargs) > 0:
             request["data"] = kwargs
 
@@ -323,7 +323,7 @@ class Object(Instance):
             kwargs[key] = helper.serialize(kwargs[key])
 
         # Create the request
-        request: dict = {"type": type, "meta": {"owner": self.id}}
+        request: dict = {"type": type, "meta": self.id}
         if len(kwargs) > 0:
             request["data"] = kwargs
 

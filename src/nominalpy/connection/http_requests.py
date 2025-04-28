@@ -33,7 +33,7 @@ def _create_session() -> requests.Session:
     )
     adapter = requests.adapters.HTTPAdapter(max_retries=retry_strategy)
     session.mount("http://", adapter)
-    session.timeout = 10  # Set a reasonable timeout (in seconds)
+    session.timeout = 60  # Set a reasonable timeout (in seconds)
     return session
 
 
