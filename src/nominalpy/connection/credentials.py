@@ -3,7 +3,7 @@
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
-from importlib.metadata import version
+from importlib.metadata import version as version_metadata
 
 
 class Credentials:
@@ -63,7 +63,7 @@ class Credentials:
         # If the version is not set, then we will assume that the package is installed
         else:
             # Fetch the version from the package information and only select the first two digits
-            package_version: str = version("nominalpy")
+            package_version: str = version_metadata("nominalpy")
 
             # Assume only the first three digits are the version
             package_version = str(package_version).split(".")[0:3]
