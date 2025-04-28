@@ -1,12 +1,14 @@
 #                     [ NOMINAL SYSTEMS ]
-# This code is developed by Nominal Systems to aid with communication 
+# This code is developed by Nominal Systems to aid with communication
 # to the public API. All code is under the the license provided along
 # with the 'nominalpy' module. Copyright Nominal Systems, 2024.
 
 import numpy as np
 
 
-def to_dcm(right: np.ndarray = None, forward: np.ndarray = None, up: np.ndarray = None) -> np.ndarray:
+def to_dcm(
+    right: np.ndarray = None, forward: np.ndarray = None, up: np.ndarray = None
+) -> np.ndarray:
     """
     Converts the DCM to a new DCM using the provided vectors.
 
@@ -22,11 +24,13 @@ def to_dcm(right: np.ndarray = None, forward: np.ndarray = None, up: np.ndarray 
         axis_f = forward / np.linalg.norm(forward)
 
         # Assign matrix components
-        M = np.array([
-            [axis_r[0], axis_f[0], axis_u[0]],
-            [axis_r[1], axis_f[1], axis_u[1]],
-            [axis_r[2], axis_f[2], axis_u[2]]
-        ])
+        M = np.array(
+            [
+                [axis_r[0], axis_f[0], axis_u[0]],
+                [axis_r[1], axis_f[1], axis_u[1]],
+                [axis_r[2], axis_f[2], axis_u[2]],
+            ]
+        )
     else:
         # Default to identity matrix if no vectors are provided
         M = np.eye(3)
@@ -80,20 +84,20 @@ def mrp_to_dcm(mrp: np.ndarray) -> np.ndarray:
     q2 = mrp[1]
     q3 = mrp[2]
 
-    d1 = np.dot(mrp,mrp)
-    s = 1-d1
+    d1 = np.dot(mrp, mrp)
+    s = 1 - d1
     d = (1 + d1) * (1 + d1)
     c = np.identity(3)
-    c[0,0] = 4 * (2 * q1 * q1 - d1) + s * s
-    c[0,1] = 8 * q1 * q2 + 4 * q3 * s
-    c[0,2] = 8 * q1 * q3 - 4 * q2 * s
-    c[1,0] = 8 * q2 * q1 - 4 * q3 * s
-    c[1,1] = 4 * (2 * q2 * q2 - d1) + s * s
-    c[1,2] = 8 * q2 * q3 + 4 * q1 * s
-    c[2,0] = 8 * q3 * q1 + 4 * q2 * s
-    c[2,1] = 8 * q3 * q2 - 4 * q1 * s
-    c[2,2] = 4 * (2 * q3 * q3 - d1) + s * s
-    c *= 1/d
+    c[0, 0] = 4 * (2 * q1 * q1 - d1) + s * s
+    c[0, 1] = 8 * q1 * q2 + 4 * q3 * s
+    c[0, 2] = 8 * q1 * q3 - 4 * q2 * s
+    c[1, 0] = 8 * q2 * q1 - 4 * q3 * s
+    c[1, 1] = 4 * (2 * q2 * q2 - d1) + s * s
+    c[1, 2] = 8 * q2 * q3 + 4 * q1 * s
+    c[2, 0] = 8 * q3 * q1 + 4 * q2 * s
+    c[2, 1] = 8 * q3 * q2 - 4 * q1 * s
+    c[2, 2] = 4 * (2 * q3 * q3 - d1) + s * s
+    c *= 1 / d
 
     return c
 
@@ -109,12 +113,11 @@ def euler2(angle_rad: float) -> np.ndarray:
     """
     cos_x = np.cos(angle_rad)
     sin_x = np.sin(angle_rad)
-    rotation_matrix = np.array([
-        [cos_x, 0.0, sin_x],
-        [0.0,   1.0, 0.0],
-        [-sin_x, 0.0, cos_x]
-    ])
+    rotation_matrix = np.array(
+        [[cos_x, 0.0, sin_x], [0.0, 1.0, 0.0], [-sin_x, 0.0, cos_x]]
+    )
     return rotation_matrix
+
 
 def euler3(angle_rad: float) -> np.ndarray:
     """
@@ -127,9 +130,59 @@ def euler3(angle_rad: float) -> np.ndarray:
     """
     cos_x = np.cos(angle_rad)
     sin_x = np.sin(angle_rad)
-    rotation_matrix = np.array([
-        [cos_x, -sin_x, 0.0],
-        [sin_x,  cos_x, 0.0],
-        [0.0,    0.0,   1.0]
-    ])
+    rotation_matrix = np.array(
+        [[cos_x, -sin_x, 0.0], [sin_x, cos_x, 0.0], [0.0, 0.0, 1.0]]
+    )
     return rotation_matrix
+
+
+def rotate_dcm(dcm: np.ndarray, axis: np.ndarray, angle: float) -> np.ndarray:
+    """
+    Rotates a DCM matrix about an axis by a given angle. The DCM is assumed to be
+    a 3x3 matrix and the axis is a 3x1 vector. The angle is measured in degrees.
+
+    :param dcm: The DCM matrix to rotate, assumed to be a 3x3 matrix.
+    :type dcm: numpy.ndarray
+    :param axis: The axis to rotate about, assumed to be a 3x1 vector.
+    :type axis: numpy.ndarray
+    :param angle: The angle of rotation in degrees.
+    :type angle: float
+
+    :return: The rotated DCM matrix.
+    :rtype: numpy.ndarray
+    """
+
+    # If a list is used, turn into a numpy array
+    if isinstance(dcm, list):
+        dcm = np.array(dcm)
+    if isinstance(axis, list):
+        axis = np.array(axis)
+
+    # Validate the data
+    if dcm.shape != (3, 3):
+        raise ValueError("DCM matrix must be a 3x3 matrix.")
+    if axis.shape != (3,):
+        raise ValueError("Axis must be a 3x1 vector.")
+
+    # Convert the angle to radians
+    angle_rad = np.radians(angle)
+
+    # Compute the rotation matrix
+    c = np.cos(angle_rad)
+    s = np.sin(angle_rad)
+    t = 1 - c
+    x = axis[0]
+    y = axis[1]
+    z = axis[2]
+
+    # Compute the rotation matrix
+    rotation_matrix = np.array(
+        [
+            [t * x * x + c, t * x * y - s * z, t * x * z + s * y],
+            [t * x * y + s * z, t * y * y + c, t * y * z - s * x],
+            [t * x * z - s * y, t * y * z + s * x, t * z * z + c],
+        ]
+    )
+
+    # Return the rotated DCM
+    return np.dot(rotation_matrix, dcm)
