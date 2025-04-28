@@ -10,6 +10,7 @@ from .instance import Instance
 from .message import Message
 from .object import Object
 from .behaviour import Behaviour
+from .model import Model
 from .system import System
 from ..connection import Credentials, http_requests
 from ..utils import NominalException, printer, helper
@@ -34,19 +35,19 @@ class Simulation:
     __credentials: Credentials = None
     """Specifies the credentials for accessing the API correctly."""
 
-    __objects: list = []
+    __objects: list[Object] = []
     """Defines all objects that are created within the simulation, with the simulation root."""
 
-    __behaviours: list = []
+    __behaviours: list[Behaviour] = []
     """Defines all behaviours that are created within the simulation, with the simulation root."""
 
-    __systems: dict = {}
+    __systems: dict[str:System] = {}
     """Defines all systems that are created within the simulation, with the simulation root."""
 
-    __messages: list = []
+    __messages: list[Message] = []
     """Defines all messages that are created within the simulation, with the simulation root."""
 
-    __planets: dict = {}
+    __planets: dict[str:Object] = {}
     """Defines all planets that are created within the simulation, with the simulation root."""
 
     __time: float = 0.0
@@ -107,7 +108,7 @@ class Simulation:
                 if first:
                     first = False
                     printer.warning(
-                        "API session is in a pending state as the instance is starting. This may take up to 1 minute."
+                        "API session is in a pending state as the instance is starting. Please wait."
                     )
                 else:
                     printer.log("Waiting for session to be active...")
@@ -158,7 +159,7 @@ class Simulation:
         for object in self.__objects:
             if object.id == id:
                 return object
-            find: Instance = object.get_instance_with_id(id)
+            find: Instance = object.get_instance_by_id(id)
             if find != None:
                 return find
         for behaviour in self.__behaviours:
@@ -213,6 +214,69 @@ class Simulation:
         # Print the success message
         printer.success(f"Object of type '{type}' created successfully.")
         return object
+
+    def get_object_by_id(self, id: str) -> Object:
+        """
+        Attempts to find an object in the simulation with a specified ID. This will look through all objects
+        that exist and will attempt to find one that has been created. If the object does not exist, it will
+        create a Python object with the ID and, provided it exists in the simulation already, the data will
+        be fetched when used.
+
+        :param id:  The ID of the object to create
+        :type id:   str
+
+        :returns:   The object that has been found or newly created.
+        :rtype:     Object
+        """
+
+        # If the ID is not valid, raise an exception
+        if not helper.is_valid_guid(id):
+            raise NominalException(
+                "Failed to create a object from an ID as the guid was incorrect."
+            )
+
+        # Validate if any of the current objects have the same ID
+        for obj in self.__objects:
+            if obj.id == id:
+                return obj
+
+            # Check children
+            obj: Object = obj.get_child_by_id(id)
+            if obj != None:
+                return obj
+
+        # Create the object and add it to the array
+        obj = Object(self.__credentials, id)
+        self.__objects.append(obj)
+
+        # Print the success message
+        printer.success(f"Object with ID '{id}' created successfully.")
+        return obj
+
+    def get_objects(self, recurse: bool = True) -> list[Object]:
+        """
+        Returns all the objects that have been created within the simulation. This will return
+        all the objects that have been created within the simulation. This will return the objects
+        as a list. If the recurse flag is set to true, all children of the objects will be returned
+        as well.
+
+        :param recurse:     Whether to return all children of the objects
+        :type recurse:      bool
+
+        :returns:           The objects that have been created within the simulation
+        :rtype:             list
+        """
+
+        # If the recurse flag is set to true, return all objects
+        if recurse:
+            objects: list = []
+            for obj in self.__objects:
+                objects.append(obj)
+                objects.extend(obj.get_children())
+            return objects
+
+        # Otherwise, return the objects
+        return self.__objects
 
     def add_behaviour(self, type: str, **kwargs) -> Behaviour:
         """
@@ -452,6 +516,42 @@ class Simulation:
         # Return the list
         return instances
 
+    def get_root_objects(self) -> list[Object]:
+        """
+        Returns all the root objects that have been created within the simulation. This will
+        return all the objects that have been created directly within the simulation and not
+        part of any other object. This will return the objects as a list.
+
+        :returns:   The root objects that have been created within the simulation
+        :rtype:     list
+        """
+
+        return self.__objects
+
+    def get_root_behaviours(self) -> list[Behaviour]:
+        """
+        Returns all the root behaviours that have been created within the simulation. This will
+        return all the behaviours that have been created directly within the simulation and not
+        part of any other object. This will return the behaviours as a list.
+
+        :returns:   The root behaviours that have been created within the simulation
+        :rtype:     list
+        """
+
+        return self.__behaviours
+
+    def get_systems(self) -> list[System]:
+        """
+        Returns all the systems that have been created within the simulation. This will return
+        all the systems that have been created within the simulation. This will return the systems
+        as a list.
+
+        :returns:   The systems that have been created within the simulation
+        :rtype:     list
+        """
+
+        return list(self.__systems.values())
+
     def get_time(self) -> float:
         """
         Returns the current time of the simulation. This will fetch the time from the API
@@ -585,39 +685,118 @@ class Simulation:
         with open(path, "w") as file:
             json.dump(state, file)
 
-    def set_state(self, state: dict) -> bool:
+    def set_state(self, state: dict, cache_all: bool = False) -> bool:
         """
         Sets the state of the simulation to the specified state. This will set the state of the
         simulation to the state provided and return whether the state was set successfully. This
-        must be in a valid JSON dictionary form.
+        must be in a valid JSON dictionary form. If the cache_all flag is set to true, all objects
+        in the simulation will be cached and pulled from the API, which may take some time.
 
-        :param state:   The state to set the simulation to
-        :type state:    dict
+        :param state:       The state to set the simulation to
+        :type state:        dict
+        :param cache_all:   Whether to cache all objects in the simulation.
+        :type cache_all:    bool
 
         :returns:       Whether the state was set successfully
         :rtype:         bool
         """
+
+        # Clear the current state
+        self.reset()
 
         # Get the extension system
         system: System = self.get_system(EXTENSION_SYSTEM)
 
         # Load the state of the simulation
         success: bool = system.invoke("SetState", state)
+        if not success:
+            return False
+
+        # Only do the following if the cache is required
+        if cache_all:
+
+            # Get the extension system
+            system: System = self.get_system(EXTENSION_SYSTEM)
+
+            # Fetch all root objects using 'GetRootObjects'
+            objects: list = system.invoke("GetRootObjects", helper.empty_guid())
+            for id in objects:
+                if helper.is_valid_guid(id):
+
+                    # Create the root object
+                    obj: Object = Object(self.__credentials, id)
+                    self.__objects.append(obj)
+
+                    # Register it properly
+                    self.__load_object(obj)
+
+            # Fetch all root behaviours
+            behaviours: list = system.invoke("GetRootBehaviours", helper.empty_guid())
+            for id in behaviours:
+                if helper.is_valid_guid(id):
+
+                    # Create the root behaviour
+                    beh: Behaviour = Behaviour(self.__credentials, id)
+                    beh.get_messages()
+                    self.__behaviours.append(beh)
 
         # Ensure the refresh is required
         self.__require_refresh()
 
         # Return the success
-        return success
+        return True
 
-    def load_state(self, path: str) -> bool:
+    def __load_object(self, parent: Object) -> None:
+        """
+        Loads the object and its children from the API. This will load the object,
+        all its children, and all behaviours in the simulation.
+
+        :param parent:  The parent object to load the children from
+        :type parent:   Object
+        """
+
+        # If the object is missing, skip
+        if parent == None:
+            return
+
+        # Get the extension system
+        system: System = self.get_system(EXTENSION_SYSTEM)
+
+        # Fetch all children objects using 'GetRootObjects'
+        children: list = system.invoke("GetRootObjects", parent.id)
+        for id in children:
+            if helper.is_valid_guid(id):
+                obj: Object = parent._Object__register_child_with_id(id)
+                self.__load_object(obj)
+
+        # Fetch all behaviours
+        behaviours: list = system.invoke("GetRootBehaviours", parent.id)
+        for id in behaviours:
+            if helper.is_valid_guid(id):
+                behaviour: Behaviour = parent._Object__register_behaviour_with_id(id)
+                behaviour.get_messages()
+
+        # Fetch all models
+        models: list = parent.invoke("GetModels")
+        for id in models:
+            if helper.is_valid_guid(id):
+                model: Model = parent._Object__register_model_with_id(id)
+                model.get_messages()
+
+        # Cache all messages and load them into memory
+        parent.get_messages()
+
+    def load_state(self, path: str, cache_all: bool = False) -> bool:
         """
         Loads the state of the simulation from the specified path. This will load the state of the
         simulation from the path as a JSON file and return whether the state was loaded successfully.
-        If the path does not exist, an exception will be raised.
+        If the path does not exist, an exception will be raised. If the cache_all flag is set to true,
+        all objects in the simulation will be cached and pulled from the API, which may take some time.
 
-        :param path:    The path to load the state of the simulation from
-        :type path:     str
+        :param path:        The path to load the state of the simulation from
+        :type path:         str
+        :param cache_all:   Whether to cache all objects in the simulation.
+        :type cache_all:    bool
 
         :returns:       Whether the state was loaded successfully
         :rtype:         bool
@@ -630,7 +809,7 @@ class Simulation:
         # Load the state from the path
         with open(path, "r") as file:
             state: dict = json.load(file)
-            return self.set_state(state)
+            return self.set_state(state, cache_all)
 
     def track_object(self, instance: Instance, isAdvanced: bool = False) -> None:
         """
