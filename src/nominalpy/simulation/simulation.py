@@ -140,6 +140,12 @@ class Simulation(Context):
         simulation can no longer be used after this has been called.
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # Dispose of the simulation and reset the state
         await self.__client.delete(f"{self.__id}")
         self.__reset()

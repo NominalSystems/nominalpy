@@ -21,9 +21,8 @@ class Client:
 
     def __init__(
         self,
-        url: str = "https://api.nominalsys.com/",
+        url: str = "https://api.nominalsys.com",
         token: str = None,
-        port: int = 25565,
         max_requests_per_client: int = 50,
         max_total_concurrent_requests: int = 100,
     ) -> None:
@@ -44,20 +43,12 @@ class Client:
         """
 
         # Remove the trailing slash from the URL if it exists
-        if url.endswith("/"):
-            url = url[:-1]
+        if not url.endswith("/"):
+            url += "/"
+        self.base_url: str = url
 
         # Set the token and port
         self.token = token
-        self.port = port
-
-        # Make the base url include the port
-        if "https://" in url and port == 443:
-            self.base_url = url + "/"
-        elif "http://" in url and port == 80:
-            self.base_url = url + "/"
-        else:
-            self.base_url = f"{url}:{port}/"
 
         # Set the maximum requests per client and total concurrent requests
         if max_requests_per_client < 1:
@@ -303,8 +294,7 @@ class Client:
         :rtype: Client
         """
         return Client(
-            url="http://localhost/",
-            port=port,
+            url=f"http://localhost:{port}",
             max_requests_per_client=max_requests_per_client,
             max_total_concurrent_requests=max_total_concurrent_requests,
         )
