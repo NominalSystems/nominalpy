@@ -63,10 +63,7 @@ class Simulation(Context):
     __ticked: bool = False
     """Defines whether the simulation has been ticked or not."""
 
-    __session_id: str = None
-    """Defines the session ID for the current working session, stored for public API keys."""
-
-    def __init__(self, client: Client, session_id: str = "") -> None:
+    def __init__(self, client: Client, id: str) -> None:
         """
         Initialises the simulation with the client and the ID of the simulation. If the ID is
         not provided, a new simulation will be created. If the reset flag is set to true, the simulation
@@ -74,15 +71,12 @@ class Simulation(Context):
 
         :param client:          The client to access the API
         :type client:           Client
-        :param session_id:      The session ID for the current working session
-        :type session_id:       str
+        :param id:              The ID of the simulation that exists
+        :type id:               str
         """
 
         # Store a reference to the client
         self.__client: Client = client
-
-        # Configure the root object
-        self.__session_id = session_id
 
         # If the client is are bad, throw an exception
         if not self.__client:
@@ -90,17 +84,20 @@ class Simulation(Context):
                 "Failed to create a simulation due to invalid client."
             )
 
+        # Configure the root object
+        self.__id = id
+
+        # If the ID is not valid, throw an exception
+        if not helper.is_valid_guid(self.__id):
+            raise NominalException(
+                "Failed to create a simulation due to invalid simulation ID."
+            )
+
         # Reset the objects and systems
-        self.__objects = []
-        self.__behaviours = []
-        self.__systems = {}
-        self.__messages = []
-        self.__planets = {}
-        self.__time = 0.0
-        self.__ticked = False
+        self.__reset()
 
     @classmethod
-    async def create(cls, client: Client, session_id: str = "") -> Simulation:
+    async def create(cls, client: Client) -> Simulation:
         """
         Creates a new simulation with the specified client. This will create a new simulation
         session with the API and return the simulation that has been created. If the client is
@@ -108,17 +105,62 @@ class Simulation(Context):
 
         :param client:          The client to access the API
         :type client:           Client
-        :param session_id:      The session ID for the current working session
-        :type session_id:       str
 
         :returns:               The simulation that has been created
         :rtype:                 Simulation
         """
 
         # Create a new simulation and return it
-        sim: Simulation = Simulation(client, session_id=session_id)
-        sim.__id = await sim.__client.post("new", "NominalSystems.Simulation")
+        id: str = await client.post("new", "NominalSystems.Simulation")
+        sim: Simulation = Simulation(client, id=id)
         return sim
+
+    @classmethod
+    async def list(cls, client: Client) -> list[Simulation]:
+        """
+        Lists all the simulations that are currently running. This will return a list of
+        simulations that are currently running and their IDs. If the client is invalid, an
+        exception will be raised.
+
+        :param client:          The client to access the API
+        :type client:           Client
+
+        :returns:               The list of simulations that are currently running
+        :rtype:                 list[Simulation]
+        """
+
+        # Get the list of simulations from the API
+        result = await client.get("")
+        return [Simulation(client, id) for id in result]
+
+    async def dispose(self) -> None:
+        """
+        Disposes of the simulation. This will dispose of the simulation and clear all objects,
+        behaviours, systems and messages that have been created within the simulation. The
+        simulation can no longer be used after this has been called.
+        """
+
+        # Dispose of the simulation and reset the state
+        await self.__client.delete(f"{self.__id}")
+        self.__reset()
+        self.__id = None
+        self.__client = None
+
+    @classmethod
+    async def dispose_all(cls, client: Client) -> None:
+        """
+        Disposes of all simulations that are currently running. This will dispose of all simulations
+        and clear all objects, behaviours, systems and messages that have been created within the
+        simulations. The simulations can no longer be used after this has been called.
+
+        :param client:          The client to access the API
+        :type client:           Client
+        """
+
+        # Dispose of all simulations
+        simulations: list[Simulation] = await cls.list(client)
+        for sim in simulations:
+            await sim.dispose()
 
     def get_id(self) -> str:
         """
@@ -130,6 +172,22 @@ class Simulation(Context):
 
         # Return the ID of the simulation, which should have been set by the API
         return self.__id
+
+    def is_valid(self) -> bool:
+        """
+        Returns whether the simulation is valid or not. This will check if the simulation ID is
+        valid and if the client is valid. If the simulation ID is not valid, an exception will be raised.
+
+        :returns:   Whether the simulation is valid or not
+        :rtype:     bool
+        """
+
+        # Check if the simulation ID is valid
+        return (
+            self.__id != None
+            and helper.is_valid_guid(self.__id)
+            and self.__client != None
+        )
 
     def __require_refresh(self) -> None:
         """
@@ -196,6 +254,12 @@ class Simulation(Context):
         :rtype:         Object
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
 
@@ -236,6 +300,12 @@ class Simulation(Context):
         :rtype:     Object
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # If the ID is not valid, raise an exception
         if not helper.is_valid_guid(id):
             raise NominalException(
@@ -274,6 +344,12 @@ class Simulation(Context):
         :rtype:             list
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # If the recurse flag is set to true, return all objects
         if recurse:
             objects: list = []
@@ -301,6 +377,12 @@ class Simulation(Context):
         :returns:       The behaviour that has been created
         :rtype:         Behaviour
         """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
@@ -342,6 +424,12 @@ class Simulation(Context):
         :returns:       The system with the specified type
         :rtype:         System
         """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
@@ -391,6 +479,12 @@ class Simulation(Context):
         :rtype:         Message
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
 
@@ -430,6 +524,12 @@ class Simulation(Context):
         :rtype:     Message
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # If the ID is not valid, raise an exception
         if not helper.is_valid_guid(id):
             raise NominalException(
@@ -457,6 +557,12 @@ class Simulation(Context):
         :returns:       The instance of the specified type
         :rtype:         Instance
         """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
@@ -488,6 +594,12 @@ class Simulation(Context):
         :returns:       The instances of the specified type
         :rtype:         list
         """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
@@ -556,6 +668,12 @@ class Simulation(Context):
         :rtype:     float
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # If the time is not zero, return the time
         if self.__time > 0:
             return self.__time
@@ -567,7 +685,7 @@ class Simulation(Context):
         # Return the time
         return self.__time
 
-    async def reset(self) -> None:
+    def __reset(self) -> None:
         """
         Resets the simulation. This will reset the simulation and clear all objects, behaviours,
         systems and messages that have been created within the simulation. This will also reset
@@ -583,9 +701,6 @@ class Simulation(Context):
         self.__time = 0.0
         self.__ticked = False
 
-        # Ensure the simulation is reset
-        await self.__client.post(f"{self.__id}/ivk", ["Dispose"])
-
     async def tick(self, step: float = 1e-1) -> None:
         """
         Ticks the simulation by the specified amount of time. This will invoke the tick function
@@ -595,6 +710,12 @@ class Simulation(Context):
         :param step:    The amount of time to tick the simulation by in seconds
         :type step:     float
         """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
 
         # Tick the simulation by the specified amount of time
         await self.tick_duration(step, step)
@@ -610,6 +731,12 @@ class Simulation(Context):
         :param step:    The time-step of the tick, used for physics calculations in seconds
         :type step:     float
         """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
 
         # Get the extension system
         system: System = await self.get_system(EXTENSION_SYSTEM)
@@ -644,6 +771,12 @@ class Simulation(Context):
         :rtype:     dict
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # Get the extension system
         system: System = self.get_system(EXTENSION_SYSTEM)
 
@@ -658,6 +791,12 @@ class Simulation(Context):
         :param path:    The path to save the state of the simulation to
         :type path:     str
         """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
 
         # Get the state of the simulation
         state: dict = self.get_state()
@@ -682,8 +821,14 @@ class Simulation(Context):
         :rtype:         bool
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # Clear the current state
-        await self.reset()
+        await self.__reset()
 
         # Get the extension system
         system: System = await self.get_system(EXTENSION_SYSTEM)
@@ -785,6 +930,12 @@ class Simulation(Context):
         :rtype:         bool
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # Check if the path exists
         if not os.path.exists(path):
             raise NominalException(f"Path '{path}' does not exist.")
@@ -805,6 +956,12 @@ class Simulation(Context):
         :param isAdvanced:  Whether the advanced variables are also being tracked
         :type isAdvanced:   bool
         """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
 
         # Get the tracking system
         system: System = await self.get_system(TRACKING_SYSTEM)
@@ -830,6 +987,12 @@ class Simulation(Context):
         :type interval:     float
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # Get the tracking system
         system: System = await self.get_system(TRACKING_SYSTEM)
 
@@ -850,6 +1013,12 @@ class Simulation(Context):
         :returns:           The data that has been stored for the object
         :rtype:             DataFrame
         """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
 
         # Get the tracking system
         system: System = await self.get_system(TRACKING_SYSTEM)
@@ -907,6 +1076,12 @@ class Simulation(Context):
         :rtype:         Object
         """
 
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # Check if the planet already exists
         if name.lower() in self.__planets:
             return self.__planets[name.lower()]
@@ -940,6 +1115,13 @@ class Simulation(Context):
         :returns:           The data that has been stored for the object
         :rtype:             DataFrame
         """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         # Create and return the data frame
         return (await self.query_object(instance=instance)).to_dataframe()
 
@@ -951,6 +1133,13 @@ class Simulation(Context):
         :returns:   The function library for the simulation
         :rtype:     Instance
         """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
         return await self.get_system(EXTENSION_SYSTEM)
 
     def get_client(self) -> Client:

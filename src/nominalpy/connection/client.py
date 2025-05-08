@@ -282,19 +282,6 @@ class Client:
         """
         return await self._request("DELETE", endpoint, data)
 
-    @staticmethod
-    def _sync_wrapper(f):
-        """
-        Create a decorator to make async functions callable synchronously.
-        This is a static method and should not be called directly.
-        """
-
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            return asyncio.run(f(*args, **kwargs))
-
-        return wrapper
-
     @classmethod
     def create_local(
         cls,
