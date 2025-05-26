@@ -768,7 +768,7 @@ class Simulation(Context):
         # Ensure the refresh is required
         self.__require_refresh()
 
-    def get_state(self) -> dict:
+    async def get_state(self) -> dict:
         """
         Returns the state of the simulation. This will fetch the state from the API and return
         the state as a dictionary.
@@ -784,12 +784,12 @@ class Simulation(Context):
             )
 
         # Get the extension system
-        system: System = self.get_system(EXTENSION_SYSTEM)
+        system: System = await self.get_system(EXTENSION_SYSTEM)
 
         # Get the state of the simulation
-        return system.invoke("GetState")
+        return await system.invoke("GetState")
 
-    def save_state(self, path: str) -> None:
+    async def save_state(self, path: str) -> None:
         """
         Saves the state of the simulation to the specified path. This will save the state of the
         simulation to the path as a JSON file. If the path does not exist, an exception will be raised.
@@ -805,7 +805,7 @@ class Simulation(Context):
             )
 
         # Get the state of the simulation
-        state: dict = self.get_state()
+        state: dict = await self.get_state()
 
         # Save the state to the path
         with open(path, "w") as file:
