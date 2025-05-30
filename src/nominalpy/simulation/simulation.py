@@ -450,7 +450,9 @@ class Simulation(Context):
             return system
 
         # Attempt to find the object of type
-        id: str = await self.__client.post(f"{self.__id}/ivk", ["FindObject", type])
+        id: str = await self.__client.post(
+            f"{self.__id}/ivk", ["FindObjectWithType", type]
+        )
         if not helper.is_valid_guid(id):
 
             # Attempt to create the system
@@ -574,7 +576,9 @@ class Simulation(Context):
         type = helper.validate_type(type)
 
         # Create the request to the function
-        id: str = await self.__client.post(f"{self.__id}/ivk", ["FindObject", type])
+        id: str = await self.__client.post(
+            f"{self.__id}/ivk", ["FindObjectWithType", type]
+        )
 
         # If the result is not a valid GUID, return None
         if not helper.is_valid_guid(id):
@@ -611,7 +615,9 @@ class Simulation(Context):
         type = helper.validate_type(type)
 
         # Create the request to the function
-        result = await self.__client.post(f"{self.__id}/ivk", ["FindObjects", type])
+        result = await self.__client.post(
+            f"{self.__id}/ivk", ["FindObjectsWithType", type]
+        )
 
         # If the result is not a list or is empty, return a missing list
         if not isinstance(result, list) or len(result) == 0:
