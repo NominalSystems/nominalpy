@@ -229,7 +229,7 @@ class Simulation(Context):
         for object in self.__objects:
             if object.id == id:
                 return object
-            find: Instance = object.get_instance_by_id(id)
+            find: Instance = object.find_instance_with_id(id)
             if find != None:
                 return find
         for behaviour in self.__behaviours:
@@ -324,7 +324,7 @@ class Simulation(Context):
                 return obj
 
             # Check children
-            obj: Object = obj.get_child_by_id(id)
+            obj: Object = obj.get_child_with_id(id)
             if obj != None:
                 return obj
 
@@ -949,21 +949,21 @@ class Simulation(Context):
         children: list = system.invoke("GetRootObjects", parent.id)
         for id in children:
             if helper.is_valid_guid(id):
-                obj: Object = parent._Object__register_child_with_id(id)
+                obj: Object = parent._Object__register_child(id)
                 self.__load_object(obj)
 
         # Fetch all behaviours
         behaviours: list = system.invoke("GetRootBehaviours", parent.id)
         for id in behaviours:
             if helper.is_valid_guid(id):
-                behaviour: Behaviour = parent._Object__register_behaviour_with_id(id)
+                behaviour: Behaviour = parent._Object__register_behaviour(id)
                 behaviour.get_messages()
 
         # Fetch all models
         models: list = parent.invoke("GetModels")
         for id in models:
             if helper.is_valid_guid(id):
-                model: Model = parent._Object__register_model_with_id(id)
+                model: Model = parent._Object__register_model(id)
                 model.get_messages()
 
         # Cache all messages and load them into memory

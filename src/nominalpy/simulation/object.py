@@ -21,19 +21,19 @@ class Object(Instance):
     structure for simulation object.
     """
 
-    __instances: dict = {}
+    __instances: dict[str:Instance] = {}
     """Defines all instances that have been connected to the object, by ID."""
 
-    __children: list = []
+    __children: list[Object] = []
     """Defines all children objects that are attached to the object."""
 
-    __behaviours: list = []
+    __behaviours: list[Behaviour] = []
     """Defines all behaviours that are attached to the object."""
 
-    __models: dict = {}
+    __models: dict[str:Model] = {}
     """Defines all models that are attached to the object, by type."""
 
-    __messages: dict = {}
+    __messages: dict[str:Message] = {}
     """Defines all messages that are attached to the object, by name."""
 
     __parent: Object = None
@@ -150,7 +150,7 @@ class Object(Instance):
 
         return self.__parent
 
-    def get_instance_by_id(self, id: str) -> Instance:
+    def find_instance_with_id(self, id: str) -> Instance:
         """
         Returns the instance that is attached to the object with the specified ID. If the
         instance does not exist, None will be returned.
@@ -184,7 +184,7 @@ class Object(Instance):
         type = helper.validate_type(type)
 
         # Get the function library
-        function_library = await self._context.get_function_library()
+        function_library: Instance = await self._context.get_function_library()
         if function_library is None:
             raise NominalException("Failed to get function library for the simulation.")
 
@@ -196,7 +196,7 @@ class Object(Instance):
             raise NominalException(f"Failed to create child object of type '{type}'.")
 
         # Create the object and add it to the array
-        child: Object = self.__register_child_with_id(child_id, type)
+        child: Object = self.__register_child(child_id, type)
         if child is None:
             raise NominalException(f"Failed to create child object of type '{type}'.")
 
@@ -207,7 +207,7 @@ class Object(Instance):
         # Regsiter the child object with the ID
         return child
 
-    def __register_child_with_id(self, id: str, type: str = "") -> Object:
+    def __register_child(self, id: str, type: str = "") -> Object:
         """
         Registers a child object to the object with the specified ID. The child object will
         be created and attached to the object and will be returned to the user.
@@ -223,7 +223,6 @@ class Object(Instance):
 
         # Create the object
         object = Object(self._context, id, type, parent=self)
-        object.__type = type
         self.__children.append(object)
         self.__instances[id] = object
 
@@ -245,7 +244,7 @@ class Object(Instance):
 
         # Fetch the child and perform a safety check
         if index < 0 or index >= len(self.__children):
-            raise NominalException("Invalid index provided to get child object.")
+            raise IndexError(f"Failed to get child object at index: {index}.")
         return self.__children[index]
 
     def get_children(self) -> list:
@@ -258,7 +257,7 @@ class Object(Instance):
 
         return self.__children
 
-    def get_children_of_type(self, type: str) -> list:
+    def get_children_with_type(self, type: str) -> list:
         """
         Returns all of the children objects that are attached to the object of the specified
         type. If the type is not found, an empty list will be returned.
@@ -276,7 +275,7 @@ class Object(Instance):
         # Filter the children by type
         return [child for child in self.__children if child.get_type() == type]
 
-    def get_child_by_id(self, id: str, recurse: bool = True) -> Object:
+    def get_child_with_id(self, id: str, recurse: bool = True) -> Object:
         """
         Returns the child object that is attached to the object with the specified ID. If the
         child object does not exist, None will be returned. This will also look down the chain
@@ -299,7 +298,7 @@ class Object(Instance):
         # If recurse is enabled, look down the chain of instances
         if recurse:
             for child in self.__children:
-                result = child.get_child_by_id(id, recurse)
+                result = child.get_child_with_id(id, recurse)
                 if result:
                     return result
 
@@ -338,7 +337,7 @@ class Object(Instance):
             )
 
         # Create the behaviour and add it to the array
-        behaviour: Behaviour = self.__register_behaviour_with_id(behaviour_id, type)
+        behaviour: Behaviour = self.__register_behaviour(behaviour_id, type)
         if behaviour is None:
             raise NominalException(
                 f"Failed to create child behaviour of type '{type}'."
@@ -351,7 +350,7 @@ class Object(Instance):
         # Regsiter the child behaviour with the ID
         return behaviour
 
-    def __register_behaviour_with_id(self, id: str, type: str = "") -> Behaviour:
+    def __register_behaviour(self, id: str, type: str = "") -> Behaviour:
         """
         Registers a child behaviour to the object with the specified ID. The child behaviour will
         be created and attached to the behaviour and will be returned to the user.
@@ -459,14 +458,14 @@ class Object(Instance):
             raise NominalException(f"Failed to create model of type '{type}'.")
 
         # Create the model with the ID
-        model = self.__register_model_with_id(id, type)
+        model = self.__register_model(id, type)
 
         # Set the data if it exists
         if len(kwargs) > 0:
             await model.set(**kwargs)
         return model
 
-    def __register_model_with_id(self, id: str, type: str = "") -> Model:
+    def __register_model(self, id: str, type: str = "") -> Model:
         """
         Registers a model to the object with the specified ID. The modelr will
         be created and attached to the object and will be returned to the user.
@@ -524,7 +523,7 @@ class Object(Instance):
         # Create the message object with the ID
         message = Message(self._context, message_id)
         self.__messages[name] = message
-        self.__instances[id] = message
+        self.__instances[message_id] = message
 
         # Return the message of that name
         printer.success(f"Successfully created message with name '{name}'.")

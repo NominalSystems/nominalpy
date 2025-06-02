@@ -15,7 +15,7 @@ class System(Instance):
     per simulation and is used to define the global state of the simulation.
     """
 
-    __messages: dict = {}
+    __messages: dict[str:Message] = {}
     """Defines all messages that are attached to the object, by name."""
 
     def __init__(self, context: Context, id: str, type: str = None) -> None:

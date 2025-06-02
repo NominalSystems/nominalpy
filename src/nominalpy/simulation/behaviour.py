@@ -21,7 +21,7 @@ class Behaviour(Instance):
     __parent: Instance = None
     """Defines the parent object that the behaviour is attached to."""
 
-    __messages: dict = {}
+    __messages: dict[str:Message] = {}
     """Defines all messages that are attached to the object, by name."""
 
     def __init__(
