@@ -34,9 +34,17 @@ class Model(Instance):
         :type id:               str
         :param type:            The type of the model to create, if applicable
         :type type:             str
+        :param target:          The target object that the model is attached to
+        :type target:           Instance
         """
 
         super().__init__(context, id, type)
+
+        # If there is no target, raise an exception
+        if not target:
+            raise NominalException(
+                "Failed to create model with a missing target object."
+            )
 
         # Clear and reset the data
         self.__target = target
