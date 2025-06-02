@@ -75,6 +75,10 @@ class Instance:
         self.__data = await self._context.get_client().post(f"{self.id}/get")
         self._refresh_cache = False
 
+        # Loop through the data and deserialize it
+        for key in self.__data:
+            self.__data[key] = helper.deserialize(self.__data[key])
+
     def _require_refresh(self) -> None:
         """
         This function is used to set the flag for refreshing the cache to true.

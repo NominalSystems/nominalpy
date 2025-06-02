@@ -212,6 +212,10 @@ class Client:
                     except:
                         result = content.decode("utf-8")
 
+                    # If the result is empty, return 'None'
+                    if result == "":
+                        result = None
+
             # Handle client errors
             except aiohttp.ClientError as e:
                 raise NominalException(f"Request failed: {str(e)}")
