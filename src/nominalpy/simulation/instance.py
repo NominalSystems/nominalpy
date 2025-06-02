@@ -122,7 +122,7 @@ class Instance:
             raise NominalException(
                 f"Failed to get parameter '{param}' in object '{self.id}' of type '{self.get_type()}'."
             )
-        return helper.deserialize(self.__data[param])
+        return self.__data[param]
 
     async def get_all(self) -> dict:
         """
