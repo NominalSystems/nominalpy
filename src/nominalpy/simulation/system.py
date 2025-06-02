@@ -46,7 +46,7 @@ class System(Instance):
             message._require_refresh()
         super()._require_refresh()
 
-    def get_message(self, name: str) -> Message:
+    async def get_message(self, name: str) -> Message:
         """
         Attempts to get the message with the specified name that is attached to the system. If the
         message does not exist, it will be created and attached to the system. If the message cannot
@@ -64,25 +64,25 @@ class System(Instance):
             return self.__messages[name]
 
         # Fetch the data
-        id = self.get(name)
-        if not helper.is_valid_guid(id):
-            raise NominalException("Failed to find message '%s'." % name)
+        message_id: str = await self.get(name)
+        if not helper.is_valid_guid(message_id):
+            raise NominalException(f"Failed to find message with name '{name}'.")
 
         # Create the message object with the ID
-        message = Message(self._context, id)
+        message = Message(self._context, message_id)
         self.__messages[name] = message
 
         # Return the message of that name
-        printer.success(f"Message with name '{name}' created successfully.")
+        printer.success(f"Successfully created message with name '{name}'.")
         return message
 
-    def get_messages(self) -> list:
+    def get_messages(self) -> list[Message]:
         """
         Returns all of the messages that are attached to the system. This will only include the
         messages that have currently been fetched.
 
         :returns:   All of the messages that are attached to the system
-        :rtype:     list
+        :rtype:     list[Message]
         """
 
-        return self.__messages.values()
+        return list(self.__messages.values())

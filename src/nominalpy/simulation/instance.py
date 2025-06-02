@@ -72,7 +72,7 @@ class Instance:
             return
 
         # Fetch all data and then set the cache to false
-        self.__data = await self._context.get_client().post(f"{self.id}/get")
+        self.__data = await self._context.get_client().get(f"{self.id}/get")
         self._refresh_cache = False
 
         # Loop through the data and deserialize it
