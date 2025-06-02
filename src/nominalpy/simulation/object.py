@@ -98,8 +98,7 @@ class Object(Instance):
         # Loop through the behaviours
         for id in await self.get("Behaviours"):
             if id not in self.__instances:
-                behaviour = Behaviour(self._context, id)
-                behaviour.__parent = self
+                behaviour = Behaviour(self._context, id, parent=self)
                 self.__instances[id] = behaviour
                 self.__behaviours.append(behaviour)
                 printer.log(
@@ -365,8 +364,7 @@ class Object(Instance):
         """
 
         # Create the behaviour
-        behaviour = Behaviour(self._context, id, type)
-        behaviour.__parent = self
+        behaviour = Behaviour(self._context, id, type, parent=self)
         behaviour.__type = type
         self.__behaviours.append(behaviour)
         self.__instances[id] = behaviour

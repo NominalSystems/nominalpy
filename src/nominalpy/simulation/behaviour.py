@@ -24,7 +24,9 @@ class Behaviour(Instance):
     __messages: dict = {}
     """Defines all messages that are attached to the object, by name."""
 
-    def __init__(self, context: Context, id: str, type: str = None) -> None:
+    def __init__(
+        self, context: Context, id: str, type: str = None, parent: Instance = None
+    ) -> None:
         """
         Initialises the behaviour with the context and the ID of the behaviour.
 
@@ -34,12 +36,14 @@ class Behaviour(Instance):
         :type id:               str
         :param type:            The type of the system, if applicable
         :type type:             str
+        :param parent:          The parent object that the behaviour is attached to
+        :type parent:           Instance
         """
 
         super().__init__(context, id, type)
 
         # Clear and reset any data
-        self.__parent = None
+        self.__parent = parent
         self.__messages = {}
 
     def get_parent(self) -> Instance:
@@ -93,13 +97,13 @@ class Behaviour(Instance):
         printer.success(f"Successfully created message with name '{name}'.")
         return message
 
-    def get_messages(self) -> list:
+    def get_messages(self) -> list[Message]:
         """
         Returns all of the messages that are attached to the behaviour. This will only include the
         messages that have currently been fetched.
 
         :returns:   All of the messages that are attached to the behaviour
-        :rtype:     list
+        :rtype:     list[Message]
         """
 
-        return self.__messages.values()
+        return list(self.__messages.values())

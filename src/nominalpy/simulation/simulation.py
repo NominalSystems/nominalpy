@@ -403,7 +403,7 @@ class Simulation(Context):
             raise NominalException(f"Failed to create behaviour of type '{type}'.")
 
         # Create the behaviour and add it to the array
-        behaviour: Behaviour = Behaviour(self, behaviour_id, type=type)
+        behaviour: Behaviour = Behaviour(self, behaviour_id, type=type, parent=None)
         self.__behaviours.append(behaviour)
 
         # Set the data if the kwargs exist
@@ -876,7 +876,7 @@ class Simulation(Context):
                 if helper.is_valid_guid(id):
 
                     # Create the root behaviour
-                    beh: Behaviour = Behaviour(self, id)
+                    beh: Behaviour = Behaviour(self, id, parent=None)
                     beh.get_messages()
                     self.__behaviours.append(beh)
 
