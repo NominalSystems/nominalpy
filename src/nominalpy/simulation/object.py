@@ -120,8 +120,7 @@ class Object(Instance):
         # Loop through the models
         for id in await self.get("Models"):
             if id not in self.__instances:
-                model = Model(self._context, id)
-                model.__target = self
+                model = Model(self._context, id, None, self)
                 self.__instances[id] = model
                 self.__models[model.get_type()] = model
                 printer.log(
@@ -482,9 +481,7 @@ class Object(Instance):
         """
 
         # Create the model with the ID
-        model = Model(self._context, id, type)
-        model.__target = self
-        model.__type = type
+        model = Model(self._context, id, type, self)
         self.__models[type] = model
         self.__instances[id] = model
 

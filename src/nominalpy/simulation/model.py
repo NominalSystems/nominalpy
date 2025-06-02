@@ -22,7 +22,9 @@ class Model(Instance):
     __messages: dict = {}
     """Defines all messages that are attached to the object, by name."""
 
-    def __init__(self, context: Context, id: str, type: str = None) -> None:
+    def __init__(
+        self, context: Context, id: str, type: str = None, target: Instance = None
+    ) -> None:
         """
         Initialises the model with the context and the ID of the model.
 
@@ -37,7 +39,7 @@ class Model(Instance):
         super().__init__(context, id, type)
 
         # Clear and reset the data
-        self.__target = None
+        self.__target = target
         self.__messages = {}
 
     def get_target(self) -> Instance:
@@ -91,13 +93,13 @@ class Model(Instance):
         printer.success(f"Successfully created message with name '{name}'.")
         return message
 
-    def get_messages(self) -> list:
+    def get_messages(self) -> list[Message]:
         """
         Returns all of the messages that are attached to the model. This will only include the
         messages that have currently been fetched.
 
         :returns:   All of the messages that are attached to the model
-        :rtype:     list
+        :rtype:     list[Message]
         """
 
-        return self.__messages.values()
+        return list(self.__messages.values())
