@@ -39,7 +39,9 @@ class Object(Instance):
     __parent: Object = None
     """Defines the parent object that the object is attached to."""
 
-    def __init__(self, context: Context, id: str, type: str = None) -> None:
+    def __init__(
+        self, context: Context, id: str, type: str = None, parent: Object = None
+    ) -> None:
         """
         Initialises the object with the context and the ID of the object.
 
@@ -49,6 +51,8 @@ class Object(Instance):
         :type id:               str
         :param type:            The type of the system, if applicable
         :type type:             str
+        :param parent:          The parent object that the object is attached to, if applicable
+        :type parent:           Object
         """
 
         super().__init__(context, id, type)
@@ -59,10 +63,10 @@ class Object(Instance):
         self.__behaviours = []
         self.__models = {}
         self.__messages = {}
-        self.__parent = None
+        self.__parent = parent
 
     @classmethod
-    def from_instance(instance: Instance) -> Object:
+    def from_instance(cls, instance: Instance) -> Object:
         """
         Converts the instance object to an object object.
 
@@ -74,9 +78,9 @@ class Object(Instance):
         """
 
         # Create the object and set the data
-        object = Object(instance._context, instance.id, instance.__type)
+        object = Object(instance._context, instance.id, instance.get_type(), None)
         object.__dict__ = instance.__dict__
-        object.__data = instance.__data
+        object._Instance__data = instance._Instance__data
         object._refresh_cache = instance._refresh_cache
 
         # Return the object
@@ -102,28 +106,27 @@ class Object(Instance):
                 self.__instances[id] = behaviour
                 self.__behaviours.append(behaviour)
                 printer.log(
-                    f"Behaviour of type '{behaviour.get_type()}' was found and created successfully in the background."
+                    f"Successfully created child behaviour of type '{behaviour.get_type()}' in the background."
                 )
 
         # Loop through the children
         for id in await self.get("Children"):
             if id not in self.__instances:
-                child = Object(self._context, id)
-                child.__parent = self
+                child = Object(self._context, id, parent=self)
                 self.__instances[id] = child
                 self.__children.append(child)
                 printer.log(
-                    f"Child object of type '{child.get_type()}' was found and created successfully in the background."
+                    f"Successfully created child object of type '{child.get_type()}' in the background."
                 )
 
         # Loop through the models
         for id in await self.get("Models"):
             if id not in self.__instances:
-                model = Model(self._context, id, None, self)
+                model = Model(self._context, id, None, target=self)
                 self.__instances[id] = model
                 self.__models[model.get_type()] = model
                 printer.log(
-                    f"Model of type '{model.get_type()}' was found and created successfully in the background."
+                    f"Successfully created model of type '{model.get_type()}' in the background."
                 )
 
     def _require_refresh(self) -> None:
@@ -133,7 +136,7 @@ class Object(Instance):
         """
 
         # Ensure all sub-objects require a refresh too
-        for id, instance in self.__instances.items():
+        for _, instance in self.__instances.items():
             instance._require_refresh()
         super()._require_refresh()
 
@@ -219,8 +222,7 @@ class Object(Instance):
         """
 
         # Create the object
-        object = Object(self._context, id, type)
-        object.__parent = self
+        object = Object(self._context, id, type, parent=self)
         object.__type = type
         self.__children.append(object)
         self.__instances[id] = object

@@ -635,6 +635,49 @@ class Simulation(Context):
         # Return the list
         return instances
 
+    async def find_instance_with_id(self, id: str) -> Instance:
+        """
+        Searches for an instance of the specified ID within the simulation. If the instance
+        does not exist, it will not be created. If the instance cannot be created, None
+        will be returned. This will search through all objects, behaviours, systems and messages
+        within the simulation to find the instance.
+
+        :param id:    The ID of the instance to find
+        :type id:     str
+
+        :returns:       The instance of the specified ID
+        :rtype:         Instance
+        """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
+        # See if the ID already exists in the local mapping
+        if not helper.is_valid_guid(id):
+            raise NominalException(
+                "Failed to find a instance with an ID as the guid was incorrect."
+            )
+
+        # If the ID is already in the list, return it
+        instance: Instance = self.__find_instance(id)
+        if instance != None:
+            return instance
+
+        # Create the request to the function
+        result_id: str = await self.__client.post(
+            f"{self.__id}/ivk", ["FindObjectWithID", id]
+        )
+
+        # If the result is not a valid GUID, return None
+        if not helper.is_valid_guid(result_id):
+            return None
+
+        # Otherwise, create the instance and return it
+        return Instance(self, result_id)
+
     def get_root_objects(self) -> list[Object]:
         """
         Returns all the root objects that have been created within the simulation. This will
