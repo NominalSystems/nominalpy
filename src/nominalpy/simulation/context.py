@@ -26,3 +26,9 @@ class Context:
         Returns the client for the context.
         """
         raise NotImplementedError("get_client() must be implemented by subclasses.")
+
+    def get_id(self) -> str:
+        """
+        Returns the ID of the context.
+        """
+        raise NotImplementedError("get_id() must be implemented by subclasses.")

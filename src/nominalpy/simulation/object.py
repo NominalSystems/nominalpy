@@ -482,7 +482,7 @@ class Object(Instance):
 
         # Attempt to find or create the model
         id: str = await self._context.get_client().post(
-            f"{self.id}/ivk", ["GetModel", type]
+            f"{self.id}/ivk", ["GetModel", type], id=self._context.get_id()
         )
         if not helper.is_valid_guid(id):
             raise NominalException(f"Failed to create model of type '{type}'.")

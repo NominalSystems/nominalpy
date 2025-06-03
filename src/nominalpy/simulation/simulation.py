@@ -271,7 +271,7 @@ class Simulation(Context):
 
         # Create the Object ID
         object_id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["AddObject", type]
+            f"{self.__id}/ivk", ["AddObject", type], id=self.get_id()
         )
 
         # If the ID is not valid, raise an exception
@@ -395,7 +395,7 @@ class Simulation(Context):
 
         # Create the behaviour ID
         behaviour_id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["AddObject", type]
+            f"{self.__id}/ivk", ["AddObject", type], id=self.get_id()
         )
 
         # If the ID is not valid, raise an exception
@@ -451,12 +451,14 @@ class Simulation(Context):
 
         # Attempt to find the object of type
         id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["FindObjectWithType", type]
+            f"{self.__id}/ivk", ["FindObjectWithType", type], id=self.get_id()
         )
         if not helper.is_valid_guid(id):
 
             # Attempt to create the system
-            id = await self.__client.post(f"{self.__id}/ivk", ["AddObject", type])
+            id = await self.__client.post(
+                f"{self.__id}/ivk", ["AddObject", type], id=self.get_id()
+            )
 
             # If the ID is not valid, raise an exception
             if not helper.is_valid_guid(id):
@@ -498,7 +500,7 @@ class Simulation(Context):
 
         # Create the message ID
         message_id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["AddObject", type]
+            f"{self.__id}/ivk", ["AddObject", type], id=self.get_id()
         )
 
         # If the ID is not valid, raise an exception
@@ -577,7 +579,7 @@ class Simulation(Context):
 
         # Create the request to the function
         id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["FindObjectWithType", type]
+            f"{self.__id}/ivk", ["FindObjectWithType", type], id=self.get_id()
         )
 
         # If the result is not a valid GUID, return None
@@ -616,7 +618,7 @@ class Simulation(Context):
 
         # Create the request to the function
         result = await self.__client.post(
-            f"{self.__id}/ivk", ["FindObjectsWithType", type]
+            f"{self.__id}/ivk", ["FindObjectsWithType", type], id=self.get_id()
         )
 
         # If the result is not a list or is empty, return a missing list
@@ -668,7 +670,7 @@ class Simulation(Context):
 
         # Create the request to the function
         result_id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["FindObjectWithID", id]
+            f"{self.__id}/ivk", ["FindObjectWithID", id], id=self.get_id()
         )
 
         # If the result is not a valid GUID, return None

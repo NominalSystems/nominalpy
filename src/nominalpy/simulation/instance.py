@@ -72,7 +72,9 @@ class Instance:
             return
 
         # Fetch all data and then set the cache to false
-        self.__data = await self._context.get_client().get(f"{self.id}/get")
+        self.__data = await self._context.get_client().get(
+            f"{self.id}/get", id=self._context.get_id()
+        )
         self._refresh_cache = False
 
         # Loop through the data and deserialize it
@@ -154,8 +156,7 @@ class Instance:
 
         # Call the method on the client
         await self._context.get_client().post(
-            f"{self.id}/set",
-            data=kwargs,
+            f"{self.id}/set", data=kwargs, id=self._context.get_id()
         )
 
         # Ensure that the cache is refreshed for the next get
@@ -185,7 +186,9 @@ class Instance:
         args.insert(0, function)
 
         # Create the response from the invoke request and get the return data
-        response = await self._context.get_client().post(f"{self.id}/ivk", args)
+        response = await self._context.get_client().post(
+            f"{self.id}/ivk", args, id=self._context.get_id()
+        )
         response = helper.deserialize(response)
 
         # Update the flag for needing to get values
