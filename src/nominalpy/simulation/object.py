@@ -247,17 +247,17 @@ class Object(Instance):
             raise IndexError(f"Failed to get child object at index: {index}.")
         return self.__children[index]
 
-    def get_children(self) -> list:
+    def get_children(self) -> list[Object]:
         """
         Returns all of the children objects that are attached to the object.
 
         :returns:   All of the children objects that are attached to the object
-        :rtype:     list
+        :rtype:     list[Object]
         """
 
         return self.__children
 
-    def get_children_with_type(self, type: str) -> list:
+    def get_children_with_type(self, type: str) -> list[Object]:
         """
         Returns all of the children objects that are attached to the object of the specified
         type. If the type is not found, an empty list will be returned.
@@ -266,7 +266,7 @@ class Object(Instance):
         :type type:     str
 
         :returns:       All of the children objects that are attached to the object of the specified type
-        :rtype:         list
+        :rtype:         list[Object]
         """
 
         # Check the type and validate it
@@ -323,7 +323,7 @@ class Object(Instance):
         type = helper.validate_type(type)
 
         # Get the function library
-        function_library = await self._context.get_function_library()
+        function_library: Instance = await self._context.get_function_library()
         if function_library is None:
             raise NominalException("Failed to get function library for the simulation.")
 
@@ -391,17 +391,17 @@ class Object(Instance):
             raise IndexError(f"Failed to get behaviour at index: {index}.")
         return self.__behaviours[index]
 
-    def get_behaviours(self) -> list:
+    def get_behaviours(self) -> list[Behaviour]:
         """
         Returns all of the behaviours that are attached to the object.
 
         :returns:   All of the behaviours that are attached to the object
-        :rtype:     list
+        :rtype:     list[Behaviour]
         """
 
         return self.__behaviours
 
-    def get_behaviours_with_type(self, type: str) -> list:
+    def get_behaviours_with_type(self, type: str) -> list[Behaviour]:
         """
         Returns all of the behaviours that are attached to the object of the specified type.
         If the type is not found, an empty list will be returned.
@@ -410,7 +410,7 @@ class Object(Instance):
         :type type:     str
 
         :returns:       All of the behaviours that are attached to the object of the specified type
-        :rtype:         list
+        :rtype:         list[Behaviour]
         """
 
         # Check the type and validate it
@@ -510,7 +510,7 @@ class Object(Instance):
         """
 
         # Create the model with the ID
-        model = Model(self._context, id, type, self)
+        model = Model(self._context, id, type, target=self)
         self.__models[type] = model
         self.__instances[id] = model
 
@@ -518,12 +518,12 @@ class Object(Instance):
         printer.success(f"Successfully created model of type '{type}'.")
         return model
 
-    def get_models(self) -> list:
+    def get_models(self) -> list[Model]:
         """
         Returns all of the models that are attached to the object.
 
         :returns:   All of the models that are attached to the object
-        :rtype:     list
+        :rtype:     list[Model]
         """
 
         return self.__models.values()
@@ -559,22 +559,25 @@ class Object(Instance):
         printer.success(f"Successfully created message with name '{name}'.")
         return message
 
-    def get_messages(self) -> list:
+    async def get_messages(self) -> list[Message]:
         """
         Returns all of the messages that are attached to the object. This will only include the
         messages that have currently been fetched.
 
         :returns:   All of the messages that are attached to the object
-        :rtype:     list
+        :rtype:     list[Message]
         """
 
         # Fetch all values on the object
-        data: dict = self.get_all()
+        data: dict = await self.get_all()
 
         # If any data starts with 'Out_', then it is a message
         for key in data.keys():
             if str(key).startswith("Out_"):
-                self.get_message(key)
+                await self.get_message(key)
+            if str(key).startswith("In_"):
+                if helper.is_valid_guid(data[key]):
+                    await self.get_message(key)
 
         # Return all the messages
         return self.__messages.values()
