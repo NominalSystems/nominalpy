@@ -388,7 +388,7 @@ class Object(Instance):
 
         # Fetch the child and perform a safety check
         if index < 0 or index >= len(self.__behaviours):
-            raise NominalException("Invalid index provided to get behaviour.")
+            raise IndexError(f"Failed to get behaviour at index: {index}.")
         return self.__behaviours[index]
 
     def get_behaviours(self) -> list:
@@ -401,7 +401,7 @@ class Object(Instance):
 
         return self.__behaviours
 
-    def get_behaviours_of_type(self, type: str) -> list:
+    def get_behaviours_with_type(self, type: str) -> list:
         """
         Returns all of the behaviours that are attached to the object of the specified type.
         If the type is not found, an empty list will be returned.
@@ -420,6 +420,36 @@ class Object(Instance):
         return [
             behaviour for behaviour in self.__behaviours if behaviour.get_type() == type
         ]
+
+    def get_behaviour_with_id(self, id: str, recurse: bool = True) -> Behaviour:
+        """
+        Returns the behaviour that is attached to the object with the specified ID. If the
+        behaviour does not exist, None will be returned. This will also look down the chain
+        of children to find the behaviour, if specified.
+
+        :param id:  The ID of the behaviour to fetch
+        :type id:   str
+        :param recurse:  Whether to look down the chain of children to find the behaviour
+        :type recurse:   bool
+
+        :returns:   The behaviour that is attached to the object with the specified ID
+        :rtype:     Behaviour
+        """
+
+        # Start by looking at the behaviours for the ID
+        for behaviour in self.__behaviours:
+            if behaviour.id == id:
+                return behaviour
+
+        # If recurse is enabled, look down the chain of children
+        if recurse:
+            for child in self.__children:
+                result = child.get_behaviour_with_id(id, recurse)
+                if result:
+                    return result
+
+        # Return None if the behaviour is not found
+        return None
 
     async def get_model(self, type: str, **kwargs) -> Model:
         """
