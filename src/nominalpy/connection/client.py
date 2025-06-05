@@ -131,6 +131,9 @@ class Client:
 
                 url = f"{self.base_url}{endpoint.lstrip('/')}"
 
+                # Print the request details for debugging
+                printer.log(f"Requesting {method} {url} with data: {body}")
+
                 for attempt in range(3):
                     try:
                         async with session.request(
