@@ -102,6 +102,24 @@ class Instance:
         # If there is no type, find it
         return self.__type
 
+    def find_instance_with_id(self, id: str, recurse: bool = False) -> "Instance":
+        """
+        Returns the instance that is attached to this instance with the specified ID. If the
+        instance does not exist, None will be returned. This may be a message or a child instance
+        of some kind.
+
+        :param id:  The ID of the instance to fetch
+        :type id:   str
+        :param recurse:  Whether to look down the chain of children to find the instance
+        :type recurse:   bool
+
+        :returns:   The instance that is attached to the object with the specified ID
+        :rtype:     Instance
+        """
+
+        # To be overriden by the base class, this is just a placeholder
+        return None
+
     async def get(self, param: str) -> any:
         """
         Fetches a parameter from the object that is stored in the API. This will

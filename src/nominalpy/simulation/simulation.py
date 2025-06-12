@@ -39,9 +39,6 @@ class Simulation(Context):
     __id: str = None
     """Defines the ID of the simulation. This is used to identify the simulation within the API."""
 
-    __url: str = None
-    """Defines the URL of the simulation. This is used to identify the simulation within the API."""
-
     __objects: list[Object] = []
     """Defines all objects that are created within the simulation, with the simulation root."""
 
@@ -110,8 +107,14 @@ class Simulation(Context):
         :rtype:                 Simulation
         """
 
-        # Create a new simulation and return it
+        # Attempt to register a new simulation with the API
         id: str = await client.post("new", "NominalSystems.Simulation")
+        if not helper.is_valid_guid(id):
+            raise NominalException(
+                "Failed to create a simulation due to invalid simulation ID."
+            )
+
+        # Create the simulation object with the ID and client
         sim: Simulation = Simulation(client, id=id)
         return sim
 
@@ -168,6 +171,22 @@ class Simulation(Context):
         for sim in simulations:
             await sim.dispose()
 
+    def __reset(self) -> None:
+        """
+        Resets the simulation. This will reset the simulation and clear all objects, behaviours,
+        systems and messages that have been created within the simulation. This will also reset
+        the time of the simulation to zero.
+        """
+
+        # Reset the objects and systems
+        self.__objects = []
+        self.__behaviours = []
+        self.__systems = {}
+        self.__messages = []
+        self.__planets = {}
+        self.__time = 0.0
+        self.__ticked = False
+
     def get_id(self) -> str:
         """
         Returns the ID of the simulation. This is used to identify the simulation within the API.
@@ -178,6 +197,18 @@ class Simulation(Context):
 
         # Return the ID of the simulation, which should have been set by the API
         return self.__id
+
+    def get_client(self) -> Client:
+        """
+        Returns the client that is used to access the API. This is used to authenticate the user
+        and ensure that the simulation is accessible.
+
+        :returns:   The client that is used to access the API
+        :rtype:     Client
+        """
+
+        # Return the client that is used to access the API
+        return self.__client
 
     def is_valid(self) -> bool:
         """
@@ -213,7 +244,7 @@ class Simulation(Context):
         for planet in self.__planets.values():
             planet._require_refresh()
 
-    def __find_instance(self, id: str) -> Instance:
+    def __find_registered_instance(self, id: str) -> Instance:
         """
         Attempts to find the instance with the specified ID within the simulation. This will
         search through all objects, behaviours, systems and messages to find the instance. If
@@ -229,15 +260,21 @@ class Simulation(Context):
         for object in self.__objects:
             if object.id == id:
                 return object
-            find: Instance = object.find_instance_with_id(id)
+            find: Instance = object.find_instance_with_id(id, True)
             if find != None:
                 return find
         for behaviour in self.__behaviours:
             if behaviour.id == id:
                 return behaviour
+            find: Instance = behaviour.find_instance_with_id(id, True)
+            if find != None:
+                return find
         for system in self.__systems.values():
             if system.id == id:
                 return system
+            find: Instance = system.find_instance_with_id(id, True)
+            if find != None:
+                return find
         for message in self.__messages:
             if message.id == id:
                 return message
@@ -496,7 +533,7 @@ class Simulation(Context):
             )
 
         # Check if the type is missing 'NominalSystems' and add it
-        type = helper.validate_type(type)
+        type = helper.validate_type(type, "Messages")
 
         # Create the message ID
         message_id: str = await self.__client.post(
@@ -587,7 +624,7 @@ class Simulation(Context):
             return None
 
         # Otherwise, check if the instance is already in the list
-        instance: Instance = self.__find_instance(id)
+        instance: Instance = self.__find_registered_instance(id)
         if instance != None:
             return instance
 
@@ -628,7 +665,7 @@ class Simulation(Context):
         # Loop through the list
         instances: list = []
         for i in range(len(result)):
-            instance: Instance = self.__find_instance(result[i])
+            instance: Instance = self.__find_registered_instance(result[i])
             if instance != None:
                 instances.append(instance)
             else:
@@ -664,7 +701,7 @@ class Simulation(Context):
             )
 
         # If the ID is already in the list, return it
-        instance: Instance = self.__find_instance(id)
+        instance: Instance = self.__find_registered_instance(id)
         if instance != None:
             return instance
 
@@ -741,22 +778,6 @@ class Simulation(Context):
 
         # Return the time
         return self.__time
-
-    def __reset(self) -> None:
-        """
-        Resets the simulation. This will reset the simulation and clear all objects, behaviours,
-        systems and messages that have been created within the simulation. This will also reset
-        the time of the simulation to zero.
-        """
-
-        # Reset the objects and systems
-        self.__objects = []
-        self.__behaviours = []
-        self.__systems = {}
-        self.__messages = []
-        self.__planets = {}
-        self.__time = 0.0
-        self.__ticked = False
 
     async def tick(self, step: float = 1e-1) -> None:
         """

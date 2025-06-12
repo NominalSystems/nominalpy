@@ -150,21 +150,41 @@ class Object(Instance):
 
         return self.__parent
 
-    def find_instance_with_id(self, id: str) -> Instance:
+    def find_instance_with_id(self, id: str, recurse: bool = False) -> Instance:
         """
         Returns the instance that is attached to the object with the specified ID. If the
         instance does not exist, None will be returned.
 
         :param id:  The ID of the instance to fetch
         :type id:   str
+        :param recurse:  Whether to look down the chain of children to find the instance
+        :type recurse:   bool
 
         :returns:   The instance that is attached to the object with the specified ID
         :rtype:     Instance
         """
 
-        if id not in self.__instances:
-            return None
-        return self.__instances[id]
+        # Start by looking at the instances for the ID
+        if id in self.__instances:
+            return self.__instances[id]
+
+        # If recurse is enabled, look down the chain of children
+        if recurse:
+            for child in self.__children:
+                result = child.find_instance_with_id(id, recurse)
+                if result:
+                    return result
+            for behaviour in self.__behaviours:
+                result = behaviour.find_instance_with_id(id)
+                if result:
+                    return result
+            for model in self.__models.values():
+                result = model.find_instance_with_id(id, recurse)
+                if result:
+                    return result
+
+        # Return None if the instance is not found
+        return None
 
     async def add_child(self, type: str, **kwargs) -> Object:
         """

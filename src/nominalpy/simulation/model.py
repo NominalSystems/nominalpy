@@ -71,6 +71,29 @@ class Model(Instance):
             message._require_refresh()
         super()._require_refresh()
 
+    def find_instance_with_id(self, id: str, recurse: bool = False) -> "Instance":
+        """
+        Returns the instance that is attached to this behaviour with the specified ID. If the
+        instance does not exist, None will be returned. This may be a message or a child instance
+        of some kind.
+
+        :param id:  The ID of the instance to fetch
+        :type id:   str
+        :param recurse:  Whether to look down the chain of children to find the instance
+        :type recurse:   bool
+
+        :returns:   The instance that is attached to the object with the specified ID
+        :rtype:     Instance
+        """
+
+        # Start by looking at the instances for the ID
+        for msg in self.__messages.values():
+            if msg.id == id:
+                return msg
+
+        # Return none otherwise
+        return None
+
     async def get_message(self, name: str) -> Message:
         """
         Attempts to get the message with the specified name that is attached to the model. If the
