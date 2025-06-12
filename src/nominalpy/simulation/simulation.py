@@ -421,9 +421,9 @@ class Simulation(Context):
         :rtype:     list[Object]
         """
 
-        return self.get_objects(False)
+        return self.get_objects(recurse=False)
 
-    async def get_object_with_id(self, id: str) -> Object:
+    async def find_object_with_id(self, id: str) -> Object:
         """
         Attempts to find an object in the simulation with a specified ID. This will look through all objects
         that exist and will attempt to find one that has been created. If the object does not exist, it will
@@ -556,9 +556,9 @@ class Simulation(Context):
         :rtype:     list[Behaviour]
         """
 
-        return self.get_behaviours(False)
+        return self.get_behaviours(recurse=False)
 
-    async def get_behaviour_with_id(self, id: str) -> Behaviour:
+    async def find_behaviour_with_id(self, id: str) -> Behaviour:
         """
         Attempts to find a behaviour in the simulation with a specified ID. This will look through all behaviours
         that exist and will attempt to find one that has been created.
@@ -789,7 +789,19 @@ class Simulation(Context):
         # Return the messages
         return messages
 
-    async def get_message_with_id(self, id: str) -> Message:
+    def get_root_messages(self) -> list[Message]:
+        """
+        Returns all the root messages that have been created within the simulation. This will
+        return all the messages that have been created directly within the simulation and not
+        part of any other object. This will return the messages as a list.
+
+        :returns:   The root messages that have been created within the simulation
+        :rtype:     list[Message]
+        """
+
+        return self.get_messages(recurse=False)
+
+    async def find_message_with_id(self, id: str) -> Message:
         """
         Attempts to find a message in the simulation with a specified ID. This will look through all messages
         that exist and will attempt to find one that has been created. If the message does not exist, it will
@@ -818,7 +830,7 @@ class Simulation(Context):
                 return message
 
         # Loop through all objects and check for messages
-        for message in self.get_messages(True):
+        for message in self.get_messages(recurse=True):
             if message.id == id:
                 return message
 
@@ -873,7 +885,7 @@ class Simulation(Context):
         # Otherwise, create the instance and return it
         return Instance(self, id, type)
 
-    async def find_instances_with_type(self, type: str) -> list:
+    async def find_instances_with_type(self, type: str) -> list[Instance]:
         """
         Finds all instances of the specified type within the simulation. This will search through
         all objects, behaviours, systems and messages within the simulation to find the instances.
@@ -883,7 +895,7 @@ class Simulation(Context):
         :type type:     str
 
         :returns:       The instances of the specified type
-        :rtype:         list
+        :rtype:         list[Instance]
         """
 
         # Throw exception if the simulation is not valid
