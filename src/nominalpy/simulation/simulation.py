@@ -147,7 +147,7 @@ class Simulation(Context):
         self.__validate()
 
         # Dispose of the simulation and reset the state
-        await self.__client.delete(f"{self.__id}")
+        await self.__client.delete(f"{self.get_id()}")
         self.__reset()
         self.__id = None
         self.__client = None
@@ -218,8 +218,8 @@ class Simulation(Context):
 
         # Check if the simulation ID is valid
         return (
-            self.__id != None
-            and helper.is_valid_guid(self.__id)
+            self.get_id() != None
+            and helper.is_valid_guid(self.get_id())
             and self.__client != None
         )
 
@@ -289,6 +289,33 @@ class Simulation(Context):
                 return message
         return None
 
+    async def __is_valid_instance_id(self, id: str) -> bool:
+        """
+        Attempts to check if the ID is a valid instance ID within the simulation. This will
+        call the API to check if the ID exists and is valid. If the ID is not valid, then this
+        will return False. If the ID is valid, then this will return True.
+
+        :param id:      The ID of the instance to check
+        :type id:       str
+
+        :returns:       Whether the ID is a valid instance ID or not
+        :rtype:         bool
+        """
+
+        # See if the ID already exists in the local mapping
+        if not helper.is_valid_guid(id):
+            raise NominalException(
+                "Failed to find a instance with an ID as the guid was incorrect."
+            )
+
+        # Create the request to the function
+        result_id: str = await self.__client.post(
+            f"{self.get_id()}/ivk", ["FindObjectWithID", id], id=self.get_id()
+        )
+
+        # Return whether the ID is valid or not
+        return helper.is_valid_guid(result_id)
+
     async def add_object(self, type: str, **kwargs) -> Object:
         """
         Adds an object to the simulation with the specified type and data. This will create
@@ -314,7 +341,7 @@ class Simulation(Context):
 
         # Create the Object ID
         object_id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["AddObject", type], id=self.get_id()
+            f"{self.get_id()}/ivk", ["AddObject", type], id=self.get_id()
         )
 
         # If the ID is not valid, raise an exception
@@ -387,7 +414,7 @@ class Simulation(Context):
 
         return self.get_objects(False)
 
-    def get_object_with_id(self, id: str) -> Object:
+    async def get_object_with_id(self, id: str) -> Object:
         """
         Attempts to find an object in the simulation with a specified ID. This will look through all objects
         that exist and will attempt to find one that has been created. If the object does not exist, it will
@@ -416,12 +443,23 @@ class Simulation(Context):
                 return obj
 
             # Check children
-            obj: Object = obj.get_child_with_id(id)
+            obj: Object = obj.get_child_with_id(id, recurse=True)
             if obj != None:
                 return obj
 
-        # Return no object if it does not exist
-        return None
+        # Attempt to find the object with the ID from the API
+        if not await self.__is_valid_instance_id(id):
+            return None
+
+        # Otherwise, assume it is a root object and create the Object instance
+        object: Object = Object(self, id)
+        self.__objects.append(object)
+
+        # Print the success message
+        printer.success(f"Successfully created object with ID '{id}'.")
+
+        # Return the object that has been found
+        return object
 
     async def add_behaviour(self, type: str, **kwargs) -> Behaviour:
         """
@@ -448,7 +486,7 @@ class Simulation(Context):
 
         # Create the behaviour ID
         behaviour_id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["AddObject", type], id=self.get_id()
+            f"{self.get_id()}/ivk", ["AddObject", type], id=self.get_id()
         )
 
         # If the ID is not valid, raise an exception
@@ -511,7 +549,7 @@ class Simulation(Context):
 
         return self.get_behaviours(False)
 
-    def get_behaviour_with_id(self, id: str) -> Behaviour:
+    async def get_behaviour_with_id(self, id: str) -> Behaviour:
         """
         Attempts to find a behaviour in the simulation with a specified ID. This will look through all behaviours
         that exist and will attempt to find one that has been created.
@@ -543,8 +581,19 @@ class Simulation(Context):
                 if behaviour.id == id:
                     return behaviour
 
-        # Return no object if it does not exist
-        return None
+        # Attempt to find the object with the ID from the API
+        if not await self.__is_valid_instance_id(id):
+            return None
+
+        # Otherwise, assume it is a root behaviour and create the Behaviour instance
+        behaviour: Behaviour = Behaviour(self, id)
+        self.__behaviours.append(behaviour)
+
+        # Print the success message
+        printer.success(f"Successfully created behaviour with ID '{id}'.")
+
+        # Return the behaviour that has been found
+        return behaviour
 
     async def get_system(self, type: str, **kwargs) -> System:
         """
@@ -578,26 +627,67 @@ class Simulation(Context):
 
         # Attempt to find the object of type
         id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["FindObjectWithType", type], id=self.get_id()
+            f"{self.get_id()}/ivk", ["FindObjectWithType", type], id=self.get_id()
         )
         if not helper.is_valid_guid(id):
 
             # Attempt to create the system
             id = await self.__client.post(
-                f"{self.__id}/ivk", ["AddObject", type], id=self.get_id()
+                f"{self.get_id()}/ivk", ["AddObject", type], id=self.get_id()
             )
 
             # If the ID is not valid, raise an exception
             if not helper.is_valid_guid(id):
                 raise NominalException(f"Failed to create system of type '{type}'.")
 
-        # Create the system object from the ID
+        # Create the system object from the ID and update any kwargs if there are any
         system: System = System(self, id, type=type)
+        if len(kwargs) > 0:
+            await system.set(**kwargs)
         self.__systems[type] = system
 
         # Print the success message
         printer.success(f"Successfully created system of type '{type}'.")
         return system
+
+    def get_systems(self) -> list[System]:
+        """
+        Returns all the systems that have been created within the simulation. This will return
+        all the systems that have been created within the simulation as a list.
+
+        :returns:   The systems that have been created within the simulation
+        :rtype:     list[System]
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # Return the systems that have been created within the simulation
+        return list(self.__systems.values())
+
+    def get_models(self) -> list[Model]:
+        """
+        Returns all the models that have been created within the simulation. This will return
+        all the models that have been created within the simulation as a list.
+
+        :returns:   The models that have been created within the simulation
+        :rtype:     list[Model]
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # Fetch all objects
+        objects: list[Object] = self.get_objects(True)
+        models: list[Model] = []
+
+        # Loop through all objects and get all models
+        for obj in objects:
+            child_models: list[Model] = obj.get_models()
+            models.extend(child_models)
+
+        # Return the models that have been created within the simulation
+        return models
 
     async def add_message(self, type: str, **kwargs) -> Message:
         """
@@ -624,7 +714,7 @@ class Simulation(Context):
 
         # Create the message ID
         message_id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["AddObject", type], id=self.get_id()
+            f"{self.get_id()}/ivk", ["AddObject", type], id=self.get_id()
         )
 
         # If the ID is not valid, raise an exception
@@ -645,16 +735,62 @@ class Simulation(Context):
         # Return the message
         return message
 
-    def add_message_by_id(self, id: str) -> Message:
+    def get_messages(self, recurse: bool = True) -> list[Message]:
         """
-        Adds a message to the simulation with the specified ID. This will create a message within
-        the simulation and return the message that has been created. If the message cannot be created,
-        an exception will be raised. This will add the message to the root of the simulation.
+        Returns all the messages that have been created within the simulation. This will return
+        the messages as a list. If the recurse flag is set to true, all child messages of the instances
+        will be returned as well.
+
+        :param recurse:     Whether to return all messages of the instances
+        :type recurse:      bool
+
+        :returns:           The messages that have been created within the simulation
+        :rtype:             list[Message]
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # Create a list of all messages
+        messages: list[Message] = self.__messages.copy()
+
+        # If recursing, loop through all objects and get all messages
+        if recurse:
+
+            # Loop through all objects and get all messages
+            for obj in self.get_objects(True):
+                child_messages: list[Message] = obj._Object__messages.values()
+                messages.extend(child_messages)
+
+            # Loop through all behaviours and get all messages
+            for behaviour in self.get_behaviours(True):
+                child_messages: list[Message] = behaviour._Behaviour__messages.values()
+                messages.extend(child_messages)
+
+            # Loop through all systems and get all messages
+            for system in self.get_systems():
+                child_messages: list[Message] = system._System__messages.values()
+                messages.extend(child_messages)
+
+            # Loop through all models and get all messages
+            for model in self.get_models():
+                child_messages: list[Message] = model._Model__messages.values()
+                messages.extend(child_messages)
+
+        # Return the messages
+        return messages
+
+    async def get_message_with_id(self, id: str) -> Message:
+        """
+        Attempts to find a message in the simulation with a specified ID. This will look through all messages
+        that exist and will attempt to find one that has been created. If the message does not exist, it will
+        create a Python message with the ID and, provided it exists in the simulation already, the data will
+        be fetched when used.
 
         :param id:  The ID of the message to create
         :type id:   str
 
-        :returns:   The message that has been created
+        :returns:   The message that has been found or newly created.
         :rtype:     Message
         """
 
@@ -667,15 +803,31 @@ class Simulation(Context):
                 "Failed to create a message from an ID as the guid was incorrect."
             )
 
-        # Create the message and add it to the array
-        message = Message(self, self.__c, id)
+        # Validate if any of the current messages have the same ID
+        for message in self.__messages:
+            if message.id == id:
+                return message
+
+        # Loop through all objects and check for messages
+        for message in self.get_messages(True):
+            if message.id == id:
+                return message
+
+        # Attempt to find the message with the ID from the API
+        if not await self.__is_valid_instance_id(id):
+            return None
+
+        # Otherwise, assume it is a root message and create the Message instance
+        message: Message = Message(self, id)
         self.__messages.append(message)
 
         # Print the success message
         printer.success(f"Successfully created message with ID '{id}'.")
+
+        # Return the message that has been found
         return message
 
-    async def find_instance_of_type(self, type: str) -> Instance:
+    async def find_instance_with_type(self, type: str) -> Instance:
         """
         Searches for an instance of the specified type within the simulation. If the instance
         does not exist, it will be created and returned. If the instance cannot be created, None
@@ -697,7 +849,7 @@ class Simulation(Context):
 
         # Create the request to the function
         id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["FindObjectWithType", type], id=self.get_id()
+            f"{self.get_id()}/ivk", ["FindObjectWithType", type], id=self.get_id()
         )
 
         # If the result is not a valid GUID, return None
@@ -712,7 +864,7 @@ class Simulation(Context):
         # Otherwise, create the instance and return it
         return Instance(self, id, type)
 
-    async def find_instances_of_type(self, type: str) -> list:
+    async def find_instances_with_type(self, type: str) -> list:
         """
         Finds all instances of the specified type within the simulation. This will search through
         all objects, behaviours, systems and messages within the simulation to find the instances.
@@ -733,7 +885,7 @@ class Simulation(Context):
 
         # Create the request to the function
         result = await self.__client.post(
-            f"{self.__id}/ivk", ["FindObjectsWithType", type], id=self.get_id()
+            f"{self.get_id()}/ivk", ["FindObjectsWithType", type], id=self.get_id()
         )
 
         # If the result is not a list or is empty, return a missing list
@@ -781,28 +933,11 @@ class Simulation(Context):
             return instance
 
         # Create the request to the function
-        result_id: str = await self.__client.post(
-            f"{self.__id}/ivk", ["FindObjectWithID", id], id=self.get_id()
-        )
-
-        # If the result is not a valid GUID, return None
-        if not helper.is_valid_guid(result_id):
+        if not await self.__is_valid_instance_id(id):
             return None
 
         # Otherwise, create the instance and return it
         return Instance(self, result_id)
-
-    def get_systems(self) -> list[System]:
-        """
-        Returns all the systems that have been created within the simulation. This will return
-        all the systems that have been created within the simulation. This will return the systems
-        as a list.
-
-        :returns:   The systems that have been created within the simulation
-        :rtype:     list
-        """
-
-        return list(self.__systems.values())
 
     async def get_time(self) -> float:
         """

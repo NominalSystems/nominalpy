@@ -155,6 +155,10 @@ class Client:
                                     result = json.loads(content)
                                 except json.JSONDecodeError:
                                     result = content.decode("utf-8")
+
+                            # Print the response details for debugging
+                            printer.log(f"Response from {method} {url}: {result}.")
+
                             if not future.done():
                                 future.set_result(result)
                             break

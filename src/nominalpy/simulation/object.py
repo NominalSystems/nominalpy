@@ -546,7 +546,7 @@ class Object(Instance):
         :rtype:     list[Model]
         """
 
-        return self.__models.values()
+        return list(self.__models.values())
 
     async def get_message(self, name: str) -> Message:
         """
