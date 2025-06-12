@@ -26,3 +26,9 @@ SPACECRAFT = "NominalSystems.Universe.Spacecraft"
 
 TELEMETRY_SYSTEM = "NominalSystems.Classes.TelemetrySystem"
 """This is the telemetry system that tracks the links between antennae."""
+
+TRACKING_SYSTEM = "NominalSystems.Universe.TrackingSystem"
+"""This is the tracking system that tracks the data of simulation objects."""
+
+EXTENSION_SYSTEM = "NominalSystems.Universe.ExtensionSystem"
+"""This is the extension system that allows for additional functionality to be added to the simulation."""

@@ -18,12 +18,6 @@ from ..utils import NominalException, printer, helper, types
 from ..data import SimulationData
 
 
-# Define the systems used for extra functionality
-TRACKING_SYSTEM = "NominalSystems.Universe.TrackingSystem"
-EXTENSION_SYSTEM = "NominalSystems.Universe.ExtensionSystem"
-SOLAR_SYSTEM = "NominalSystems.Universe.SolarSystem"
-
-
 class Simulation(Context):
     """
     The Simulation class is the root object that is used to interact with the simulation.
@@ -234,6 +228,21 @@ class Simulation(Context):
             raise NominalException(
                 "Failed to call function on an invalid or deleted simulation."
             )
+
+    async def get_function_library(self) -> System:
+        """
+        Returns the function library for the simulation. This will return the function library
+        that is used to access the API and authenticate the user.
+
+        :returns:   The function library for the simulation
+        :rtype:     System
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # Create the request to the function
+        return await self.get_system(types.EXTENSION_SYSTEM)
 
     def __require_refresh(self) -> None:
         """
@@ -937,7 +946,7 @@ class Simulation(Context):
             return None
 
         # Otherwise, create the instance and return it
-        return Instance(self, result_id)
+        return Instance(self, id)
 
     async def get_time(self) -> float:
         """
@@ -956,7 +965,7 @@ class Simulation(Context):
             return self.__time
 
         # Get the extension system and grab the time
-        system: System = await self.get_system(EXTENSION_SYSTEM)
+        system: System = await self.get_function_library()
         self.__time = float(await system.invoke("GetSimulationTime"))
 
         # Return the time
@@ -994,7 +1003,7 @@ class Simulation(Context):
         self.__validate()
 
         # Get the extension system
-        system: System = await self.get_system(EXTENSION_SYSTEM)
+        system: System = await self.get_function_library()
 
         # If the simulation has not been ticked yet, call a tick with 0.0 to initialise the tracking data
         if not self.__ticked:
@@ -1030,7 +1039,7 @@ class Simulation(Context):
         self.__validate()
 
         # Get the extension system
-        system: System = await self.get_system(EXTENSION_SYSTEM)
+        system: System = await self.get_function_library()
 
         # Get the state of the simulation
         return await system.invoke("GetState")
@@ -1077,7 +1086,7 @@ class Simulation(Context):
         await self.__reset()
 
         # Get the extension system
-        system: System = await self.get_system(EXTENSION_SYSTEM)
+        system: System = await self.get_function_library()
 
         # Load the state of the simulation
         success: bool = await system.invoke("SetState", state)
@@ -1088,7 +1097,7 @@ class Simulation(Context):
         if cache_all:
 
             # Get the extension system
-            system: System = await self.get_system(EXTENSION_SYSTEM)
+            system: System = await self.get_function_library()
 
             # Fetch all root objects using 'GetRootObjects'
             objects: list = await system.invoke("GetRootObjects", helper.empty_guid())
@@ -1134,7 +1143,7 @@ class Simulation(Context):
             return
 
         # Get the extension system
-        system: System = self.get_system(EXTENSION_SYSTEM)
+        system: System = await self.get_function_library()
 
         # Fetch all children objects using 'GetRootObjects'
         children: list = system.invoke("GetRootObjects", parent.id)
@@ -1204,7 +1213,7 @@ class Simulation(Context):
         self.__validate()
 
         # Get the tracking system
-        system: System = await self.get_system(TRACKING_SYSTEM)
+        system: System = await self.get_system(types.TRACKING_SYSTEM)
 
         # Check if the ID is a string and a valid GUID, as the GUID could be passed in
         # to the function instead.
@@ -1231,7 +1240,7 @@ class Simulation(Context):
         self.__validate()
 
         # Get the tracking system
-        system: System = await self.get_system(TRACKING_SYSTEM)
+        system: System = await self.get_system(types.TRACKING_SYSTEM)
 
         # Invoke the set track interval
         await system.set(Interval=interval)
@@ -1255,7 +1264,7 @@ class Simulation(Context):
         self.__validate()
 
         # Get the tracking system
-        system: System = await self.get_system(TRACKING_SYSTEM)
+        system: System = await self.get_system(types.TRACKING_SYSTEM)
 
         # Store the total data and the current page being called
         data: dict = {}
@@ -1318,7 +1327,7 @@ class Simulation(Context):
             return self.__planets[name.lower()]
 
         # Fetch the solar system
-        system: System = await self.get_system(SOLAR_SYSTEM)
+        system: System = await self.get_system(types.SOLAR_SYSTEM)
 
         # Grab the planet by invoking the method
         id = await system.invoke("GetBody", name)
@@ -1352,144 +1361,3 @@ class Simulation(Context):
 
         # Create and return the data frame
         return (await self.query_object(instance=instance)).to_dataframe()
-
-    async def get_function_library(self) -> Instance:
-        """
-        Returns the function library for the simulation. This will return the function library
-        that is used to access the API and authenticate the user.
-
-        :returns:   The function library for the simulation
-        :rtype:     Instance
-        """
-
-        # Throw exception if the simulation is not valid
-        self.__validate()
-
-        return await self.get_system(EXTENSION_SYSTEM)
-
-    def get_client(self) -> Client:
-        """
-        Returns the client for the simulation. This will return the client that are
-        used to access the API and authenticate the user.
-
-        :returns:   The client for the simulation
-        :rtype:     Client
-        """
-        return self.__client
-
-    '''
-    @classmethod
-    def get_sessions(cls, credentials: Credentials) -> dict:
-        """
-        Returns the active sessions that are currently running on the API for the user's
-        credentials. This will return a list of session IDs that are currently active. If
-        there are no active sessions, an empty list will be returned.
-
-        :param credentials:     The credentials to access the API
-        :type credentials:      Credentials
-
-        :returns:   The dictionary of sessions and whether they are active or not
-        :rtype:     dict
-        """
-
-        # Get the sessions from the API and throw an error if there are no sessions
-        result: list = http_requests.get(credentials, "session")
-        sessions: dict = {}
-        for r in result:
-            sessions[r["guid"]] = r["status"] == "RUNNING"
-        return sessions
-
-    @classmethod
-    def create_session(cls, credentials: Credentials) -> str:
-        """
-        Attempts to create a new session with the public API. This will create a new session
-        with the API and return the session ID. If the session cannot be created, an exception
-        will be raised.
-
-        :param credentials:     The credentials to access the API
-        :type credentials:      Credentials
-
-        :returns:   The session ID of the new session
-        :rtype:     str
-        """
-
-        # Output information about creating a sessiojn
-        printer.warning(
-            "Attempting to create a new session with your API key. This may take up to a minute."
-        )
-
-        # Create a new session from the API
-        data = {"version": credentials.version, "duration": 7200}
-        response = http_requests.post(credentials, "session", data=data)
-
-        # Check if there was no session, throw an error with the message
-        if "guid" not in response:
-            raise NominalException(
-                "Failed to create session. Message: %s" % str(response)
-            )
-
-        # Return the session
-        return response["guid"]
-
-    @classmethod
-    def get(
-        cls, credentials: Credentials, index: int = 0, reset: bool = True
-    ) -> Simulation:
-        """
-        This will attempt to create a simulation that is connected to the current session. If
-        the session does not exist, a new session will be created. Assuming that the simulation
-        is not running locally, it will use your access key to fetch the most recent simulation
-        or attempt to create one. Optionally, an index can be set to define which session to use.
-        If the index does not exist, it will attempt to create it.
-
-        :param credentials:     The credentials to access the API
-        :type credentials:      Credentials
-        :param index:           The index of the session to use
-        :type index:            int
-        :param reset:           Whether to reset the simulation before initialising
-        :type reset:            bool
-
-        :returns:   The simulation that has been created
-        :rtype:     Simulation
-        """
-
-        # If the credentials are bad, throw an exception
-        if not credentials:
-            raise NominalException(
-                "Invalid Credentials: No credentials passed into the Simulation."
-            )
-        if not credentials.is_valid():
-            raise NominalException(
-                "Invalid Credentials: The credentials are missing information."
-            )
-
-        # Check for local credentials and return a local simulation
-        if credentials.is_local:
-            simulation: Simulation = Simulation(credentials, "localhost")
-            if reset:
-                simulation.reset()
-            return simulation
-
-        # Fetch the sessions
-        sessions: dict = Simulation.get_sessions(credentials)
-
-        # If no sessions, create a new one
-        if sessions == None or len(sessions) <= index:
-            session = Simulation.create_session(credentials)
-            return Simulation(credentials, session_id=session)
-
-        # Otherwise, get the first active session found
-        else:
-            active_sessions: str = [s for s in sessions.keys() if sessions[s]]
-            if len(active_sessions) <= index:
-                session = list(sessions.keys())[index]
-            else:
-                session = active_sessions[index]
-
-            # Create the simulation and reset it if the parameter is passed through
-            simulation: Simulation = Simulation(credentials, session_id=session)
-            if reset:
-                simulation.reset()
-            return simulation
-
-            '''
