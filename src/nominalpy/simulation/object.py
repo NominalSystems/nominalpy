@@ -179,7 +179,7 @@ class Object(Instance):
                 if result:
                     return result
             for model in self.__models.values():
-                result = model.find_instance_with_id(id, recurse)
+                result = model.find_instance_with_id(id)
                 if result:
                     return result
 

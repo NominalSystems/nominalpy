@@ -144,10 +144,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Dispose of the simulation and reset the state
         await self.__client.delete(f"{self.__id}")
@@ -226,6 +223,18 @@ class Simulation(Context):
             and self.__client != None
         )
 
+    def __validate(self) -> None:
+        """
+        Validates the simulation. This will ensure that the simulation is valid and that the ID
+        and client are set. If the simulation is not valid, an exception will be raised.
+        """
+
+        # Throw exception if the simulation is not valid
+        if not self.is_valid():
+            raise NominalException(
+                "Failed to call function on an invalid or deleted simulation."
+            )
+
     def __require_refresh(self) -> None:
         """
         Ensures that the simulation requires a refresh. This will ensure that all objects, behaviours,
@@ -298,10 +307,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
@@ -329,7 +335,59 @@ class Simulation(Context):
         # Return the object
         return object
 
-    def get_object_by_id(self, id: str) -> Object:
+    def get_objects(self, recurse: bool = True) -> list[Object]:
+        """
+        Returns all the objects that have been created within the simulation. This will return
+        the objects as a list. If the recurse flag is set to true, all children of the objects
+        will be returned as well.
+
+        :param recurse:     Whether to return all children of the objects
+        :type recurse:      bool
+
+        :returns:           The objects that have been created within the simulation
+        :rtype:             list[Object]
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # Create a list of all objects.
+        objects: list[Object] = self.__objects.copy()
+
+        # If recursing, loop through all objects and get all children and then keep going
+        # down the chain of children to get all objects. This might be multiple levels deep.
+        if recurse:
+
+            # Define a recursive function to get all children of an object
+            def __inner_get_children(
+                child: Object, children: list[Object]
+            ) -> list[Object]:
+                for c in child.get_children():
+                    children.append(c)
+                    __inner_get_children(c, children)
+                return children
+
+            # Loop through all objects and get all children
+            for obj in self.__objects:
+                children: list[Object] = __inner_get_children(obj, [])
+                objects.extend(children)
+
+        # Return the objects
+        return objects
+
+    def get_root_objects(self) -> list[Object]:
+        """
+        Returns all the root objects that have been created within the simulation. This will
+        return all the objects that have been created directly within the simulation and not
+        part of any other object. This will return the objects as a list.
+
+        :returns:   The root objects that have been created within the simulation
+        :rtype:     list[Object]
+        """
+
+        return self.get_objects(False)
+
+    def get_object_with_id(self, id: str) -> Object:
         """
         Attempts to find an object in the simulation with a specified ID. This will look through all objects
         that exist and will attempt to find one that has been created. If the object does not exist, it will
@@ -344,10 +402,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # If the ID is not valid, raise an exception
         if not helper.is_valid_guid(id):
@@ -365,44 +420,8 @@ class Simulation(Context):
             if obj != None:
                 return obj
 
-        # Create the object and add it to the array
-        obj = Object(self, id)
-        self.__objects.append(obj)
-
-        # Print the success message
-        printer.success(f"Successfully created object with ID '{id}'.")
-        return obj
-
-    def get_objects(self, recurse: bool = True) -> list[Object]:
-        """
-        Returns all the objects that have been created within the simulation. This will return
-        all the objects that have been created within the simulation. This will return the objects
-        as a list. If the recurse flag is set to true, all children of the objects will be returned
-        as well.
-
-        :param recurse:     Whether to return all children of the objects
-        :type recurse:      bool
-
-        :returns:           The objects that have been created within the simulation
-        :rtype:             list
-        """
-
-        # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
-
-        # If the recurse flag is set to true, return all objects
-        if recurse:
-            objects: list = []
-            for obj in self.__objects:
-                objects.append(obj)
-                objects.extend(obj.get_children())
-            return objects
-
-        # Otherwise, return the objects
-        return self.__objects
+        # Return no object if it does not exist
+        return None
 
     async def add_behaviour(self, type: str, **kwargs) -> Behaviour:
         """
@@ -422,10 +441,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
@@ -453,6 +469,83 @@ class Simulation(Context):
         # Return the behaviour
         return behaviour
 
+    def get_behaviours(self, recurse: bool = True) -> list[Behaviour]:
+        """
+        Returns all the behaviours that have been created within the simulation. This will return
+        the behaviours as a list. If the recurse flag is set to true, all child behaviours of the objects
+        will be returned as well.
+
+        :param recurse:     Whether to return all behaviours of the objects
+        :type recurse:      bool
+
+        :returns:           The behaviours that have been created within the simulation
+        :rtype:             list[Behaviour]
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # Create a list of all behaviours
+        behaviours: list[Behaviour] = self.__behaviours.copy()
+
+        # If recursing, loop through all objects and get all behaviours
+        if recurse:
+            for obj in self.get_objects(True):
+
+                # Get the children of the object
+                child_behaviours: list[Behaviour] = obj.get_behaviours()
+                behaviours.extend(child_behaviours)
+
+        # Return the behaviours
+        return behaviours
+
+    def get_root_behaviours(self) -> list[Behaviour]:
+        """
+        Returns all the root behaviours that have been created within the simulation. This will
+        return all the behaviours that have been created directly within the simulation and not
+        part of any other object. This will return the behaviours as a list.
+
+        :returns:   The root behaviours that have been created within the simulation
+        :rtype:     list[Behaviour]
+        """
+
+        return self.get_behaviours(False)
+
+    def get_behaviour_with_id(self, id: str) -> Behaviour:
+        """
+        Attempts to find a behaviour in the simulation with a specified ID. This will look through all behaviours
+        that exist and will attempt to find one that has been created.
+
+        :param id:  The ID of the behaviour to get
+        :type id:   str
+
+        :returns:   The behaviour that has been found
+        :rtype:     Behaviour
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # If the ID is not valid, raise an exception
+        if not helper.is_valid_guid(id):
+            raise NominalException("Failed to find behaviour with ID.")
+
+        # Validate if any of the current behaviours have the same ID
+        for behaviour in self.__behaviours:
+            if behaviour.id == id:
+                return behaviour
+
+        # Fetch the children
+        for child in self.get_objects(True):
+
+            # Check if the behaviour is in the children
+            for behaviour in child.get_behaviours():
+                if behaviour.id == id:
+                    return behaviour
+
+        # Return no object if it does not exist
+        return None
+
     async def get_system(self, type: str, **kwargs) -> System:
         """
         Attempts to get the system with the specified type within the simulation. If the system
@@ -469,10 +562,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
@@ -527,10 +617,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type, "Messages")
@@ -572,10 +659,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # If the ID is not valid, raise an exception
         if not helper.is_valid_guid(id):
@@ -606,10 +690,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
@@ -645,10 +726,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Check if the type is missing 'NominalSystems' and add it
         type = helper.validate_type(type)
@@ -689,10 +767,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # See if the ID already exists in the local mapping
         if not helper.is_valid_guid(id):
@@ -717,30 +792,6 @@ class Simulation(Context):
         # Otherwise, create the instance and return it
         return Instance(self, result_id)
 
-    def get_root_objects(self) -> list[Object]:
-        """
-        Returns all the root objects that have been created within the simulation. This will
-        return all the objects that have been created directly within the simulation and not
-        part of any other object. This will return the objects as a list.
-
-        :returns:   The root objects that have been created within the simulation
-        :rtype:     list
-        """
-
-        return self.__objects
-
-    def get_root_behaviours(self) -> list[Behaviour]:
-        """
-        Returns all the root behaviours that have been created within the simulation. This will
-        return all the behaviours that have been created directly within the simulation and not
-        part of any other object. This will return the behaviours as a list.
-
-        :returns:   The root behaviours that have been created within the simulation
-        :rtype:     list
-        """
-
-        return self.__behaviours
-
     def get_systems(self) -> list[System]:
         """
         Returns all the systems that have been created within the simulation. This will return
@@ -763,10 +814,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # If the time is not zero, return the time
         if self.__time > 0:
@@ -790,10 +838,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Tick the simulation by the specified amount of time
         await self.tick_duration(step, step)
@@ -811,10 +856,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Get the extension system
         system: System = await self.get_system(EXTENSION_SYSTEM)
@@ -850,10 +892,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Get the extension system
         system: System = await self.get_system(EXTENSION_SYSTEM)
@@ -871,10 +910,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Get the state of the simulation
         state: dict = await self.get_state()
@@ -900,10 +936,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Clear the current state
         await self.__reset()
@@ -1009,10 +1042,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Check if the path exists
         if not os.path.exists(path):
@@ -1036,10 +1066,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Get the tracking system
         system: System = await self.get_system(TRACKING_SYSTEM)
@@ -1066,10 +1093,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Get the tracking system
         system: System = await self.get_system(TRACKING_SYSTEM)
@@ -1093,10 +1117,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Get the tracking system
         system: System = await self.get_system(TRACKING_SYSTEM)
@@ -1155,10 +1176,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Check if the planet already exists
         if name.lower() in self.__planets:
@@ -1195,10 +1213,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         # Create and return the data frame
         return (await self.query_object(instance=instance)).to_dataframe()
@@ -1213,10 +1228,7 @@ class Simulation(Context):
         """
 
         # Throw exception if the simulation is not valid
-        if not self.is_valid():
-            raise NominalException(
-                "Failed to call function on an invalid or deleted simulation."
-            )
+        self.__validate()
 
         return await self.get_system(EXTENSION_SYSTEM)
 
