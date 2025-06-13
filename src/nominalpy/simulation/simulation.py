@@ -1227,6 +1227,25 @@ class Simulation(Context):
             state: dict = json.load(file)
             return await self.set_state(state)
 
+    async def reload_data(self) -> None:
+        """
+        Reloads the data of the simulation. This will reload all objects, behaviours, systems and messages
+        within the simulation correctly, storing them into the Python module. This is useful if the simulation
+        has been modified externally and the data needs to be refreshed.
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # Clear the current state
+        self.__reset()
+
+        # Load the cache
+        await self.__load_cache()
+
+        # Ensure the refresh is required
+        self.__require_refresh()
+
     async def get_time(self) -> float:
         """
         Returns the current time of the simulation. This will fetch the time from the API
@@ -1250,7 +1269,7 @@ class Simulation(Context):
         # Return the time
         return self.__time
 
-    async def tick(self, step: float = 1e-1) -> None:
+    async def tick(self, step: float = 0.1) -> None:
         """
         Ticks the simulation by the specified amount of time. This will invoke the tick function
         on the simulation and update the time by the specified amount. If the step is not provided,
@@ -1260,17 +1279,15 @@ class Simulation(Context):
         :type step:     float
         """
 
-        # Throw exception if the simulation is not valid
-        self.__validate()
-
         # Tick the simulation by the specified amount of time
         await self.tick_duration(step, step)
 
-    async def tick_duration(self, time: float, step: float = 1e-1) -> None:
+    async def tick_duration(self, time: float, step: float = 0.1) -> None:
         """
         Ticks the simulation by the specified amount of time. This will invoke the tick function
         on the simulation and update the time by the specified amount. If the step is not provided,
-        the default step of 0.1 seconds will be used.
+        the default step of 0.1 seconds will be used. If the step is too small, it will do the final
+        step with the remaining time.
 
         :param time:    The totalamount of time to tick the simulation by in seconds
         :type time:     float
@@ -1280,6 +1297,18 @@ class Simulation(Context):
 
         # Throw exception if the simulation is not valid
         self.__validate()
+
+        # If the time is zero, throw an exception
+        if time < 1e-6:
+            raise NominalException(
+                "Failed to tick simulation as the time is zero or negative."
+            )
+
+        # If the step is zero, throw an exception
+        if step < 1e-6:
+            raise NominalException(
+                "Failed to tick simulation as the step is zero or negative."
+            )
 
         # Get the extension system
         system: System = await self.get_function_library()
@@ -1292,6 +1321,9 @@ class Simulation(Context):
         # Calculate the number of steps to take
         iterations = int(time / step)
 
+        # Determine the final time to tick to (roundede to 1microsecond precision)
+        final_time: float = round(time + self.__time, 6)
+
         # While there are steps remaining, tick
         while iterations > 0:
 
@@ -1301,6 +1333,11 @@ class Simulation(Context):
 
             # Update the time
             self.__time += result * step
+
+        # Check if there is any remaining time to tick
+        if abs(self.__time - final_time) > 1e-6:
+            await system.invoke("TickIterations", 1, final_time - self.__time)
+            self.__time = final_time
 
         # Ensure the refresh is required
         self.__require_refresh()
