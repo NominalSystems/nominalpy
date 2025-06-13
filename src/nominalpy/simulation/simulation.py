@@ -1379,6 +1379,49 @@ class Simulation(Context):
         # Ensure the refresh is required
         self.__require_refresh()
 
+    async def get_tracking_interval(self) -> float:
+        """
+        Returns the current tracking interval for all the objects that have been tracked. This will
+        return the interval in simulation seconds. The default value is 10.0 seconds.
+
+        :returns:   The interval to track the objects by in seconds
+        :rtype:     float
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # Get the tracking system
+        system: System = await self.get_system(types.TRACKING_SYSTEM)
+
+        # Invoke the get track interval
+        return await system.get("Interval")
+
+    async def set_tracking_interval(self, interval: float) -> None:
+        """
+        Updates the tracking interval for all the objects that have been tracked. This will
+        be an interval in simulation seconds and will be the same across all objects. The
+        default value is 10.0 seconds.
+
+        :param interval:    The interval to track the objects by in seconds
+        :type interval:     float
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # If the interval is not positive, throw an exception
+        if interval < 1e-6:
+            raise NominalException(
+                "Failed to set tracking interval as the interval must be positive."
+            )
+
+        # Get the tracking system
+        system: System = await self.get_system(types.TRACKING_SYSTEM)
+
+        # Invoke the set track interval
+        await system.set(Interval=interval)
+
     async def track_object(self, instance: Instance, isAdvanced: bool = False) -> None:
         """
         Starts tracking the object within the simulation. This will start tracking the object
@@ -1397,35 +1440,15 @@ class Simulation(Context):
         # Get the tracking system
         system: System = await self.get_system(types.TRACKING_SYSTEM)
 
-        # Check if the ID is a string and a valid GUID, as the GUID could be passed in
-        # to the function instead.
-        if type(instance) is str and helper.is_valid_guid(instance):
-            await system.invoke("TrackObject", instance, isAdvanced)
-        elif isinstance(instance, Instance):
-            await system.invoke("TrackObject", instance.id, isAdvanced)
-        else:
-            raise NominalException(
-                "Failed to track object as the instance was not a valid type."
-            )
+        # Get the instance ID, based on whether it is an instance or a string
+        id: str = instance.id if isinstance(instance, Instance) else instance
 
-    async def set_tracking_interval(self, interval: float) -> None:
-        """
-        Updates the tracking interval for all the objects that have been tracked. This will
-        be an interval in simulation seconds and will be the same across all objects. The
-        default value is 10.0 seconds.
+        # If the ID is not a valid GUID, raise an exception
+        if not helper.is_valid_guid(id):
+            raise NominalException("Failed to track object as the ID was not valid.")
 
-        :param interval:    The interval to track the objects by in seconds
-        :type interval:     float
-        """
-
-        # Throw exception if the simulation is not valid
-        self.__validate()
-
-        # Get the tracking system
-        system: System = await self.get_system(types.TRACKING_SYSTEM)
-
-        # Invoke the set track interval
-        await system.set(Interval=interval)
+        # Invoke the track object on the API, with the ID and whether it is advanced
+        await system.invoke("TrackObject", id, isAdvanced)
 
     async def query_object(self, instance: Instance) -> SimulationData:
         """
@@ -1453,11 +1476,15 @@ class Simulation(Context):
         page_count: int = 1
         page: int = 0
 
+        # Get the instance ID, based on whether it is an instance or a string
+        id: str = instance.id if isinstance(instance, Instance) else instance
+
+        # If the ID is not a valid GUID, raise an exception
+        if not helper.is_valid_guid(id):
+            raise NominalException("Failed to query object as the ID was not valid.")
+
         # Loop through all pages (which is at least 1)
         while page < page_count:
-
-            # Get the instance ID, based on whether it is an instance or a string
-            id: str = instance.id if isinstance(instance, Instance) else instance
 
             # Invoke the query object on the API, with the current page
             page_data: dict = await system.invoke("ExportToAPI", id, page)
@@ -1501,9 +1528,6 @@ class Simulation(Context):
         :returns:           The data that has been stored for the object
         :rtype:             DataFrame
         """
-
-        # Throw exception if the simulation is not valid
-        self.__validate()
 
         # Create and return the data frame
         return (await self.query_object(instance=instance)).to_dataframe()
