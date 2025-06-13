@@ -1144,8 +1144,11 @@ class Simulation(Context):
         # Get the extension system
         system: System = await self.get_function_library()
 
-        # Get the state of the simulation
-        return await system.invoke("GetState")
+        # Get the state of the simulation as a raw JSON, not processed and deserialized
+        # (which is what .invoke does).
+        return await self.get_client().post(
+            f"{system.id}/ivk", ["GetState"], id=self.get_id()
+        )
 
     async def save_state(self, path: str) -> None:
         """
@@ -1156,33 +1159,21 @@ class Simulation(Context):
         :type path:     str
         """
 
-        # Throw exception if the simulation is not valid
-        self.__validate()
-
-        # Get the extension system
-        system: System = await self.get_function_library()
-
-        # Get the state of the simulation as a raw JSON, not processed and deserialized
-        # (which is what .invoke does).
-        state: dict = await self.get_client().post(
-            f"{system.id}/ivk", ["GetState"], id=self.get_id()
-        )
+        # Get the state of the simulation as a raw JSON
+        state: dict = await self.get_state()
 
         # Save the state to the path
         with open(path, "w") as file:
             json.dump(state, file)
 
-    async def set_state(self, state: dict, cache_all: bool = False) -> bool:
+    async def set_state(self, state: dict) -> bool:
         """
-        Sets the state of the simulation to the specified state. This will set the state of the
-        simulation to the state provided and return whether the state was set successfully. This
-        must be in a valid JSON dictionary form. If the cache_all flag is set to true, all objects
-        in the simulation will be cached and pulled from the API, which may take some time.
+        Sets the state of the simulation to the specified state from a JSON object. This
+        will also reset and load all objects, behaviours, systems and messages within the
+        simulation correctly, storing them into the Python module.
 
         :param state:       The state to set the simulation to
         :type state:        dict
-        :param cache_all:   Whether to cache all objects in the simulation.
-        :type cache_all:    bool
 
         :returns:       Whether the state was set successfully
         :rtype:         bool
@@ -1202,35 +1193,8 @@ class Simulation(Context):
         if not success:
             return False
 
-        # Only do the following if the cache is required
-        if cache_all:
-
-            # Get the extension system
-            system: System = await self.get_function_library()
-
-            # Fetch all root objects using 'GetRootObjects'
-            objects: list = await system.invoke("GetRootObjects", helper.empty_guid())
-            for id in objects:
-                if helper.is_valid_guid(id):
-
-                    # Create the root object
-                    obj: Object = Object(self, id)
-                    self.__objects.append(obj)
-
-                    # Register it properly
-                    await self.__load_object(obj)
-
-            # Fetch all root behaviours
-            behaviours: list = await system.invoke(
-                "GetRootBehaviours", helper.empty_guid()
-            )
-            for id in behaviours:
-                if helper.is_valid_guid(id):
-
-                    # Create the root behaviour
-                    beh: Behaviour = Behaviour(self, id, parent=None)
-                    beh.get_messages()
-                    self.__behaviours.append(beh)
+        # Next, load the cache
+        await self.__load_cache()
 
         # Ensure the refresh is required
         self.__require_refresh()
@@ -1238,73 +1202,30 @@ class Simulation(Context):
         # Return the success
         return True
 
-    async def __load_object(self, parent: Object) -> None:
-        """
-        Loads the object and its children from the API. This will load the object,
-        all its children, and all behaviours in the simulation.
-
-        :param parent:  The parent object to load the children from
-        :type parent:   Object
-        """
-
-        # If the object is missing, skip
-        if parent == None:
-            return
-
-        # Get the extension system
-        system: System = await self.get_function_library()
-
-        # Fetch all children objects using 'GetRootObjects'
-        children: list = system.invoke("GetRootObjects", parent.id)
-        for id in children:
-            if helper.is_valid_guid(id):
-                obj: Object = parent._Object__register_child(id)
-                self.__load_object(obj)
-
-        # Fetch all behaviours
-        behaviours: list = system.invoke("GetRootBehaviours", parent.id)
-        for id in behaviours:
-            if helper.is_valid_guid(id):
-                behaviour: Behaviour = parent._Object__register_behaviour(id)
-                behaviour.get_messages()
-
-        # Fetch all models
-        models: list = parent.invoke("GetModels")
-        for id in models:
-            if helper.is_valid_guid(id):
-                model: Model = parent._Object__register_model(id)
-                model.get_messages()
-
-        # Cache all messages and load them into memory
-        parent.get_messages()
-
-    async def load_state(self, path: str, cache_all: bool = False) -> bool:
+    async def load_state(self, path: str) -> bool:
         """
         Loads the state of the simulation from the specified path. This will load the state of the
         simulation from the path as a JSON file and return whether the state was loaded successfully.
-        If the path does not exist, an exception will be raised. If the cache_all flag is set to true,
-        all objects in the simulation will be cached and pulled from the API, which may take some time.
+        If the path does not exist, an exception will be raised. This will also reset and load all objects,
+        behaviours, systems and messages within the simulation correctly, storing them into the Python module.
 
         :param path:        The path to load the state of the simulation from
         :type path:         str
-        :param cache_all:   Whether to cache all objects in the simulation.
-        :type cache_all:    bool
 
         :returns:       Whether the state was loaded successfully
         :rtype:         bool
         """
 
-        # Throw exception if the simulation is not valid
-        self.__validate()
-
         # Check if the path exists
         if not os.path.exists(path):
-            raise NominalException(f"Path '{path}' does not exist.")
+            raise NominalException(
+                f"Failed to load state from path '{path}' as it does not exist."
+            )
 
         # Load the state from the path
         with open(path, "r") as file:
             state: dict = json.load(file)
-            return await self.set_state(state, cache_all)
+            return await self.set_state(state)
 
     async def get_time(self) -> float:
         """
