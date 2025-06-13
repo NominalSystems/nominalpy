@@ -8,8 +8,7 @@ with the 'nominalpy' module. Copyright Nominal Systems, 2025.
 from typing import Optional, Dict, Union
 from nominalpy.utils import printer, NominalException
 import asyncio, aiohttp, json, atexit
-from typing import Optional, Union, Dict
-
+from typing import Optional, Union, Dict, Any
 
 class Client:
     """
@@ -96,6 +95,7 @@ class Client:
         session = self.sessions[id]
 
         while not self._closed:
+            future = None
             try:
                 async with asyncio.timeout(60.0):
                     method, endpoint, data, future = await queue.get()
@@ -177,7 +177,7 @@ class Client:
             except asyncio.CancelledError:
                 break
             except Exception as e:
-                if "future" in locals() and not future.done():
+                if future is not None and not future.done():
                     future.set_exception(e)
                 try:
                     if "queue" in locals():
@@ -191,7 +191,7 @@ class Client:
         endpoint: str,
         data: Optional[Union[str, list, dict]] = None,
         id: str = "default",
-    ) -> dict:
+    ):
         """
         Make an HTTP request for a given simulation ID.
 
@@ -218,8 +218,8 @@ class Client:
             raise
 
     async def get(
-        self, endpoint: str, data: Optional[dict] = None, id: str = "default"
-    ) -> dict:
+        self, endpoint: str, id: str = "default"
+    ):
         """
         Perform an async GET request to the specified endpoint. This will
         return the result of the request as a dictionary.
@@ -234,11 +234,11 @@ class Client:
         :return: The result of the request.
         :rtype: dict
         """
-        return await self._request("GET", endpoint, data, id=id)
+        return await self._request("GET", endpoint, id=id)
 
     async def post(
-        self, endpoint: str, data: Optional[dict] = None, id: str = "default"
-    ) -> dict:
+        self, endpoint: str, data: Optional[Any], id: str = "default"
+    ):
         """
         Perform an async POST request to the specified endpoint. This will
         return the result of the request as a dictionary.
@@ -256,8 +256,8 @@ class Client:
         return await self._request("POST", endpoint, data, id=id)
 
     async def delete(
-        self, endpoint: str, data: Optional[dict] = None, id: str = "default"
-    ) -> dict:
+        self, endpoint: str, id: str = "default"
+    ):
         """
         Perform an async DELETE request to the specified endpoint. This will
         return the result of the request as a dictionary.
@@ -272,7 +272,7 @@ class Client:
         :return: The result of the request.
         :rtype: dict
         """
-        return await self._request("DELETE", endpoint, data, id=id)
+        return await self._request("DELETE", endpoint, id=id)
 
     @classmethod
     def create_local(cls, port: int = 25565) -> "Client":
