@@ -179,8 +179,11 @@ class Client:
             except Exception as e:
                 if "future" in locals() and not future.done():
                     future.set_exception(e)
-                if "queue" in locals():
-                    queue.task_done()
+                try:
+                    if "queue" in locals():
+                        queue.task_done()
+                except:
+                    pass
 
     async def _request(
         self,

@@ -960,55 +960,11 @@ class Simulation(Context):
         # Otherwise, create the instance and return it
         return Instance(self, id)
 
-    async def get_time(self) -> float:
+    async def __load_cache(self) -> None:
         """
-        Returns the current time of the simulation. This will fetch the time from the API
-        and return the time as a floating point number.
-
-        :returns:   The current time of the simulation in seconds
-        :rtype:     float
-        """
-
-        # Throw exception if the simulation is not valid
-        self.__validate()
-
-        # If the time is not zero, return the time
-        if self.__time > 0:
-            return self.__time
-
-        # Get the extension system and grab the time
-        system: System = await self.get_function_library()
-        self.__time = float(await system.invoke("GetSimulationTime"))
-
-        # Return the time
-        return self.__time
-
-    async def tick(self, step: float = 1e-1) -> None:
-        """
-        Ticks the simulation by the specified amount of time. This will invoke the tick function
-        on the simulation and update the time by the specified amount. If the step is not provided,
-        the default step of 0.1 seconds will be used.
-
-        :param step:    The amount of time to tick the simulation by in seconds
-        :type step:     float
-        """
-
-        # Throw exception if the simulation is not valid
-        self.__validate()
-
-        # Tick the simulation by the specified amount of time
-        await self.tick_duration(step, step)
-
-    async def tick_duration(self, time: float, step: float = 1e-1) -> None:
-        """
-        Ticks the simulation by the specified amount of time. This will invoke the tick function
-        on the simulation and update the time by the specified amount. If the step is not provided,
-        the default step of 0.1 seconds will be used.
-
-        :param time:    The totalamount of time to tick the simulation by in seconds
-        :type time:     float
-        :param step:    The time-step of the tick, used for physics calculations in seconds
-        :type step:     float
+        Loads the cache for the simulation. This will load all objects, behaviours, systems and messages
+        that have been created within the simulation. This will create all the appropriate instances and
+        objects in the correct structure.
         """
 
         # Throw exception if the simulation is not valid
@@ -1017,26 +973,161 @@ class Simulation(Context):
         # Get the extension system
         system: System = await self.get_function_library()
 
-        # If the simulation has not been ticked yet, call a tick with 0.0 to initialise the tracking data
-        if not self.__ticked:
-            await system.invoke("InitializeSimulation")
-            self.__ticked = True
+        # Get the structure of the simulation
+        structure: dict = await system.invoke("GetSimulationStructure")
+        if structure is None:
+            raise NominalException("Failed to load the simulation structure.")
 
-        # Calculate the number of steps to take
-        iterations = int(time / step)
+        # Set the time of the simulation
+        self.__time = float(structure.get("Time", 0.0))
+        self.__ticked = self.__time > 0.0
 
-        # While there are steps remaining, tick
-        while iterations > 0:
+        # Defines a function to register a message with the instance
+        def __register_msg(instance: Instance, msg_data: dict) -> None:
+            msg: Message = Message(self, msg_data["ID"], type=msg_data["Type"])
+            name: str = msg_data.get("Name", "")
+            if type(instance) is System:
+                if name not in instance._System__messages:
+                    instance._System__messages[name] = msg
+            elif type(instance) is Behaviour:
+                if name not in instance._Behaviour__messages:
+                    instance._Behaviour__messages[name] = msg
+            elif type(instance) is Object:
+                if name not in instance._Object__messages:
+                    instance._Object__messages[name] = msg
+                    instance._Object__instances[msg.id] = msg
+            elif type(instance) is Model:
+                if name not in instance._Model__messages:
+                    instance._Model__messages[name] = msg
 
-            # Tick the iterations and get the amount of iterations completed
-            result = await system.invoke("TickIterations", iterations, step)
-            iterations -= result
+        # Defines a function to register a behaviour
+        def __register_behaviour(behaviour: Behaviour, behaviour_data: dict) -> None:
 
-            # Update the time
-            self.__time += result * step
+            # Loop through all messages and register them
+            for msg_data in behaviour_data.get("Messages", []):
+                __register_msg(behaviour, msg_data)
 
-        # Ensure the refresh is required
-        self.__require_refresh()
+        # Defines a function to register a model
+        def __register_model(model: Model, model_data: dict) -> None:
+
+            # Loop through all messages and register them
+            for msg_data in model_data.get("Messages", []):
+                __register_msg(model, msg_data)
+
+        # Defines a function to register an object
+        def __register_object(object: Object, object_data: dict) -> None:
+
+            # Loop through all messages and register them
+            for msg_data in object_data.get("Messages", []):
+                __register_msg(object, msg_data)
+
+            # Loop through all models and register them
+            for model_data in object_data.get("Models", []):
+                model_type: str = model_data["Type"]
+                model: Model = None
+                if model_type in object._Object__models:
+                    model = object._Object__models[model_type]
+                else:
+                    model: Model = Model(
+                        self, model_data["ID"], type=model_type, target=object
+                    )
+                    object._Object__models[model_type] = model
+                    object._Object__instances[model.id] = model
+                __register_model(model, model_data)
+
+            # Loop through all behaviours and register them
+            for behaviour_data in object_data.get("Behaviours", []):
+                behaviour: Behaviour = None
+                for b in object._Object__behaviours:
+                    if b.id == behaviour_data["ID"]:
+                        behaviour = b
+                        break
+                if behaviour is None:
+                    behaviour: Behaviour = Behaviour(
+                        self,
+                        id=behaviour_data["ID"],
+                        type=behaviour_data["Type"],
+                        parent=object,
+                    )
+                    object._Object__behaviours.append(behaviour)
+                    object._Object__instances[behaviour.id] = behaviour
+                __register_behaviour(behaviour, behaviour_data)
+
+            # Loop through all children and register them
+            for child_data in object_data.get("Children", []):
+                child: Object = None
+                for c in object._Object__children:
+                    if c.id == child_data["ID"]:
+                        child = c
+                        break
+                if child is None:
+                    child: Object = Object(
+                        self,
+                        id=child_data["ID"],
+                        type=child_data["Type"],
+                        parent=object,
+                    )
+                    object._Object__children.append(child)
+                    object._Object__instances[child.id] = child
+                __register_object(child, child_data)
+
+        # Loop through all systems and create them
+        for system_data in structure.get("Systems", []):
+
+            # If the system already exists, get it, otherwise create it
+            system: System = None
+            if system_data["Type"] in self.__systems:
+                system = self.__systems[system_data["Type"]]
+            else:
+                system: System = System(
+                    self, id=system_data["ID"], type=system_data["Type"]
+                )
+                self.__systems[system.get_type()] = system
+
+            # Register the messages in each system
+            messages: list = system_data.get("Messages", [])
+            for msg_data in messages:
+                __register_msg(system, msg_data)
+
+        # Loop through all behaviours and create them
+        for behaviour_data in structure.get("Behaviours", []):
+
+            # If the behaviour already exists, get it, otherwise create it
+            behaviour: Behaviour = None
+            for b in self.__behaviours:
+                if b.id == behaviour_data["ID"]:
+                    behaviour = b
+                    break
+
+            # If the behaviour was not found, create it
+            if behaviour is None:
+                behaviour: Behaviour = Behaviour(
+                    self, id=behaviour_data["ID"], type=behaviour_data["Type"]
+                )
+                self.__behaviours.append(behaviour)
+
+            # Register the behaviour data
+            __register_behaviour(behaviour, behaviour_data)
+
+        # Loop through all objects and create them
+        for object_data in structure.get("Objects", []):
+
+            # If the object already exists, get it, otherwise create it
+            object: Object = None
+            for o in self.__objects:
+                if o.id == object_data["ID"]:
+                    object = o
+                    break
+
+            # If the object was not found, create it
+            if object is None:
+                object: Object = Object(
+                    self, id=object_data["ID"], type=object_data["Type"]
+                )
+                self.__objects.append(object)
+
+            # Register the object data
+            __register_object(object, object_data)
 
     async def get_state(self) -> dict:
         """
@@ -1068,8 +1159,14 @@ class Simulation(Context):
         # Throw exception if the simulation is not valid
         self.__validate()
 
-        # Get the state of the simulation
-        state: dict = await self.get_state()
+        # Get the extension system
+        system: System = await self.get_function_library()
+
+        # Get the state of the simulation as a raw JSON, not processed and deserialized
+        # (which is what .invoke does).
+        state: dict = await self.get_client().post(
+            f"{system.id}/ivk", ["GetState"], id=self.get_id()
+        )
 
         # Save the state to the path
         with open(path, "w") as file:
@@ -1095,7 +1192,7 @@ class Simulation(Context):
         self.__validate()
 
         # Clear the current state
-        await self.__reset()
+        self.__reset()
 
         # Get the extension system
         system: System = await self.get_function_library()
@@ -1208,6 +1305,84 @@ class Simulation(Context):
         with open(path, "r") as file:
             state: dict = json.load(file)
             return await self.set_state(state, cache_all)
+
+    async def get_time(self) -> float:
+        """
+        Returns the current time of the simulation. This will fetch the time from the API
+        and return the time as a floating point number.
+
+        :returns:   The current time of the simulation in seconds
+        :rtype:     float
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # If the time is not zero, return the time
+        if self.__time > 0:
+            return self.__time
+
+        # Get the extension system and grab the time
+        system: System = await self.get_function_library()
+        self.__time = float(await system.invoke("GetSimulationTime"))
+
+        # Return the time
+        return self.__time
+
+    async def tick(self, step: float = 1e-1) -> None:
+        """
+        Ticks the simulation by the specified amount of time. This will invoke the tick function
+        on the simulation and update the time by the specified amount. If the step is not provided,
+        the default step of 0.1 seconds will be used.
+
+        :param step:    The amount of time to tick the simulation by in seconds
+        :type step:     float
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # Tick the simulation by the specified amount of time
+        await self.tick_duration(step, step)
+
+    async def tick_duration(self, time: float, step: float = 1e-1) -> None:
+        """
+        Ticks the simulation by the specified amount of time. This will invoke the tick function
+        on the simulation and update the time by the specified amount. If the step is not provided,
+        the default step of 0.1 seconds will be used.
+
+        :param time:    The totalamount of time to tick the simulation by in seconds
+        :type time:     float
+        :param step:    The time-step of the tick, used for physics calculations in seconds
+        :type step:     float
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # Get the extension system
+        system: System = await self.get_function_library()
+
+        # If the simulation has not been ticked yet, call a tick with 0.0 to initialise the tracking data
+        if not self.__ticked:
+            await system.invoke("InitializeSimulation")
+            self.__ticked = True
+
+        # Calculate the number of steps to take
+        iterations = int(time / step)
+
+        # While there are steps remaining, tick
+        while iterations > 0:
+
+            # Tick the iterations and get the amount of iterations completed
+            result = await system.invoke("TickIterations", iterations, step)
+            iterations -= result
+
+            # Update the time
+            self.__time += result * step
+
+        # Ensure the refresh is required
+        self.__require_refresh()
 
     async def track_object(self, instance: Instance, isAdvanced: bool = False) -> None:
         """
