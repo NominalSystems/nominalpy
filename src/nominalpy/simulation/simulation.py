@@ -801,6 +801,43 @@ class Simulation(Context):
 
         return self.get_messages(recurse=False)
 
+    async def get_planet(self, name: str) -> Object:
+        """
+        Returns the planet with the specified name within the simulation. This will return the
+        planet object that has been created within the simulation. If the planet does not exist,
+        it will be created and returned. If the planet cannot be created, None will be returned.
+
+        :param name:    The name of the planet to get or create
+        :type name:     str
+
+        :returns:       The planet with the specified name
+        :rtype:         Object
+        """
+
+        # Throw exception if the simulation is not valid
+        self.__validate()
+
+        # Check if the planet already exists
+        name = name.strip().lower()
+        if name in self.__planets:
+            return self.__planets[name]
+
+        # Fetch the solar system
+        system: System = await self.get_system(types.SOLAR_SYSTEM)
+
+        # Grab the planet by invoking the method
+        id: str = await system.invoke("GetBody", name)
+        if not helper.is_valid_guid(id):
+            raise NominalException(f"Failed to create planet with name '{name}'.")
+
+        # Construct the object
+        object: Object = Object(self, id, types.CELESTIAL_BODY)
+        self.__planets[name] = object
+        self.__objects.append(object)
+
+        # Return the object
+        return object
+
     async def find_message_with_id(self, id: str) -> Message:
         """
         Attempts to find a message in the simulation with a specified ID. This will look through all messages
@@ -1450,42 +1487,6 @@ class Simulation(Context):
 
         # Create and return the data frame
         return SimulationData(data)
-
-    async def get_planet(self, name: str) -> Object:
-        """
-        Returns the planet with the specified name within the simulation. This will return the
-        planet object that has been created within the simulation. If the planet does not exist,
-        it will be created and returned. If the planet cannot be created, None will be returned.
-
-        :param name:    The name of the planet to get or create
-        :type name:     str
-
-        :returns:       The planet with the specified name
-        :rtype:         Object
-        """
-
-        # Throw exception if the simulation is not valid
-        self.__validate()
-
-        # Check if the planet already exists
-        if name.lower() in self.__planets:
-            return self.__planets[name.lower()]
-
-        # Fetch the solar system
-        system: System = await self.get_system(types.SOLAR_SYSTEM)
-
-        # Grab the planet by invoking the method
-        id = await system.invoke("GetBody", name)
-        if not helper.is_valid_guid(id):
-            return None
-
-        # Construct the object
-        object: Object = Object(self, id, types.CELESTIAL_BODY)
-        self.__planets[name.lower()] = object
-        self.__objects.append(object)
-
-        # Return the object
-        return object
 
     async def query_dataframe(self, instance: Instance) -> pd.DataFrame:
         """
