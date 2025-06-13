@@ -276,25 +276,25 @@ class Simulation(Context):
         """
 
         for object in self.__objects:
-            if object.id == id:
+            if object.get_id() == id:
                 return object
             find: Instance = object.find_instance_with_id(id, True)
             if find != None:
                 return find
         for behaviour in self.__behaviours:
-            if behaviour.id == id:
+            if behaviour.get_id() == id:
                 return behaviour
             find: Instance = behaviour.find_instance_with_id(id, True)
             if find != None:
                 return find
         for system in self.__systems.values():
-            if system.id == id:
+            if system.get_id() == id:
                 return system
             find: Instance = system.find_instance_with_id(id, True)
             if find != None:
                 return find
         for message in self.__messages:
-            if message.id == id:
+            if message.get_id() == id:
                 return message
         return None
 
@@ -448,7 +448,7 @@ class Simulation(Context):
 
         # Validate if any of the current objects have the same ID
         for obj in self.__objects:
-            if obj.id == id:
+            if obj.get_id() == id:
                 return obj
 
             # Check children
@@ -579,7 +579,7 @@ class Simulation(Context):
 
         # Validate if any of the current behaviours have the same ID
         for behaviour in self.__behaviours:
-            if behaviour.id == id:
+            if behaviour.get_id() == id:
                 return behaviour
 
         # Fetch the children
@@ -587,7 +587,7 @@ class Simulation(Context):
 
             # Check if the behaviour is in the children
             for behaviour in child.get_behaviours():
-                if behaviour.id == id:
+                if behaviour.get_id() == id:
                     return behaviour
 
         # Attempt to find the object with the ID from the API
@@ -863,12 +863,12 @@ class Simulation(Context):
 
         # Validate if any of the current messages have the same ID
         for message in self.__messages:
-            if message.id == id:
+            if message.get_id() == id:
                 return message
 
         # Loop through all objects and check for messages
         for message in self.get_messages(recurse=True):
-            if message.id == id:
+            if message.get_id() == id:
                 return message
 
         # Attempt to find the message with the ID from the API
@@ -1032,7 +1032,7 @@ class Simulation(Context):
             elif type(instance) is Object:
                 if name not in instance._Object__messages:
                     instance._Object__messages[name] = msg
-                    instance._Object__instances[msg.id] = msg
+                    instance._Object__instances[msg.get_id()] = msg
             elif type(instance) is Model:
                 if name not in instance._Model__messages:
                     instance._Model__messages[name] = msg
@@ -1069,14 +1069,14 @@ class Simulation(Context):
                         self, model_data["ID"], type=model_type, target=object
                     )
                     object._Object__models[model_type] = model
-                    object._Object__instances[model.id] = model
+                    object._Object__instances[model.get_id()] = model
                 __register_model(model, model_data)
 
             # Loop through all behaviours and register them
             for behaviour_data in object_data.get("Behaviours", []):
                 behaviour: Behaviour = None
                 for b in object._Object__behaviours:
-                    if b.id == behaviour_data["ID"]:
+                    if b.get_id() == behaviour_data["ID"]:
                         behaviour = b
                         break
                 if behaviour is None:
@@ -1087,14 +1087,14 @@ class Simulation(Context):
                         parent=object,
                     )
                     object._Object__behaviours.append(behaviour)
-                    object._Object__instances[behaviour.id] = behaviour
+                    object._Object__instances[behaviour.get_id()] = behaviour
                 __register_behaviour(behaviour, behaviour_data)
 
             # Loop through all children and register them
             for child_data in object_data.get("Children", []):
                 child: Object = None
                 for c in object._Object__children:
-                    if c.id == child_data["ID"]:
+                    if c.get_id() == child_data["ID"]:
                         child = c
                         break
                 if child is None:
@@ -1105,7 +1105,7 @@ class Simulation(Context):
                         parent=object,
                     )
                     object._Object__children.append(child)
-                    object._Object__instances[child.id] = child
+                    object._Object__instances[child.get_id()] = child
                 __register_object(child, child_data)
 
         # Loop through all systems and create them
@@ -1132,7 +1132,7 @@ class Simulation(Context):
             # If the behaviour already exists, get it, otherwise create it
             behaviour: Behaviour = None
             for b in self.__behaviours:
-                if b.id == behaviour_data["ID"]:
+                if b.get_id() == behaviour_data["ID"]:
                     behaviour = b
                     break
 
@@ -1152,7 +1152,7 @@ class Simulation(Context):
             # If the object already exists, get it, otherwise create it
             object: Object = None
             for o in self.__objects:
-                if o.id == object_data["ID"]:
+                if o.get_id() == object_data["ID"]:
                     object = o
                     break
 
@@ -1184,7 +1184,7 @@ class Simulation(Context):
         # Get the state of the simulation as a raw JSON, not processed and deserialized
         # (which is what .invoke does).
         return await self.get_client().post(
-            f"{system.id}/ivk", ["GetState"], id=self.get_id()
+            f"{system.get_id()}/ivk", ["GetState"], id=self.get_id()
         )
 
     async def save_state(self, path: str) -> None:
@@ -1441,7 +1441,7 @@ class Simulation(Context):
         system: System = await self.get_system(types.TRACKING_SYSTEM)
 
         # Get the instance ID, based on whether it is an instance or a string
-        id: str = instance.id if isinstance(instance, Instance) else instance
+        id: str = instance.get_id() if isinstance(instance, Instance) else instance
 
         # If the ID is not a valid GUID, raise an exception
         if not helper.is_valid_guid(id):
@@ -1477,7 +1477,7 @@ class Simulation(Context):
         page: int = 0
 
         # Get the instance ID, based on whether it is an instance or a string
-        id: str = instance.id if isinstance(instance, Instance) else instance
+        id: str = instance.get_id() if isinstance(instance, Instance) else instance
 
         # If the ID is not a valid GUID, raise an exception
         if not helper.is_valid_guid(id):

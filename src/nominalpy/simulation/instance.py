@@ -28,7 +28,7 @@ class Instance:
     _context: Context = None
     """Defines the context that is used to access the API."""
 
-    id: str = None
+    __id: str = None
     """Defines the unique GUID identifier of the object. This needs to be in the correct GUID format."""
 
     def __init__(self, context: Context, id: str, type: str = None) -> None:
@@ -54,7 +54,7 @@ class Instance:
             )
 
         # Set the values and default data
-        self.id = id
+        self.__id = id
         self._context = context
         self.__data = None
         self.__type = type
@@ -73,7 +73,7 @@ class Instance:
 
         # Fetch all data and then set the cache to false
         self.__data = await self._context.get_client().get(
-            f"{self.id}/get", id=self._context.get_id()
+            f"{self.get_id()}/get", id=self._context.get_id()
         )
         self._refresh_cache = False
 
@@ -88,6 +88,18 @@ class Instance:
         """
 
         self._refresh_cache = True
+
+    def get_id(self) -> str:
+        """
+        Returns the unique GUID identifier of the object. This is used to identify
+        the object in the API and is used to fetch the data from the API.
+
+        :returns:   The unique GUID identifier of the object
+        :rtype:     str
+        """
+
+        # Return the ID of the object
+        return self.__id
 
     def get_type(self) -> str:
         """
@@ -140,7 +152,7 @@ class Instance:
         # Check if the param is in the data
         if param not in self.__data:
             raise NominalException(
-                f"Failed to get parameter '{param}' in object '{self.id}' of type '{self.get_type()}'."
+                f"Failed to get parameter '{param}' in object '{self.get_id()}' of type '{self.get_type()}'."
             )
         return self.__data[param]
 
@@ -174,7 +186,7 @@ class Instance:
 
         # Call the method on the client
         await self._context.get_client().post(
-            f"{self.id}/set", data=kwargs, id=self._context.get_id()
+            f"{self.get_id()}/set", data=kwargs, id=self._context.get_id()
         )
 
         # Ensure that the cache is refreshed for the next get
@@ -205,7 +217,7 @@ class Instance:
 
         # Create the response from the invoke request and get the return data
         response = await self._context.get_client().post(
-            f"{self.id}/ivk", args, id=self._context.get_id()
+            f"{self.get_id()}/ivk", args, id=self._context.get_id()
         )
         response = helper.deserialize(response)
 
@@ -223,4 +235,4 @@ class Instance:
         """
 
         # Return the ID of the object
-        return self.id
+        return self.get_id()

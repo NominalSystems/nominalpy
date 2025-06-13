@@ -78,7 +78,7 @@ class Object(Instance):
         """
 
         # Create the object and set the data
-        object = Object(instance._context, instance.id, instance.get_type(), None)
+        object = Object(instance._context, instance.get_id(), instance.get_type(), None)
         object.__dict__ = instance.__dict__
         object._Instance__data = instance._Instance__data
         object._refresh_cache = instance._refresh_cache
@@ -209,7 +209,7 @@ class Object(Instance):
             raise NominalException("Failed to get function library for the simulation.")
 
         # Invoke the function library to create the object
-        child_id: str = await function_library.invoke("AddObject", type, self.id)
+        child_id: str = await function_library.invoke("AddObject", type, self.get_id())
 
         # If the ID is not valid, raise an exception
         if not helper.is_valid_guid(child_id):
@@ -312,7 +312,7 @@ class Object(Instance):
 
         # Start by looking at the children for the ID
         for child in self.__children:
-            if child.id == id:
+            if child.get_id() == id:
                 return child
 
         # If recurse is enabled, look down the chain of instances
@@ -348,7 +348,9 @@ class Object(Instance):
             raise NominalException("Failed to get function library for the simulation.")
 
         # Invoke the function library to create the behaviour
-        behaviour_id: str = await function_library.invoke("AddBehaviour", type, self.id)
+        behaviour_id: str = await function_library.invoke(
+            "AddBehaviour", type, self.get_id()
+        )
 
         # If the ID is not valid, raise an exception
         if not helper.is_valid_guid(behaviour_id):
@@ -458,7 +460,7 @@ class Object(Instance):
 
         # Start by looking at the behaviours for the ID
         for behaviour in self.__behaviours:
-            if behaviour.id == id:
+            if behaviour.get_id() == id:
                 return behaviour
 
         # If recurse is enabled, look down the chain of children
@@ -502,7 +504,7 @@ class Object(Instance):
 
         # Attempt to find or create the model
         id: str = await self._context.get_client().post(
-            f"{self.id}/ivk", ["GetModel", type], id=self._context.get_id()
+            f"{self.get_id()}/ivk", ["GetModel", type], id=self._context.get_id()
         )
         if not helper.is_valid_guid(id):
             raise NominalException(f"Failed to create model of type '{type}'.")

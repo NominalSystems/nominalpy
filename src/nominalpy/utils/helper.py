@@ -161,8 +161,8 @@ def serialize(value: any) -> any:
         return value.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
     # Check if the value is a simulation instance
-    if hasattr(value, "id") and hasattr(value, "get_type"):
-        return value.id
+    if hasattr(value, "get_id") and hasattr(value, "get_type"):
+        return value.get_id()
 
     # Return the value as is for other types
     return value

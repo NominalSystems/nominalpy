@@ -88,7 +88,7 @@ class Model(Instance):
 
         # Start by looking at the instances for the ID
         for msg in self.__messages.values():
-            if msg.id == id:
+            if msg.get_id() == id:
                 return msg
 
         # Return none otherwise
