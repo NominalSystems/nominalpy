@@ -1119,7 +1119,7 @@ class Simulation(Context):
                 system: System = System(
                     self, id=system_data["ID"], type=system_data["Type"]
                 )
-                self.__systems[system.get_type()] = system
+                self.__systems[system._Instance__type] = system
 
             # Register the messages in each system
             messages: list = system_data.get("Messages", [])

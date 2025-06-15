@@ -78,7 +78,9 @@ class Object(Instance):
         """
 
         # Create the object and set the data
-        object = Object(instance._context, instance.get_id(), instance.get_type(), None)
+        object = Object(
+            instance._context, instance.get_id(), instance._Instance__type, None
+        )
         object.__dict__ = instance.__dict__
         object._Instance__data = instance._Instance__data
         object._refresh_cache = instance._refresh_cache
@@ -106,7 +108,7 @@ class Object(Instance):
                 self.__instances[id] = behaviour
                 self.__behaviours.append(behaviour)
                 printer.log(
-                    f"Successfully created child behaviour of type '{behaviour.get_type()}' in the background."
+                    f"Successfully created child behaviour of type '{await behaviour.get_type()}' in the background."
                 )
 
         # Loop through the children
@@ -116,7 +118,7 @@ class Object(Instance):
                 self.__instances[id] = child
                 self.__children.append(child)
                 printer.log(
-                    f"Successfully created child object of type '{child.get_type()}' in the background."
+                    f"Successfully created child object of type '{await child.get_type()}' in the background."
                 )
 
         # Loop through the models
@@ -124,9 +126,9 @@ class Object(Instance):
             if id not in self.__instances:
                 model = Model(self._context, id, None, target=self)
                 self.__instances[id] = model
-                self.__models[model.get_type()] = model
+                self.__models[await model.get_type()] = model
                 printer.log(
-                    f"Successfully created model of type '{model.get_type()}' in the background."
+                    f"Successfully created model of type '{await model.get_type()}' in the background."
                 )
 
     def _require_refresh(self) -> None:
@@ -293,7 +295,7 @@ class Object(Instance):
         type = helper.validate_type(type)
 
         # Filter the children by type
-        return [child for child in self.__children if child.get_type() == type]
+        return [child for child in self.__children if child._Instance__type == type]
 
     def get_child_with_id(self, id: str, recurse: bool = True) -> Object:
         """
@@ -440,7 +442,9 @@ class Object(Instance):
 
         # Filter the children by type
         return [
-            behaviour for behaviour in self.__behaviours if behaviour.get_type() == type
+            behaviour
+            for behaviour in self.__behaviours
+            if behaviour._Instance__type == type
         ]
 
     def get_behaviour_with_id(self, id: str, recurse: bool = True) -> Behaviour:

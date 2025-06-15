@@ -101,7 +101,7 @@ class Instance:
         # Return the ID of the object
         return self.__id
 
-    def get_type(self) -> str:
+    async def get_type(self) -> str:
         """
         Returns the type of the object that is fetched from the API. This is the
         full type, including the namespace and the class name. If the type has not
@@ -110,6 +110,25 @@ class Instance:
         :returns:   The type of the object
         :rtype:     str
         """
+
+        # If the type is not provided, or empty, then fetch it from the API
+        if not self.__type or self.__type == "":
+
+            # Fetch the function library from the context
+            function_library: Instance = await self._context.get_function_library()
+            if not function_library:
+                raise NominalException(
+                    "Failed to get type of instance due to missing function library."
+                )
+
+            # Fetch the type from the API
+            self.__type = await function_library.invoke("GetObjectType", self.get_id())
+
+            # If the type is still None, raise an exception
+            if not self.__type or self.__type == "":
+                raise NominalException(
+                    f"Failed to get type of instance with ID '{self.get_id()}'."
+                )
 
         # If there is no type, find it
         return self.__type
@@ -152,7 +171,7 @@ class Instance:
         # Check if the param is in the data
         if param not in self.__data:
             raise NominalException(
-                f"Failed to get parameter '{param}' in object '{self.get_id()}' of type '{self.get_type()}'."
+                f"Failed to get parameter '{param}' in object '{self.get_id()}' of type '{await self.get_type()}'."
             )
         return self.__data[param]
 
