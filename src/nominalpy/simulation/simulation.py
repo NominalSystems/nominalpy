@@ -1066,7 +1066,7 @@ class Simulation(Context):
                     model = object._Object__models[model_type]
                 else:
                     model: Model = Model(
-                        self, model_data["ID"], type=model_type, target=object
+                        self, model_data["ID"], type=model_type, parent=object
                     )
                     object._Object__models[model_type] = model
                     object._Object__instances[model.get_id()] = model

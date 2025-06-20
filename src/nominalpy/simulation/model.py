@@ -16,14 +16,14 @@ class Model(Instance):
     type attach and allows for extended functionality to be added to the object.
     """
 
-    __target: Instance = None
-    """Defines the target object that the model is attached to."""
+    __parent: Instance = None
+    """Defines the parent object that the model is attached to."""
 
     __messages: dict[str:Message] = {}
     """Defines all messages that are attached to the object, by name."""
 
     def __init__(
-        self, context: Context, id: str, type: str = None, target: Instance = None
+        self, context: Context, id: str, type: str = None, parent: Instance = None
     ) -> None:
         """
         Initialises the model with the context and the ID of the model.
@@ -34,31 +34,31 @@ class Model(Instance):
         :type id:               str
         :param type:            The type of the model to create, if applicable
         :type type:             str
-        :param target:          The target object that the model is attached to
-        :type target:           Instance
+        :param parent:          The parent object that the model is attached to
+        :type parent:           Instance
         """
 
         super().__init__(context, id, type)
 
-        # If there is no target, raise an exception
-        if not target:
+        # If there is no parent, raise an exception
+        if not parent:
             raise NominalException(
-                "Failed to create model with a missing target object."
+                "Failed to create model with a missing parent object."
             )
 
         # Clear and reset the data
-        self.__target = target
+        self.__parent = parent
         self.__messages = {}
 
-    def get_target(self) -> Instance:
+    def get_parent(self) -> Instance:
         """
-        Returns the target object that the model is attached to.
+        Returns the parent object that the model is attached to.
 
-        :returns:   The target object that the model is attached to
+        :returns:   The parent object that the model is attached to
         :rtype:     Object
         """
 
-        return self.__target
+        return self.__parent
 
     def _require_refresh(self) -> None:
         """
