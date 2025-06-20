@@ -57,15 +57,12 @@ def is_valid_guid(guid: str) -> bool:
     return True
 
 
-def validate_type(type: str, namespace: str = "Classes") -> str:
+def validate_type(type: str) -> str:
     """
     Validates the type of the object and ensures that it is in the correct format.
-    This will return the correct type with the namespace if it is not already present.
 
     :param type:        The type of the object to validate
     :type type:         str
-    :param namespace:   The namespace to use for the type
-    :type namespace:    str
 
     :returns:           The validated type with the namespace
     :rtype:             str
@@ -79,60 +76,6 @@ def validate_type(type: str, namespace: str = "Classes") -> str:
 
     # Make sure the type is pascal cased
     type = type[0].upper() + type[1:]
-
-    # Ensure the type has the namespace
-    if "NominalSystems" not in type:
-        if "." not in type:
-            type = f"NominalSystems.{namespace}." + type
-        else:
-            type = "NominalSystems." + type
-
-    # For certain types, ensure the namespace is correct
-    universe_types: list = [
-        "UniverseObject",
-        "UniverseModel",
-        "UniverseBehaviour",
-        "UniverseSystem",
-        "ExtensionSystem",
-        "MaritimeSystem",
-        "SolarSystem",
-        "TrackingSystem",
-        "CelestialBody",
-        "PhysicalObject",
-        "DynamicEffector",
-        "StateEffector",
-        "GroundObject",
-        "GroundStation",
-        "Vehicle",
-        "Vessel",
-        "Rover",
-        "Spacecraft",
-        "StarSphere",
-        "BodyEffector",
-        "AlbedoPlanetModel",
-        "AlbedoModel",
-        "AtmosphereModel",
-        "AtmospherePlanetModel",
-        "AtmosphereExponentialPlanetModel",
-        "AtmosphereNRLMSISPlanetModel",
-        "ElectromagneticModel",
-        "GravityModel",
-        "MagneticFieldPlanetModel",
-        "MagneticFieldCenteredDipolePlanetModel",
-        "MagneticFieldWMMPlanetModel",
-        "MagneticModel",
-        "SolarModel",
-        "SphericalHarmonicsModel",
-        "StateModel",
-        "ThermalModel",
-    ]
-
-    # If the type is a universe type, ensure the namespace is correct
-    small_type: str = type.split(".")[-1]
-    if small_type in universe_types:
-        return "NominalSystems.Universe." + small_type
-
-    # Return the correct type
     return type
 
 

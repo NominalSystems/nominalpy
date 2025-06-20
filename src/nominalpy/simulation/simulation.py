@@ -14,7 +14,7 @@ from .context import Context
 from .model import Model
 from .system import System
 from ..connection import Client
-from ..utils import NominalException, printer, helper, types
+from ..utils import NominalException, printer, helper
 from ..data import SimulationData
 
 
@@ -102,7 +102,7 @@ class Simulation(Context):
         """
 
         # Attempt to register a new simulation with the API
-        id: str = await client.post("new", "NominalSystems.Simulation")
+        id: str = await client.post("new", "Simulation")
         if not helper.is_valid_guid(id):
             raise NominalException(
                 "Failed to create a simulation due to invalid simulation ID."
@@ -242,7 +242,7 @@ class Simulation(Context):
         self.__validate()
 
         # Create the request to the function
-        return await self.get_system(types.EXTENSION_SYSTEM)
+        return await self.get_system("ExtensionSystem")
 
     def __require_refresh(self) -> None:
         """
@@ -345,7 +345,7 @@ class Simulation(Context):
         # Throw exception if the simulation is not valid
         self.__validate()
 
-        # Check if the type is missing 'NominalSystems' and add it
+        # Check if the type is valid
         type = helper.validate_type(type)
 
         # Create the Object ID
@@ -490,7 +490,7 @@ class Simulation(Context):
         # Throw exception if the simulation is not valid
         self.__validate()
 
-        # Check if the type is missing 'NominalSystems' and add it
+        # Check if the type is valid
         type = helper.validate_type(type)
 
         # Create the behaviour ID
@@ -622,7 +622,7 @@ class Simulation(Context):
         # Throw exception if the simulation is not valid
         self.__validate()
 
-        # Check if the type is missing 'NominalSystems' and add it
+        # Check if the type is valid
         type = helper.validate_type(type)
 
         # Check if the system exists and return it
@@ -718,8 +718,8 @@ class Simulation(Context):
         # Throw exception if the simulation is not valid
         self.__validate()
 
-        # Check if the type is missing 'NominalSystems' and add it
-        type = helper.validate_type(type, "Messages")
+        # Check if the type is valid
+        type = helper.validate_type(type)
 
         # Create the message ID
         message_id: str = await self.__client.post(
@@ -823,7 +823,7 @@ class Simulation(Context):
             return self.__planets[name]
 
         # Fetch the solar system
-        system: System = await self.get_system(types.SOLAR_SYSTEM)
+        system: System = await self.get_system("SolarSystem")
 
         # Grab the planet by invoking the method
         id: str = await system.invoke("GetBody", name)
@@ -831,7 +831,7 @@ class Simulation(Context):
             raise NominalException(f"Failed to create planet with name '{name}'.")
 
         # Construct the object
-        object: Object = Object(self, id, types.CELESTIAL_BODY)
+        object: Object = Object(self, id, "CelestialBody")
         self.__planets[name] = object
         self.__objects.append(object)
 
@@ -902,7 +902,7 @@ class Simulation(Context):
         # Throw exception if the simulation is not valid
         self.__validate()
 
-        # Check if the type is missing 'NominalSystems' and add it
+        # Check if the type is valid
         type = helper.validate_type(type)
 
         # Create the request to the function
@@ -938,7 +938,7 @@ class Simulation(Context):
         # Throw exception if the simulation is not valid
         self.__validate()
 
-        # Check if the type is missing 'NominalSystems' and add it
+        # Check if the type is valid
         type = helper.validate_type(type)
 
         # Create the request to the function
@@ -1392,7 +1392,7 @@ class Simulation(Context):
         self.__validate()
 
         # Get the tracking system
-        system: System = await self.get_system(types.TRACKING_SYSTEM)
+        system: System = await self.get_system("TrackingSystem")
 
         # Invoke the get track interval
         return await system.get("Interval")
@@ -1417,7 +1417,7 @@ class Simulation(Context):
             )
 
         # Get the tracking system
-        system: System = await self.get_system(types.TRACKING_SYSTEM)
+        system: System = await self.get_system("TrackingSystem")
 
         # Invoke the set track interval
         await system.set(Interval=interval)
@@ -1438,7 +1438,7 @@ class Simulation(Context):
         self.__validate()
 
         # Get the tracking system
-        system: System = await self.get_system(types.TRACKING_SYSTEM)
+        system: System = await self.get_system("TrackingSystem")
 
         # Get the instance ID, based on whether it is an instance or a string
         id: str = instance.get_id() if isinstance(instance, Instance) else instance
@@ -1469,7 +1469,7 @@ class Simulation(Context):
         self.__validate()
 
         # Get the tracking system
-        system: System = await self.get_system(types.TRACKING_SYSTEM)
+        system: System = await self.get_system("TrackingSystem")
 
         # Store the total data and the current page being called
         data: dict = {}

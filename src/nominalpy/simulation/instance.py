@@ -130,6 +130,9 @@ class Instance:
                     f"Failed to get type of instance with ID '{self.get_id()}'."
                 )
 
+            # Set the type to only be the last part of the "." separated string
+            self.__type = self.__type.split(".")[-1]
+
         # If there is no type, find it
         return self.__type
 
