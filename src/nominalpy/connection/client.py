@@ -10,6 +10,7 @@ from nominalpy.utils import printer, NominalException
 import asyncio, aiohttp, json, atexit
 from typing import Optional, Union, Dict, Any
 
+
 class Client:
     """
     A simple client to handle HTTP requests to an API.
@@ -91,7 +92,7 @@ class Client:
         if not queue:
             return
         if id not in self.sessions:
-            self.sessions[id] = aiohttp.ClientSession()
+            self.sessions[id] = aiohttp.ClientSession(trust_env=True)
         session = self.sessions[id]
 
         while not self._closed:
@@ -109,7 +110,7 @@ class Client:
                 headers = {"Accept": "application/json"}
                 if self.token:
                     headers["Authorization"] = f"Bearer {self.token}"
-                timeout = aiohttp.ClientTimeout(total=30.0)
+                timeout = aiohttp.ClientTimeout(total=60.0)
 
                 body = None
                 if isinstance(data, str):
@@ -146,8 +147,11 @@ class Client:
                         ) as response:
                             content = await response.read()
                             if response.status != 200:
+                                content_data: str = (
+                                    content.decode("utf-8") if content else None
+                                )
                                 raise NominalException(
-                                    f"Request failed: {response.status} {response.reason}"
+                                    f"Request failed: {response.status} {content_data}"
                                 )
                             result = None
                             if content:
@@ -217,9 +221,7 @@ class Client:
                 future.set_exception(NominalException("Request timed out"))
             raise
 
-    async def get(
-        self, endpoint: str, id: str = "default"
-    ):
+    async def get(self, endpoint: str, id: str = "default"):
         """
         Perform an async GET request to the specified endpoint. This will
         return the result of the request as a dictionary.
@@ -237,7 +239,7 @@ class Client:
         return await self._request("GET", endpoint, id=id)
 
     async def post(
-        self, endpoint: str, data: Optional[Any], id: str = "default"
+        self, endpoint: str, data: Optional[Any] = None, id: str = "default"
     ):
         """
         Perform an async POST request to the specified endpoint. This will
@@ -255,9 +257,7 @@ class Client:
         """
         return await self._request("POST", endpoint, data, id=id)
 
-    async def delete(
-        self, endpoint: str, id: str = "default"
-    ):
+    async def delete(self, endpoint: str, id: str = "default"):
         """
         Perform an async DELETE request to the specified endpoint. This will
         return the result of the request as a dictionary.
